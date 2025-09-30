@@ -1,0 +1,213 @@
+/* Overall page style; vi: filetype=css
+ */
+
+body {
+  margin: 0 auto;
+  background-color: white;
+  font-family: sans-serif;
+}
+
+a {
+  color: #3779BF;
+  text-decoration: none;
+}
+a:hover {
+  color: #4183C4;
+  text-decoration: underline;
+}
+
+
+/* Page title, above menu bars */
+
+.title {
+  color: #4183C4;
+  float: left;
+}
+h1.page-title {
+  font-size: 1.60em;  
+  margin-bottom: 0;   
+  display: none;      
+}
+.artifact h1.page-title,
+.dir      h1.page-title,
+.doc      h1.page-title,
+.wiki     h1.page-title {
+  display: block;   
+  color: #444;
+}
+.artifact .title > .page-title,
+.dir      .title > .page-title,
+.doc      .title > .page-title,
+.wiki     .title > .page-title {
+  display: none;   
+}
+.title h1 {
+  display: inline;
+  font-size: 2.20em;
+}
+.title h1:after {
+  content: " / ";
+  color: #777;
+  font-weight: normal;
+}
+.artifact .title h1:after,
+.dir      .title h1:after,
+.doc      .title h1:after,
+.wiki     .title h1:after {
+  content: "";
+}
+.status {
+  float: right;
+  font-size: 0.8em;
+}
+div.logo {
+  float: left;
+  padding-right: 10px;
+}
+div.logo img {
+  max-height: 2em;    
+}
+
+
+/* Main menu and optional sub-menu */
+
+.mainmenu {
+  clear: both;
+  background: #eaeaea linear-gradient(#fafafa, #eaeaea) repeat-x;
+  border: 1px solid #eaeaea;
+  border-radius: 5px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  z-index: 21;  
+  padding: 10px;
+}
+.mainmenu a {
+  text-decoration: none;
+  color: #777;
+  border-right: 1px solid #eaeaea;
+  padding: 0 10px;
+}
+.mainmenu a.active,
+.mainmenu a:hover {
+  color: #000;
+  border-bottom: 2px solid #D26911;
+}
+nav#hbdrop {
+  background-color: white;
+  border: 1px solid black;
+  border-top: white;
+  border-radius: 0 0 0.5em 0.5em;
+  display: none;
+  font-size: 80%;
+  left: 2em;
+  width: 90%;
+  padding-right: 1em;
+  position: absolute;
+  z-index: 20;  
+}
+
+.submenu {
+  font-size: 0.8em;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+.submenu a, .submenu label {
+  padding: 10px 11px;
+  text-decoration: none;
+  color: #777;
+}
+.submenu label {
+  white-space: nowrap;
+}
+.submenu a:hover, .submenu label:hover {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  color: #000;
+}
+span.submenuctrl, span.submenuctrl input, select.submenuctrl {
+  color: #777;
+}
+span.submenuctrl {
+  white-space: nowrap;
+}
+
+
+/* Main document area; elements common to most pages. */
+
+.content {
+  padding: 1ex;
+  color: #2e2e2e;
+}
+.content h1 { font-size: 1.60em; color: #444; }
+.content h2 { font-size: 1.45em; color: #444; }
+.content h3 { font-size: 1.15em; color: #444; }
+.content h4 { font-size: 1.05em; color: #444; }
+.content h5 { font-size: 1.00em; color: #444; }
+
+.section {
+  font-size: 1em;
+  font-weight: bold;
+  background-color: #f5f5f5;
+  border: 1px solid #d8d8d8;
+  border-radius: 3px 3px 0 0;
+  padding: 9px 10px 10px;
+  margin: 10px 0;
+}
+.sectionmenu {
+  border: 1px solid #d8d8d8;
+  border-radius: 0 0 3px 3px;
+  border-top: 0;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+.sectionmenu a {
+  display: inline-block;
+  margin-right: 1em;
+}
+
+hr {
+  color: #eee;
+}
+
+
+/* Page footer */
+
+footer {
+  border-top: 1px solid #ccc;
+  padding: 10px;
+  font-size: 0.8em;
+  margin-top: 10px;
+  color: #ccc;
+}
+
+/* Forum */
+
+.forum a:visited {
+  color: #6A7F94;
+}
+
+/* Language selector styles */
+.language-selector {
+  float: right;
+  margin-right: 10px;
+  font-size: 0.9em;
+}
+.language-option {
+  padding: 0 5px;
+  margin: 0 3px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+}
+.language-option:hover {
+  border-color: #ccc;
+  background-color: #f5f5f5;
+}
+.active-language {
+  padding: 0 5px;
+  margin: 0 3px;
+  color: #D26911;
+  font-weight: bold;
+}

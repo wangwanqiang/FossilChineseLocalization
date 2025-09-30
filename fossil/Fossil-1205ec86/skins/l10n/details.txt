@@ -1,0 +1,4 @@
+# 本地化皮肤配置
+# 这个皮肤支持多语言翻译功能
+skin-name: Localized
+skin-description: 支持多语言翻译的Fossil皮肤
