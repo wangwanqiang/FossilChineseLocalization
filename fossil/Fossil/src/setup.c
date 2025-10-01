@@ -102,79 +102,79 @@ void setup_page(void){
 #endif
 
   @ <table border="0" cellspacing="3">
-  setup_menu_entry("Users", "setup_ulist",
-    "Grant privileges to individual users.");
+  setup_menu_entry("用户", "setup_ulist",
+    "为个人用户授予权限。");
   if( setup_user ){
-    setup_menu_entry("Access", "setup_access",
-      "Control access settings.");
-    setup_menu_entry("Configuration", "setup_config",
-      "Configure the WWW components of the repository");
+    setup_menu_entry("访问控制", "setup_access",
+      "控制访问设置。");
+    setup_menu_entry("配置", "setup_config",
+      "配置仓库的WWW组件");
   }
-  setup_menu_entry("Security-Audit", "secaudit0",
-    "Analyze the current configuration for security problems");
+  setup_menu_entry("安全审计", "secaudit0",
+    "分析当前配置的安全问题");
   if( setup_user ){
-    setup_menu_entry("Robot-Defense", "setup_robot",
-      "Settings for configure defense against robots");
-    setup_menu_entry("Settings", "setup_settings",
-      "Web interface to the \"fossil settings\" command");
+    setup_menu_entry("机器人防御", "setup_robot",
+      "配置防御机器人的设置");
+    setup_menu_entry("设置", "setup_settings",
+      "\"fossil settings\"命令的Web界面");
   }
-  setup_menu_entry("Timeline", "setup_timeline",
-    "Timeline display preferences");
+  setup_menu_entry("时间线", "setup_timeline",
+    "时间线显示首选项");
   if( setup_user ){
-    setup_menu_entry("Login-Group", "setup_login_group",
-      "Manage single sign-on between this repository and others"
-      " on the same server");
-    setup_menu_entry("Tickets", "tktsetup",
-      "Configure the trouble-ticketing system for this repository");
+    setup_menu_entry("登录组", "setup_login_group",
+      "管理此仓库与同一服务器上其他仓库之间的单点登录"
+      "");
+    setup_menu_entry("工单", "tktsetup",
+      "为此仓库配置问题工单系统");
     setup_menu_entry("Wiki", "setup_wiki",
-      "Configure the wiki for this repository");
-    setup_menu_entry("Interwiki Map", "intermap",
-      "Mapping keywords for interwiki links");
-    setup_menu_entry("Chat", "setup_chat",
-      "Configure the chatroom");
-    setup_menu_entry("Forum", "setup_forum",
-      "Forum config and metrics");
+      "为此仓库配置Wiki");
+    setup_menu_entry("跨Wiki映射", "intermap",
+      "跨Wiki链接的关键字映射");
+    setup_menu_entry("聊天", "setup_chat",
+      "配置聊天室");
+    setup_menu_entry("论坛", "setup_forum",
+      "论坛配置和统计");
   }
-  setup_menu_entry("Search","srchsetup",
-    "Configure the built-in search engine");
-  setup_menu_entry("URL Aliases", "waliassetup",
-    "Configure URL aliases");
+  setup_menu_entry("搜索","srchsetup",
+    "配置内置搜索引擎");
+  setup_menu_entry("URL别名", "waliassetup",
+    "配置URL别名");
   if( setup_user ){
-    setup_menu_entry("Notification", "setup_notification",
-      "Automatic notifications of changes via outbound email");
-    setup_menu_entry("Transfers", "xfersetup",
-      "Configure the transfer system for this repository");
+    setup_menu_entry("通知", "setup_notification",
+      "通过出站电子邮件自动通知变更");
+    setup_menu_entry("传输", "xfersetup",
+      "为此仓库配置传输系统");
   }
-  setup_menu_entry("Skins", "setup_skin_admin",
-    "Select and/or modify the web interface \"skins\"");
-  setup_menu_entry("Moderation", "setup_modreq",
-    "Enable/Disable requiring moderator approval of Wiki and/or Ticket"
-    " changes and attachments.");
-  setup_menu_entry("Ad-Unit", "setup_adunit",
-    "Edit HTML text for an ad unit inserted after the menu bar");
-  setup_menu_entry("URLs & Checkouts", "urllist",
-    "Show URLs used to access this repo and known check-outs");
+  setup_menu_entry("皮肤", "setup_skin_admin",
+    "选择和/或修改Web界面\"皮肤\"");
+  setup_menu_entry("审核", "setup_modreq",
+    "启用/禁用Wiki和/或工单变更和附件需要审核"
+    "");
+  setup_menu_entry("广告单元", "setup_adunit",
+    "编辑插入在菜单栏后的广告单元HTML文本");
+  setup_menu_entry("URL和检出", "urllist",
+    "显示用于访问此仓库的URL和已知检出");
   if( setup_user ){
-    setup_menu_entry("Web-Cache", "cachestat",
-      "View the status of the expensive-page cache");
+    setup_menu_entry("Web缓存", "cachestat",
+      "查看昂贵页面缓存的状态");
   }
   setup_menu_entry("Logo", "setup_logo",
-    "Change the logo and background images for the server");
-  setup_menu_entry("Shunned", "shun",
-    "Show artifacts that are shunned by this repository");
-  setup_menu_entry("Log Files", "setup-logmenu",
-    "A menu of available log files");
-  setup_menu_entry("Unversioned Files", "uvlist?byage=1",
-    "Show all unversioned files held");
-  setup_menu_entry("Stats", "stat",
-    "Repository Status Reports");
-  setup_menu_entry("Sitemap", "sitemap",
-    "Links to miscellaneous pages");
+    "更改服务器的Logo和背景图像");
+  setup_menu_entry("屏蔽", "shun",
+    "显示此仓库屏蔽的工件");
+  setup_menu_entry("日志文件", "setup-logmenu",
+    "可用日志文件菜单");
+  setup_menu_entry("未版本化文件", "uvlist?byage=1",
+    "显示所有未版本化的文件");
+  setup_menu_entry("统计", "stat",
+    "显示仓库统计信息");
+  setup_menu_entry("站点地图", "sitemap",
+    "指向各种页面的链接");
   if( setup_user ){
     setup_menu_entry("SQL", "admin_sql",
-      "Enter raw SQL commands");
+      "输入原始SQL命令");
     setup_menu_entry("TH1", "admin_th1",
-      "Enter raw TH1 commands");
+      "输入原始TH1命令");
   }
   @ </table>
 
@@ -206,33 +206,33 @@ void setup_logmenu_page(void){
 
   if( db_get_boolean("admin-log",1)==0 ){
     blob_appendf(&desc,
-      "The admin log records configuration changes to the repository.\n"
-      "<b>Disabled</b>:  Turn on the "
-      " <a href='%R/setup_settings'>admin-log setting</a> to enable."
+      "管理员日志记录对仓库的配置变更。\n"
+      "<b>已禁用</b>:  开启 "
+      " <a href='%R/setup_settings'>admin-log设置</a> 以启用。"
     );
-    setup_menu_entry("Admin Log", 0, blob_str(&desc));
+    setup_menu_entry("管理员日志", 0, blob_str(&desc));
     blob_reset(&desc);
   }else{
-    setup_menu_entry("Admin Log", "admin_log",
-      "The admin log records configuration changes to the repository\n"
-      "in the \"admin_log\" table.\n"
+    setup_menu_entry("管理员日志", "admin_log",
+      "管理员日志记录对仓库的配置变更\n"
+      "保存在\"admin_log\"表中。\n"
     );
   }
-  setup_menu_entry("Xfer Log", "rcvfromlist",
-    "The artifact log records when new content is added in the\n"
-    "\"rcvfrom\" table.\n"
+  setup_menu_entry("传输日志", "rcvfromlist",
+    "工件日志记录何时在\n"
+    "\"rcvfrom\"表中添加新内容。\n"
   );
   if( db_get_boolean("access-log",1) ){
-    setup_menu_entry("User Log", "user_log",
-      "Login attempts recorded in the \"accesslog\" table."
+    setup_menu_entry("用户日志", "user_log",
+      "登录尝试记录在\"accesslog\"表中。"
     );
   }else{
     blob_appendf(&desc,
-      "Login attempts recorded in the \"accesslog\" table.\n"
-      "<b>Disabled</b>:  Turn on the "
-      "<a href='%R/setup_settings'>access-log setting</a> to enable."
+      "登录尝试记录在\"accesslog\"表中。\n"
+      "<b>已禁用</b>:  开启 "
+      "<a href='%R/setup_settings'>access-log设置</a> 以启用。"
     );
-    setup_menu_entry("User Log", 0, blob_str(&desc));
+    setup_menu_entry("用户日志", 0, blob_str(&desc));
     blob_reset(&desc);
   }
 

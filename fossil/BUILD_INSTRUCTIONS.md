@@ -6,7 +6,7 @@ This document provides detailed instructions for building Fossil SCM on Windows 
 
 1. **Visual Studio 2022** (Community Edition or higher) with C++ development tools installed
 2. **PowerShell** (version 5.1 or higher)
-3. **Fossil Source Code** (included in this repository at `Fossil-1205ec86`)
+3. **Fossil Source Code** (included in this repository at `Fossil`)
 
 ## Build Options
 
@@ -65,7 +65,7 @@ If you prefer to build manually without the script:
 
 2. **Navigate to the Fossil Windows build directory**
    ```cmd
-   cd c:\source\fossil_depot\fossil\Fossil-1205ec86\win
+   cd c:\source\fossil_depot\fossil\Fossil\win
    ```
 
 3. **Run the build command with your desired options**
@@ -76,7 +76,7 @@ If you prefer to build manually without the script:
 ## Build Output
 
 After a successful build, you will find the `fossil.exe` executable in the `win` directory:
-`c:\source\fossil_depot\fossil\Fossil-1205ec86\win\fossil.exe`
+`c:\source\fossil_depot\fossil\Fossil\win\fossil.exe`
 
 ## Troubleshooting
 

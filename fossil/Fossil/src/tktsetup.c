@@ -35,26 +35,26 @@ void tktsetup_page(void){
 
   style_header("Ticket Setup");
   @ <table border="0" cellspacing="20">
-  setup_menu_entry("Table", "tktsetup_tab",
-    "Specify the schema of the  \"ticket\" table in the database.");
-  setup_menu_entry("Timeline", "tktsetup_timeline",
-    "How to display ticket status in the timeline");
-  setup_menu_entry("Common", "tktsetup_com",
-    "Common TH1 code run before all ticket processing.");
-  setup_menu_entry("Change", "tktsetup_change",
-    "The TH1 code run after a ticket is edited or created.");
-  setup_menu_entry("New Ticket Page", "tktsetup_newpage",
-    "HTML with embedded TH1 code for the \"new ticket\" webpage.");
-  setup_menu_entry("View Ticket Page", "tktsetup_viewpage",
-    "HTML with embedded TH1 code for the \"view ticket\" webpage.");
-  setup_menu_entry("Edit Ticket Page", "tktsetup_editpage",
-    "HTML with embedded TH1 code for the \"edit ticket\" webpage.");
-  setup_menu_entry("Report List Page", "tktsetup_reportlist",
-    "HTML with embedded TH1 code for the \"report list\" webpage.");
-  setup_menu_entry("Report Template", "tktsetup_rpttplt",
-    "The default ticket report format.");
-  setup_menu_entry("Key Template", "tktsetup_keytplt",
-    "The default color key for reports.");
+  setup_menu_entry("表结构", "tktsetup_tab",
+    "指定数据库中\"ticket\"表的结构。");
+  setup_menu_entry("时间线", "tktsetup_timeline",
+    "如何在时间线中显示工单状态");
+  setup_menu_entry("通用代码", "tktsetup_com",
+    "所有工单处理前运行的通用TH1代码。");
+  setup_menu_entry("变更后代码", "tktsetup_change",
+    "工单编辑或创建后运行的TH1代码。");
+  setup_menu_entry("新建工单页面", "tktsetup_newpage",
+    "用于\"新建工单\"网页的内嵌TH1代码的HTML。");
+  setup_menu_entry("查看工单页面", "tktsetup_viewpage",
+    "用于\"查看工单\"网页的内嵌TH1代码的HTML。");
+  setup_menu_entry("编辑工单页面", "tktsetup_editpage",
+    "用于\"编辑工单\"网页的内嵌TH1代码的HTML。");
+  setup_menu_entry("报告列表页面", "tktsetup_reportlist",
+    "用于\"报告列表\"网页的内嵌TH1代码的HTML。");
+  setup_menu_entry("报告模板", "tktsetup_rpttplt",
+    "默认工单报告格式。");
+  setup_menu_entry("颜色键模板", "tktsetup_keytplt",
+    "报告的默认颜色键。");
   @ </table>
   style_finish_page();
 }

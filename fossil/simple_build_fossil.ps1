@@ -32,14 +32,16 @@ if (-not (Test-Path $devCmdPath)) {
 # Get the current script directory
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $fossilDir = $scriptDir
-$winDir = Join-Path $fossilDir "Fossil-1205ec86\win"
+$fossilSrcDir = Join-Path $fossilDir "Fossil"
+$winDir = Join-Path $fossilSrcDir "win"
+$binDir = Join-Path $fossilDir "bin"
 
 # Create a temporary batch file to set up environment and build
 $tempPath = [System.IO.Path]::GetTempPath()
 $tempBatch = Join-Path $tempPath "build_fossil_temp.bat"
 
 # Build command with basic options including base directory
-$bPath = "$fossilDir"
+$bPath = "$fossilSrcDir"
 $buildOptions = "/f Makefile.msc B=`"$bPath`" OPTIMIZATIONS=$optimize FOSSIL_BUILD_ZLIB=1 DEBUG=0 PLATFORM=$platform FOSSIL_ENABLE_TH1_HOOKS=1 FOSSIL_ENABLE_TH1_DOCS=1"
 $buildCmd = "nmake $buildOptions"
 
@@ -52,8 +54,16 @@ echo Building Fossil with options: $buildOptions
 echo Running: $buildCmd
 $buildCmd
 if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
+
+REM Create bin directory if it doesn't exist
+if not exist "$binDir" mkdir "$binDir"
+
+REM Copy fossil.exe to bin directory
+copy /Y fossil.exe "$binDir"
+if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
+
 echo Build completed successfully.
-echo Fossil executable should be in the win directory.
+echo Fossil executable has been copied to: $binDir
 "@
 
 $batchContent | Out-File -FilePath $tempBatch -Encoding ASCII
@@ -68,7 +78,7 @@ try {
     }
     else {
         Write-Host "Fossil build completed successfully!" -ForegroundColor Green
-        Write-Host "The executable can be found at: $winDir\fossil.exe" -ForegroundColor Cyan
+        Write-Host "The executable has been copied to: $binDir\fossil.exe" -ForegroundColor Cyan
     }
 } catch {
     Write-Host "An error occurred during the build process: $($_.Exception.Message)" -ForegroundColor Red

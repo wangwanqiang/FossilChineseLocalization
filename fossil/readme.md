@@ -23,7 +23,7 @@ Fossil 的核心优势在于其完整性和简单性：
 
 本项目包含以下主要组件：
 
-- `Fossil-1205ec86/`：Fossil 源代码的主要目录
+- `Fossil/`：Fossil 源代码的主要目录
   - `src/`：核心源代码文件
   - `skins/`：Web 界面的主题样式
   - `www/`：Web 界面资源和文档
@@ -41,7 +41,7 @@ Fossil 的核心优势在于其完整性和简单性：
 #### Unix/Linux/macOS 平台
 
 ```bash
-cd Fossil-1205ec86
+cd Fossil
 ./configure
 make
 ```
@@ -51,7 +51,7 @@ make
 使用 Visual Studio 或 MinGW 编译：
 
 ```bash
-cd Fossil-1205ec86
+cd Fossil
 nmake /f Makefile.msc
 ```
 

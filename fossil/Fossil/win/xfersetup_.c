@@ -37,14 +37,14 @@ void xfersetup_page(void){
   style_header("Transfer Setup");
 
   cgi_printf("<table class=\"xfersetup\">\n");
-  setup_menu_entry("Common", "xfersetup_com",
-    "Common TH1 code run before all transfer request processing.");
-  setup_menu_entry("Push", "xfersetup_push",
-    "Specific TH1 code to run after \"push\" transfer requests.");
-  setup_menu_entry("Commit", "xfersetup_commit",
-    "Specific TH1 code to run after processing a commit.");
-  setup_menu_entry("Ticket", "xfersetup_ticket",
-    "Specific TH1 code to run after processing a ticket change.");
+  setup_menu_entry("通用代码", "xfersetup_com",
+    "所有传输请求处理前运行的通用TH1代码。");
+  setup_menu_entry("推送后代码", "xfersetup_push",
+    "\"推送\"传输请求后运行的特定TH1代码。");
+  setup_menu_entry("提交后代码", "xfersetup_commit",
+    "处理提交后运行的特定TH1代码。");
+  setup_menu_entry("工单变更后代码", "xfersetup_ticket",
+    "处理工单变更后运行的特定TH1代码。");
   cgi_printf("</table>\n");
 
   url_parse(0, URL_USE_CONFIG);
