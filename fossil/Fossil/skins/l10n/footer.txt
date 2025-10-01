@@ -1,6 +1,0 @@
-<footer>
-<th1>translate "This page was generated in about"</th1>
-<th1>puts [expr {([utime]+[stime]+1000)/1000*0.001}]</th1>
-<th1>translate "s by"</th1>
-Fossil $release_version $manifest_version $manifest_date
-</footer>

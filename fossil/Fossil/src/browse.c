@@ -749,7 +749,7 @@ void page_tree(void){
   /* If a regular expression is specified, compile it */
   zRE = P("re");
   if( zRE ){
-    re_compile(&pRE, zRE, 0);
+    fossil_re_compile(&pRE, zRE, 0);
     zREx = mprintf("&re=%T", zRE);
   }
   cgi_check_for_malice();
@@ -1040,7 +1040,8 @@ static const char zComputeFileAgeSetup[] =
 @   fid INTEGER,
 @   mid INTEGER,
 @   mtime DATETIME,
-@   pathname TEXT
+@   pathname TEXT,
+@   uuid TEXT
 @ );
 @ CREATE VIRTUAL TABLE IF NOT EXISTS temp.foci USING files_of_checkin;
 ;
@@ -1052,8 +1053,9 @@ static const char zComputeFileAgeRun[] =
 @              SELECT plink.pid
 @                FROM ckin, plink
 @               WHERE plink.cid=ckin.x)
-@ INSERT OR IGNORE INTO fileage(fnid, fid, mid, mtime, pathname)
-@   SELECT filename.fnid, mlink.fid, mlink.mid, event.mtime, filename.name
+@ INSERT OR IGNORE INTO fileage(fnid, fid, mid, mtime, pathname, uuid)
+@   SELECT filename.fnid, mlink.fid, mlink.mid, event.mtime, filename.name,
+@          foci.uuid
 @     FROM foci, filename, blob, mlink, event
 @    WHERE foci.checkinID=:ckin
 @      AND foci.filename GLOB :glob
@@ -1164,7 +1166,6 @@ void fileage_page(void){
   double baseTime;
   login_check_credentials();
   if( !g.perm.Read ){ login_needed(g.anon.Read); return; }
-  if( exclude_spiders(0) ) return;
   zName = P("name");
   if( zName==0 ) zName = "tip";
   rid = symbolic_name_to_rid(zName, "ci");

@@ -121,6 +121,7 @@ SRC = \
   $(SRCDIR)/regexp.c \
   $(SRCDIR)/repolist.c \
   $(SRCDIR)/report.c \
+  $(SRCDIR)/robot.c \
   $(SRCDIR)/rss.c \
   $(SRCDIR)/schema.c \
   $(SRCDIR)/search.c \
@@ -387,6 +388,7 @@ TRANS_SRC = \
   $(OBJDIR)/regexp_.c \
   $(OBJDIR)/repolist_.c \
   $(OBJDIR)/report_.c \
+  $(OBJDIR)/robot_.c \
   $(OBJDIR)/rss_.c \
   $(OBJDIR)/schema_.c \
   $(OBJDIR)/search_.c \
@@ -537,6 +539,7 @@ OBJ = \
  $(OBJDIR)/regexp.o \
  $(OBJDIR)/repolist.o \
  $(OBJDIR)/report.o \
+ $(OBJDIR)/robot.o \
  $(OBJDIR)/rss.o \
  $(OBJDIR)/schema.o \
  $(OBJDIR)/search.o \
@@ -580,7 +583,7 @@ OBJ = \
  $(OBJDIR)/xfer.o \
  $(OBJDIR)/xfersetup.o \
  $(OBJDIR)/zip.o
-all:	$(OBJDIR) $(APPNAME)
+all:	$(APPNAME)
 
 install:	all
 	mkdir -p $(INSTALLDIR)
@@ -589,26 +592,28 @@ install:	all
 codecheck:	$(TRANS_SRC) $(OBJDIR)/codecheck1
 	$(OBJDIR)/codecheck1 $(TRANS_SRC)
 
-$(OBJDIR):
-	-mkdir $(OBJDIR)
-
 $(OBJDIR)/translate:	$(SRCDIR_tools)/translate.c
 	-mkdir -p $(OBJDIR)
 	$(XBCC) -o $(OBJDIR)/translate $(SRCDIR_tools)/translate.c
 
 $(OBJDIR)/makeheaders:	$(SRCDIR_tools)/makeheaders.c
+	-mkdir -p $(OBJDIR)
 	$(XBCC) -o $(OBJDIR)/makeheaders $(SRCDIR_tools)/makeheaders.c
 
 $(OBJDIR)/mkindex:	$(SRCDIR_tools)/mkindex.c
+	-mkdir -p $(OBJDIR)
 	$(XBCC) -o $(OBJDIR)/mkindex $(SRCDIR_tools)/mkindex.c
 
 $(OBJDIR)/mkbuiltin:	$(SRCDIR_tools)/mkbuiltin.c
+	-mkdir -p $(OBJDIR)
 	$(XBCC) -o $(OBJDIR)/mkbuiltin $(SRCDIR_tools)/mkbuiltin.c
 
 $(OBJDIR)/mkversion:	$(SRCDIR_tools)/mkversion.c
+	-mkdir -p $(OBJDIR)
 	$(XBCC) -o $(OBJDIR)/mkversion $(SRCDIR_tools)/mkversion.c
 
 $(OBJDIR)/codecheck1:	$(SRCDIR_tools)/codecheck1.c
+	-mkdir -p $(OBJDIR)
 	$(XBCC) -o $(OBJDIR)/codecheck1 $(SRCDIR_tools)/codecheck1.c
 
 # Run the test suite.
@@ -624,7 +629,7 @@ $(OBJDIR)/codecheck1:	$(SRCDIR_tools)/codecheck1.c
 # TESTFLAGS can also include names of specific test files to limit
 # the run to just those test cases.
 #
-test:	$(OBJDIR) $(APPNAME)
+test:	$(APPNAME)
 	$(TCLSH) $(SRCDIR)/../test/tester.tcl $(APPNAME) $(TESTFLAGS)
 
 $(OBJDIR)/VERSION.h:	$(SRCDIR)/../manifest.uuid $(SRCDIR)/../manifest $(SRCDIR)/../VERSION $(OBJDIR)/mkversion $(OBJDIR)/phony.h
@@ -655,6 +660,7 @@ SQLITE_OPTIONS = -DNDEBUG=1 \
                  -DSQLITE_ENABLE_FTS4 \
                  -DSQLITE_ENABLE_FTS5 \
                  -DSQLITE_ENABLE_MATH_FUNCTIONS \
+                 -DSQLITE_ENABLE_SETLK_TIMEOUT \
                  -DSQLITE_ENABLE_STMTVTAB \
                  -DSQLITE_HAVE_ZLIB \
                  -DSQLITE_ENABLE_DBPAGE_VTAB \
@@ -681,6 +687,7 @@ SHELL_OPTIONS = -DNDEBUG=1 \
                 -DSQLITE_ENABLE_FTS4 \
                 -DSQLITE_ENABLE_FTS5 \
                 -DSQLITE_ENABLE_MATH_FUNCTIONS \
+                -DSQLITE_ENABLE_SETLK_TIMEOUT \
                 -DSQLITE_ENABLE_STMTVTAB \
                 -DSQLITE_HAVE_ZLIB \
                 -DSQLITE_ENABLE_DBPAGE_VTAB \
@@ -876,6 +883,7 @@ $(OBJDIR)/headers:	$(OBJDIR)/page_index.h $(OBJDIR)/builtin_data.h $(OBJDIR)/mak
 	$(OBJDIR)/regexp_.c:$(OBJDIR)/regexp.h \
 	$(OBJDIR)/repolist_.c:$(OBJDIR)/repolist.h \
 	$(OBJDIR)/report_.c:$(OBJDIR)/report.h \
+	$(OBJDIR)/robot_.c:$(OBJDIR)/robot.h \
 	$(OBJDIR)/rss_.c:$(OBJDIR)/rss.h \
 	$(OBJDIR)/schema_.c:$(OBJDIR)/schema.h \
 	$(OBJDIR)/search_.c:$(OBJDIR)/search.h \
@@ -1767,6 +1775,14 @@ $(OBJDIR)/report.o:	$(OBJDIR)/report_.c $(OBJDIR)/report.h $(SRCDIR)/config.h
 
 $(OBJDIR)/report.h:	$(OBJDIR)/headers
 
+$(OBJDIR)/robot_.c:	$(SRCDIR)/robot.c $(OBJDIR)/translate
+	$(OBJDIR)/translate $(SRCDIR)/robot.c >$@
+
+$(OBJDIR)/robot.o:	$(OBJDIR)/robot_.c $(OBJDIR)/robot.h $(SRCDIR)/config.h
+	$(XTCC) -o $(OBJDIR)/robot.o -c $(OBJDIR)/robot_.c
+
+$(OBJDIR)/robot.h:	$(OBJDIR)/headers
+
 $(OBJDIR)/rss_.c:	$(SRCDIR)/rss.c $(OBJDIR)/translate
 	$(OBJDIR)/translate $(SRCDIR)/rss.c >$@
 
@@ -2121,19 +2137,25 @@ $(OBJDIR)/linenoise.o:	$(SRCDIR_extsrc)/linenoise.c $(SRCDIR_extsrc)/linenoise.h
 	$(XTCC) -c $(SRCDIR_extsrc)/linenoise.c -o $@
 
 $(OBJDIR)/th.o:	$(SRCDIR)/th.c
+	-mkdir -p $(OBJDIR)
+
 	$(XTCC) -c $(SRCDIR)/th.c -o $@
 
 $(OBJDIR)/th_lang.o:	$(SRCDIR)/th_lang.c
+	-mkdir -p $(OBJDIR)
+
 	$(XTCC) -c $(SRCDIR)/th_lang.c -o $@
 
 $(OBJDIR)/th_tcl.o:	$(SRCDIR)/th_tcl.c
+	-mkdir -p $(OBJDIR)
+
 	$(XTCC) -c $(SRCDIR)/th_tcl.c -o $@
 
 
-$(OBJDIR)/pikchr.o:	$(SRCDIR_extsrc)/pikchr.c
+$(OBJDIR)/pikchr.o:	$(SRCDIR_extsrc)/pikchr.c $(OBJDIR)/mkversion
 	$(XTCC) $(PIKCHR_OPTIONS) -c $(SRCDIR_extsrc)/pikchr.c -o $@
 
-$(OBJDIR)/cson_amalgamation.o: $(SRCDIR_extsrc)/cson_amalgamation.c
+$(OBJDIR)/cson_amalgamation.o: $(SRCDIR_extsrc)/cson_amalgamation.c $(OBJDIR)/mkversion
 	$(XTCC) -c $(SRCDIR_extsrc)/cson_amalgamation.c -o $@
 
 $(SRCDIR_extsrc)/pikchr.js: $(SRCDIR_extsrc)/pikchr.c $(MAKEFILE_LIST)

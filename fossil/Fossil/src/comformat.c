@@ -305,7 +305,7 @@ void char_info_utf8(
         ( (z[0] & 0x0f)<<18 ) |
         ( (z[1] & 0x3f)<<12 ) |
         ( (z[2] & 0x3f)<< 6 ) |
-        ( (z[4] & 0x3f)<< 0 ) ;
+        ( (z[3] & 0x3f)<< 0 ) ;
       break;
     case 3:
       *pUtf32 =
@@ -809,13 +809,13 @@ void test_comment_format(void){
   if( fromFile ){
     Blob fileData;
     blob_read_from_file(&fileData, fromFile, ExtFILE);
-    zText = mprintf("%s", blob_str(&fileData));
+    zText = fossil_strdup(blob_str(&fileData));
     blob_reset(&fileData);
   }
   if( fromOrig ){
     Blob fileData;
     blob_read_from_file(&fileData, fromOrig, ExtFILE);
-    zOrigText = mprintf("%s", blob_str(&fileData));
+    zOrigText = fossil_strdup(blob_str(&fileData));
     blob_reset(&fileData);
   }
   for(i=2; i<g.argc; i++){

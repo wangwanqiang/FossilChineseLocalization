@@ -2736,7 +2736,7 @@ int manifest_crosslink(int rid, Blob *pContent, int flags){
       zValue = p->aTag[i].zValue;
       if( strcmp(zName, "*branch")==0 ){
         blob_appendf(&comment,
-           " Move to branch [/timeline?r=%h&nd&dp=%!S&unhide | %h].",
+           " Move to branch [/timeline?r=%t&nd&dp=%!S&unhide | %h].",
            zValue, zTagUuid, zValue);
         branchMove = 1;
         continue;
@@ -3026,7 +3026,7 @@ void artifact_to_json(Manifest const *p, Blob *b){
   ISA( CFTYPE_CLUSTER ){
     CARD_LETTER(M);
     blob_append_char(b, '[');
-    for( int i = 0; i < p->nCChild; ++i ){
+    for( i = 0; i < p->nCChild; ++i ){
       if( i>0 ) blob_append_char(b, ',');
       blob_appendf(b, "%!j", p->azCChild[i]);
     }
@@ -3061,7 +3061,7 @@ void artifact_to_json(Manifest const *p, Blob *b){
   if( p->nTag ){
     CARD_LETTER(T);
     blob_append_char(b, '[');
-    for( int i = 0; i < p->nTag; ++i ){
+    for( i = 0; i < p->nTag; ++i ){
       const char *zName = p->aTag[i].zName;
       if( i>0 ) blob_append_char(b, ',');
       blob_append_char(b, '{');

@@ -669,12 +669,7 @@ void diff_file(
     }
 
     /* Run the external diff command */
-    if( fossil_system(blob_str(&cmd)) ){
-#if !defined(_WIN32)
-      /* On Windows, exit codes are unreliable. */     
-      fossil_warning("External diff command failed: %b\n", &cmd);
-#endif                     
-    }
+    fossil_system(blob_str(&cmd));
 
     /* Delete the temporary file and clean up memory used */
     if( useTempfile ) file_delete(blob_str(&nameFile1));
@@ -1297,7 +1292,7 @@ const char *diff_get_binary_glob(void){
 ** specified (as they exist on disk) and that same file as it was checked-
 ** out.  Or if the FILE arguments are omitted, show all unsaved changes
 ** currently in the working check-out.  The "gdiff" variant means to
-** to use a GUI diff.
+** use a GUI diff.
 **
 ** The default output format is a "unified patch" (the same as the
 ** output of "diff -u" on most unix systems).  Many alternative formats
@@ -1529,6 +1524,7 @@ void vpatch_page(void){
   login_check_credentials();
   if( !g.perm.Read ){ login_needed(g.anon.Read); return; }
   if( zFrom==0 || zTo==0 ) fossil_redirect_home();
+  if( robot_restrict("diff") ) return;
 
   fossil_nice_default();
   cgi_set_content_type("text/plain");

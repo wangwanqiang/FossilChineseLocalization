@@ -403,30 +403,32 @@ static void append_file_change_line(
       append_diff(zOld, zNew, pCfg);
     }
   }else{
+    const char *zCkin2 =
+      mprintf(validate16(zCkin, -1) ? "%!S" : "%T"/*works-like:"%s"*/, zCkin);
     if( zOld && zNew ){
       if( fossil_strcmp(zOld, zNew)!=0 ){
         if( zOldName!=0 && fossil_strcmp(zName,zOldName)!=0 ){
           @ Renamed and modified
-          @ %z(href("%R/finfo?name=%T&m=%!S&ci=%!S",zOldName,zOld,zCkin))\
+          @ %z(href("%R/finfo?name=%T&m=%!S&ci=%s",zOldName,zOld,zCkin2))\
           @ %h(zOldName)</a>
           @ %z(href("%R/artifact/%!S",zOld))[%S(zOld)]</a>
-          @ to %z(href("%R/finfo?name=%T&m=%!S&ci=%!S",zName,zNew,zCkin))\
+          @ to %z(href("%R/finfo?name=%T&m=%!S&ci=%s",zName,zNew,zCkin2))\
           @ %h(zName)</a>
           @ %z(href("%R/artifact/%!S",zNew))[%S(zNew)]</a>.
         }else{
-          @ Modified %z(href("%R/finfo?name=%T&m=%!S&ci=%!S",zName,zNew,zCkin))\
+          @ Modified %z(href("%R/finfo?name=%T&m=%!S&ci=%s",zName,zNew,zCkin2))\
           @ %h(zName)</a>
           @ from %z(href("%R/artifact/%!S",zOld))[%S(zOld)]</a>
           @ to %z(href("%R/artifact/%!S",zNew))[%S(zNew)]</a>.
         }
       }else if( zOldName!=0 && fossil_strcmp(zName,zOldName)!=0 ){
         @ Name change
-        @ from %z(href("%R/finfo?name=%T&m=%!S&ci=%!S",zOldName,zOld,zCkin))\
+        @ from %z(href("%R/finfo?name=%T&m=%!S&ci=%s",zOldName,zOld,zCkin2))\
         @ %h(zOldName)</a>
-        @ to %z(href("%R/finfo?name=%T&m=%!S&ci=%!S",zName,zNew,zCkin))\
+        @ to %z(href("%R/finfo?name=%T&m=%!S&ci=%s",zName,zNew,zCkin2))\
         @ %h(zName)</a>.
       }else{
-        @ %z(href("%R/finfo?name=%T&m=%!S&ci=%!S",zName,zNew,zCkin))\
+        @ %z(href("%R/finfo?name=%T&m=%!S&ci=%s",zName,zNew,zCkin2))\
         @ %h(zName)</a> became
         if( mperm==PERM_EXE ){
           @ executable with contents
@@ -438,10 +440,10 @@ static void append_file_change_line(
         @ %z(href("%R/artifact/%!S",zNew))[%S(zNew)]</a>.
       }
     }else if( zOld ){
-      @ Deleted %z(href("%R/finfo?name=%T&m=%!S&ci=%!S",zName,zOld,zCkin))\
+      @ Deleted %z(href("%R/finfo?name=%T&m=%!S&ci=%s",zName,zOld,zCkin2))\
       @ %h(zName)</a> version %z(href("%R/artifact/%!S",zOld))[%S(zOld)]</a>.
     }else{
-      @ Added %z(href("%R/finfo?name=%T&m=%!S&ci=%!S",zName,zNew,zCkin))\
+      @ Added %z(href("%R/finfo?name=%T&m=%!S&ci=%s",zName,zNew,zCkin2))\
       @ %h(zName)</a> version %z(href("%R/artifact/%!S",zNew))[%S(zNew)]</a>.
     }
     if( zOld && zNew && fossil_strcmp(zOld,zNew)!=0 ){
@@ -645,6 +647,8 @@ static void ckout_normal_diff(int vid){
   }else{
     DCfg.diffFlags |= DIFF_LINENO | DIFF_HTML | DIFF_NOTTOOBIG;
   }
+  @ <div class="section" id="changes_section">Changes</div>
+  DCfg.diffFlags |= DIFF_NUMSTAT; /* Show stats in the 'Changes' section */
   @ <div class="sectionmenu info-changes-menu">
   zW = (DCfg.diffFlags&DIFF_IGNORE_ALLWS)?"&w":"";
   if( diffType!=1 ){
@@ -720,6 +724,12 @@ static void ckout_normal_diff(int vid){
     }
   }
   db_finalize(&q);
+  @ <script nonce='%h(style_nonce())'>;/* info.c:%d(__LINE__) */
+  @ document.getElementById('changes_section').textContent =  'Changes ' +
+  @   '(%d(g.diffCnt[0]) file' + (%d(g.diffCnt[0])===1 ? '' : 's') + ': ' +
+  @   '+%d(g.diffCnt[1]) ' +
+  @   '−%d(g.diffCnt[2]))'
+  @ </script>
   append_diff_javascript(diffType);
 }
 
@@ -743,6 +753,8 @@ static void ckout_external_base_diff(int vid, const char *zExBase){
   }else{
     DCfg.diffFlags |= DIFF_LINENO | DIFF_HTML | DIFF_NOTTOOBIG;
   }
+  @ <div class="section" id="changes_section">Changes</div>
+  DCfg.diffFlags |= DIFF_NUMSTAT; /* Show stats in the 'Changes' section */
   @ <div class="sectionmenu info-changes-menu">
   zW = (DCfg.diffFlags&DIFF_IGNORE_ALLWS)?"&w":"";
   if( diffType!=1 ){
@@ -805,6 +817,12 @@ static void ckout_external_base_diff(int vid, const char *zExBase){
     fossil_free(zRhs);
   }
   db_finalize(&q);
+  @ <script nonce='%h(style_nonce())'>;/* info.c:%d(__LINE__) */
+  @ document.getElementById('changes_section').textContent =  'Changes ' +
+  @   '(%d(g.diffCnt[0]) file' + (%d(g.diffCnt[0])===1 ? '' : 's') + ': ' +
+  @   '+%d(g.diffCnt[1]) ' +
+  @   '−%d(g.diffCnt[2]))'
+  @ </script>
   append_diff_javascript(diffType);
 }
 
@@ -920,7 +938,7 @@ void ci_page(void){
     return;
   }
   zRe = P("regex");
-  if( zRe ) re_compile(&pRe, zRe, 0);
+  if( zRe ) fossil_re_compile(&pRe, zRe, 0);
   zUuid = db_text(0, "SELECT uuid FROM blob WHERE rid=%d", rid);
   zParent = db_text(0,
     "SELECT uuid FROM plink, blob"
@@ -1169,11 +1187,12 @@ void ci_page(void){
        "<div class=\"section accordion\">References</div>\n");
   @ <div class="section accordion">Context</div><div class="accordion_panel">
   render_checkin_context(rid, 0, 0, 0);
-  @ </div><div class="section accordion">Changes</div>
+  @ </div><div class="section accordion" id="changes_section">Changes</div>
   @ <div class="accordion_panel">
   @ <div class="sectionmenu info-changes-menu">
   /* ^^^ .info-changes-menu is used by diff scroll sync */
   pCfg = construct_diff_flags(diffType, &DCfg);
+  DCfg.diffFlags |= DIFF_NUMSTAT; /* Show stats in the 'Changes' section */
   DCfg.pRe = pRe;
   zW = (DCfg.diffFlags&DIFF_IGNORE_ALLWS)?"&w":"";
   if( diffType!=1 ){
@@ -1229,6 +1248,14 @@ void ci_page(void){
   }
   db_finalize(&q3);
   @ </div>
+  if( diffType!=0 ){
+    @ <script nonce='%h(style_nonce())'>;/* info.c:%d(__LINE__) */
+    @ document.getElementById('changes_section').textContent =  'Changes ' +
+    @   '(%d(g.diffCnt[0]) file' + (%d(g.diffCnt[0])===1 ? '' : 's') + ': ' +
+    @   '+%d(g.diffCnt[1]) ' +
+    @   '−%d(g.diffCnt[2]))'
+    @ </script>
+  }
   append_diff_javascript(diffType);
   style_finish_page();
 }
@@ -1416,13 +1443,14 @@ void vdiff_page(void){
 
   login_check_credentials();
   if( !g.perm.Read ){ login_needed(g.anon.Read); return; }
+  if( robot_restrict("diff") ) return;
   login_anonymous_available();
   fossil_nice_default();
   blob_init(&qp, 0, 0);
   blob_init(&qpGlob, 0, 0);
   diffType = preferred_diff_type();
   zRe = P("regex");
-  if( zRe ) re_compile(&pRe, zRe, 0);
+  if( zRe ) fossil_re_compile(&pRe, zRe, 0);
   zBranch = P("branch");
   if( zBranch && zBranch[0]==0 ) zBranch = 0;
   if( zBranch ){
@@ -1920,14 +1948,27 @@ int object_description(
 */
 int preferred_diff_type(void){
   int dflt;
+  int res;
+  int isBot;
   static char zDflt[2]
     /*static b/c cookie_link_parameter() does not copy it!*/;
-  dflt = db_get_int("preferred-diff-type",-99);
-  if( dflt<=0 ) dflt = user_agent_is_likely_mobile() ? 1 : 2;
+  if( client_might_be_a_robot() && robot_restrict_has_tag("diff") ){
+    dflt = 0;
+    isBot = 1;
+  }else{
+    dflt = db_get_int("preferred-diff-type",-99);
+    if( dflt<=0 ) dflt = user_agent_is_likely_mobile() ? 1 : 2;
+    isBot = 0;
+  }
   zDflt[0] = dflt + '0';
   zDflt[1] = 0;
   cookie_link_parameter("diff","diff", zDflt);
-  return atoi(PD_NoBot("diff",zDflt));
+  res = atoi(PD_NoBot("diff",zDflt));
+  if( isBot && res>0 && robot_restrict("diff") ){
+    cgi_reply();
+    fossil_exit(0);
+  }
+  return res;
 }
 
 
@@ -1969,6 +2010,7 @@ void diff_page(void){
 
   login_check_credentials();
   if( !g.perm.Read ){ login_needed(g.anon.Read); return; }
+  if( robot_restrict("diff") ) return;
   diff_config_init(&DCfg, 0);
   diffType = preferred_diff_type();
   if( P("from") && P("to") ){
@@ -2011,7 +2053,7 @@ void diff_page(void){
   }
   zRe = P("regex");
   cgi_check_for_malice();
-  if( zRe ) re_compile(&pRe, zRe, 0);
+  if( zRe ) fossil_re_compile(&pRe, zRe, 0);
   if( verbose ) objdescFlags |= OBJDESC_DETAIL;
   if( isPatch ){
     Blob c1, c2, *pOut;
@@ -2409,11 +2451,11 @@ void hexdump_page(void){
                         zUuid, file_tail(blob_str(&downloadName)));
   @ <hr>
   content_get(rid, &content);
-  if( !g.isHuman ){
+  if( blob_size(&content)>100000 ){
     /* Prevent robots from running hexdump on megabyte-sized source files
     ** and there by eating up lots of CPU time and bandwidth.  There is
     ** no good reason for a robot to need a hexdump. */
-    @ <p>A hex dump of this file is not available.
+    @ <p>A hex dump of this file is not available because it is too large.
     @  Please download the raw binary file and generate a hex dump yourself.</p>
   }else{
     @ <blockquote><pre>
@@ -2888,7 +2930,7 @@ void artifact_page(void){
       zHeader = mprintf("%s at [%S]", file_tail(zName), zCIUuid);
       style_set_current_page("doc/%S/%T", zCIUuid, zName);
     }else{
-      zHeader = mprintf("%s", file_tail(zName));
+      zHeader = fossil_strdup(file_tail(zName));
       style_set_current_page("doc/tip/%T", zName);
     }
   }else if( descOnly ){
@@ -2917,7 +2959,8 @@ void artifact_page(void){
     db_finalize(&q);
   }
   if( !docOnly ){
-    style_submenu_element("Download", "%R/raw/%s?at=%T",zUuid,file_tail(zName));
+    style_submenu_element("Download", "%R/raw/%s?at=%T",
+                zUuid, file_tail(blob_str(&downloadName)));
     if( db_exists("SELECT 1 FROM mlink WHERE fid=%d", rid) ){
       style_submenu_element("Check-ins Using", "%R/timeline?uf=%s", zUuid);
     }
@@ -3934,6 +3977,7 @@ static void prepare_amend_comment(
 **    --date DATETIME            Make DATETIME the check-in time
 **    --date-override DATETIME   Set the change time on the control artifact
 **    -e|--edit-comment          Launch editor to revise comment
+**    --editor NAME              Text editor to use for check-in comment
 **    --hide                     Hide branch starting from this check-in
 **    -m|--comment COMMENT       Make COMMENT the check-in comment
 **    -M|--message-file FILE     Read the amended comment from FILE
@@ -4007,6 +4051,7 @@ void ci_amend_cmd(void){
   noVerifyCom = find_option("no-verify-comment",0,0)!=0;
   db_find_and_open_repository(0,0);
   user_select();
+  (void)fossil_text_editor();
   verify_all_options();
   if( g.argc<3 || g.argc>=4 ) usage(AMEND_USAGE_STMT);
   rid = name_to_typed_rid(g.argv[2], "ci");
@@ -4240,7 +4285,7 @@ int describe_commit(
   }
 
   zUuid = rid_to_uuid(rid);
-  descr->zCommitHash = mprintf("%s", zUuid);
+  descr->zCommitHash = fossil_strdup(zUuid);
   descr->isDirty = unsaved_changes(0);
 
   db_multi_exec(
@@ -4289,7 +4334,7 @@ int describe_commit(
 
   if( db_step(&q)==SQLITE_ROW ){
     const char *lastTag = db_column_text(&q, 0);
-    descr->zRelTagname = mprintf("%s", lastTag);
+    descr->zRelTagname = fossil_strdup(lastTag);
     descr->nCommitsSince = db_column_int(&q, 1);
     nRet = 0;
   }else{

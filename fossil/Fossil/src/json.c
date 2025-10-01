@@ -80,7 +80,7 @@ int json_request_is_json_api(const char * zPathInfo){
     ** https://fossil-scm.org/forum/forumpost/e4953666d6
     */
     ReCompiled * pReg = 0;
-    const char * zErr = re_compile(&pReg, "^/[^/]+/json(/.*)?", 0);
+    const char * zErr = fossil_re_compile(&pReg, "^/[^/]+/json(/.*)?", 0);
     assert(zErr==0 && "Regex compilation failed?");
     if(zErr==0 &&
          re_match(pReg, (const unsigned char *)zPathInfo, -1)){
@@ -1645,7 +1645,7 @@ int json_set_err( int code, char const * fmt, ... ){
   fossil_free(g.zErrMsg);
   g.json.resultCode = code;
   if(!fmt || !*fmt){
-    g.zErrMsg = mprintf("%s", json_err_cstr(code));
+    g.zErrMsg = fossil_strdup(json_err_cstr(code));
   }else{
     va_list vargs;
     char * msg;
@@ -1963,7 +1963,6 @@ cson_value * json_page_cap(void){
   ADD(Setup,"setup");
   ADD(Admin,"admin");
   ADD(Password,"password");
-  ADD(Query,"query"); /* don't think this one is actually used */
   ADD(Write,"checkin");
   ADD(Read,"checkout");
   ADD(Hyperlink,"history");

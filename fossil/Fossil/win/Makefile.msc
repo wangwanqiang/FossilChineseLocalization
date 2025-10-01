@@ -32,7 +32,7 @@ INSTALLDIR = $(DESTDIR)\$(INSTALLDIR)
 #
 # NOTE: Make sure B path has no trailing backslash, UNIX-style path is OK too.
 #
-!if !exist("$(B)\_FOSSIL_")
+!if !exist("$(B)\.fossil-settings")
 !error Please specify path to project base directory: B="path/to/fossil"
 !endif
 
@@ -153,8 +153,8 @@ TCLINCDIR = $(TCLSRCDIR)\generic
 !endif
 
 # zlib options
-ZINCDIR   = $(B)\Fossil-1205ec86\compat\zlib
-ZLIBDIR   = $(B)\Fossil-1205ec86\compat\zlib
+ZINCDIR   = $(B)\compat\zlib
+ZLIBDIR   = $(B)\compat\zlib
 
 !if $(FOSSIL_DYNAMIC_BUILD)!=0
 ZLIB      = zdll.lib
@@ -318,6 +318,7 @@ SQLITE_OPTIONS = /DNDEBUG=1 \
                  /DSQLITE_ENABLE_FTS4 \
                  /DSQLITE_ENABLE_FTS5 \
                  /DSQLITE_ENABLE_MATH_FUNCTIONS \
+                 /DSQLITE_ENABLE_SETLK_TIMEOUT \
                  /DSQLITE_ENABLE_STMTVTAB \
                  /DSQLITE_HAVE_ZLIB \
                  /DSQLITE_ENABLE_DBPAGE_VTAB \
@@ -344,6 +345,7 @@ SHELL_OPTIONS = /DNDEBUG=1 \
                 /DSQLITE_ENABLE_FTS4 \
                 /DSQLITE_ENABLE_FTS5 \
                 /DSQLITE_ENABLE_MATH_FUNCTIONS \
+                /DSQLITE_ENABLE_SETLK_TIMEOUT \
                 /DSQLITE_ENABLE_STMTVTAB \
                 /DSQLITE_HAVE_ZLIB \
                 /DSQLITE_ENABLE_DBPAGE_VTAB \
@@ -467,6 +469,7 @@ SRC   = "$(OX)\add_.c" \
         "$(OX)\regexp_.c" \
         "$(OX)\repolist_.c" \
         "$(OX)\report_.c" \
+        "$(OX)\robot_.c" \
         "$(OX)\rss_.c" \
         "$(OX)\schema_.c" \
         "$(OX)\search_.c" \
@@ -734,6 +737,7 @@ OBJ   = "$(OX)\add$O" \
         "$(OX)\regexp$O" \
         "$(OX)\repolist$O" \
         "$(OX)\report$O" \
+        "$(OX)\robot$O" \
         "$(OX)\rss$O" \
         "$(OX)\schema$O" \
         "$(OX)\search$O" \
@@ -984,6 +988,7 @@ APPTARGETS = $(APPTARGETS) openssl
 	echo "$(OX)\regexp.obj" >> $@
 	echo "$(OX)\repolist.obj" >> $@
 	echo "$(OX)\report.obj" >> $@
+	echo "$(OX)\robot.obj" >> $@
 	echo "$(OX)\rss.obj" >> $@
 	echo "$(OX)\schema.obj" >> $@
 	echo "$(OX)\search.obj" >> $@
@@ -1890,6 +1895,12 @@ realclean: clean
 "$(OX)\report_.c" : "$(SRCDIR)\report.c"
 	"$(OBJDIR)\translate$E" $** > $@
 
+"$(OX)\robot$O" : "$(OX)\robot_.c" "$(OX)\robot.h"
+	$(TCC) /Fo$@ /Fd$(@D)\ -c "$(OX)\robot_.c"
+
+"$(OX)\robot_.c" : "$(SRCDIR)\robot.c"
+	"$(OBJDIR)\translate$E" $** > $@
+
 "$(OX)\rss$O" : "$(OX)\rss_.c" "$(OX)\rss.h"
 	$(TCC) /Fo$@ /Fd$(@D)\ -c "$(OX)\rss_.c"
 
@@ -2257,6 +2268,7 @@ realclean: clean
 			"$(OX)\regexp_.c":"$(OX)\regexp.h" \
 			"$(OX)\repolist_.c":"$(OX)\repolist.h" \
 			"$(OX)\report_.c":"$(OX)\report.h" \
+			"$(OX)\robot_.c":"$(OX)\robot.h" \
 			"$(OX)\rss_.c":"$(OX)\rss.h" \
 			"$(OX)\schema_.c":"$(OX)\schema.h" \
 			"$(OX)\search_.c":"$(OX)\search.h" \

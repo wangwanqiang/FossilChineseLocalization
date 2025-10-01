@@ -128,6 +128,16 @@ static void db_err(const char *zFormat, ...){
     @ error Database\serror:\s%F(z)
     cgi_reply();
   }
+  if( strstr(z,"attempt to write a readonly database") ){
+    static const char *azDbNames[] = { "repository", "localdb", "configdb" };
+    int i;
+    for(i=0; i<3; i++){
+      if( sqlite3_db_readonly(g.db, azDbNames[i])==1 ){
+        z = mprintf("\"%s\" is readonly.\n%s", 
+                     sqlite3_db_filename(g.db,azDbNames[i]), z);
+      }
+    }
+  }
   fossil_fatal("Database error: %s", z);
 }
 
@@ -4760,7 +4770,7 @@ struct Setting {
 **
 ** Possible values are:
 **    1     Use the original comment printing algorithm:
-**             *   Leading and trialing whitespace is removed
+**             *   Leading and trailing whitespace is removed
 **             *   Internal whitespace is converted into a single space (0x20)
 **             *   Line breaks occurs at whitespace or hyphens if possible
 **          This is the recommended value and the default.
