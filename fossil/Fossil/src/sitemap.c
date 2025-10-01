@@ -68,13 +68,13 @@ void sitemap_page(void){
   }
   srchFlags = search_restrict(SRCH_ALL);
   if( !isPopup ){
-    style_header("Site Map");
+    style_header("站点地图");
     style_adunit_config(ADUNIT_RIGHT_OK);
   }
 
   @ <ul id="sitemap" class="columns" style="column-width:20em">
   if( (e&1)==0 ){
-    @ <li>%z(href("%R/home"))Home Page</a>
+    @ <li>%z(href("%R/home"))首页</a>
   }
 
   zExtra = db_get("sitemap-extra",0);
@@ -119,140 +119,139 @@ void sitemap_page(void){
   }
   @ </li>
   if( cgi_is_loopback(g.zIpAddr) && db_open_local(0) ){
-    @ <li>%z(href("%R/ckout"))Checkout Status</a></li>
+    @ <li>%z(href("%R/ckout"))检出状态</a></li>
   }
   if( g.perm.Read ){
     const char *zEditGlob = db_get("fileedit-glob","");
-    @ <li>%z(href("%R/tree"))File Browser</a>
+    @ <li>%z(href("%R/tree"))文件浏览器</a>
     @   <ul>
-    @   <li>%z(href("%R/tree?type=tree&ci=trunk"))Tree-view,
-    @        Trunk Check-in</a></li>
-    @   <li>%z(href("%R/tree?type=flat"))Flat-view</a></li>
-    @   <li>%z(href("%R/fileage?name=trunk"))File ages for Trunk</a></li>
-    @   <li>%z(href("%R/uvlist"))Unversioned Files</a>
+    @   <li>%z(href("%R/tree?type=tree&ci=trunk"))树状视图,
+    @        主干检出</a></li>
+    @   <li>%z(href("%R/tree?type=flat"))平面视图</a></li>
+    @   <li>%z(href("%R/fileage?name=trunk"))主干文件年代</a></li>
+    @   <li>%z(href("%R/uvlist"))未版本化文件</a>
     if( g.perm.Write && zEditGlob[0]!=0 ){
-      @   <li>%z(href("%R/fileedit"))On-line File Editor</li>
+      @   <li>%z(href("%R/fileedit"))在线文件编辑器</li>
     }
     @ </ul>
   }
   if( g.perm.Read ){
-    @ <li>%z(href("%R/timeline"))Project Timeline</a>
+    @ <li>%z(href("%R/timeline"))项目时间线</a>
     @ <ul>
-    @   <li>%z(href("%R/reports"))Activity Reports</a></li>
-    @   <li>%z(href("%R/sitemap-timeline"))Other timelines</a></li>
+    @   <li>%z(href("%R/reports"))活动报告</a></li>
+    @   <li>%z(href("%R/sitemap-timeline"))其他时间线</a></li>
     @ </ul>
     @ </li>
   }
   if( g.perm.Read ){
-    @ <li>%z(href("%R/brlist"))Branches</a>
+    @ <li>%z(href("%R/brlist"))分支</a>
     @ <ul>
-    @   <li>%z(href("%R/taglist"))Tags</a></li>
-    @   <li>%z(href("%R/leaves"))Leaf Check-ins</a></li>
+    @   <li>%z(href("%R/taglist"))标签</a></li>
+    @   <li>%z(href("%R/leaves"))叶节点检出</a></li>
     @ </ul>
     @ </li>
   }
   if( srchFlags ){
-    @ <li>%z(href("%R/search"))Search</a></li>
+    @ <li>%z(href("%R/search"))搜索</a></li>
   }
   if( g.perm.Chat ){
-    @ <li>%z(href("%R/chat"))Chat</a></li>
+    @ <li>%z(href("%R/chat"))聊天</a></li>
   }
   if( g.perm.RdForum ){
     const char *zTitle = db_get("forum-title","Forum");
     @ <li>%z(href("%R/forum"))%h(zTitle)</a>
     @ <ul>
-    @   <li>%z(href("%R/timeline?y=f"))Recent activity</a></li>
+    @   <li>%z(href("%R/timeline?y=f"))近期活动</a></li>
     @ </ul>
     @ </li>
   }
   if( g.perm.RdTkt ){
-    @ <li>%z(href("%R/reportlist"))Tickets/Bug Reports</a>
+    @ <li>%z(href("%R/reportlist"))工单/缺陷报告</a>
     @   <ul>
     if( srchFlags & SRCH_TKT ){
-      @   <li>%z(href("%R/tktsrch"))Ticket Search</a></li>
+      @   <li>%z(href("%R/tktsrch"))工单搜索</a></li>
     }
-    @   <li>%z(href("%R/timeline?y=t"))Recent activity</a></li>
-    @   <li>%z(href("%R/attachlist"))List of Attachments</a></li>
+    @   <li>%z(href("%R/timeline?y=t"))近期活动</a></li>
+    @   <li>%z(href("%R/attachlist"))附件列表</a></li>
     @   </ul>
     @ </li>
   }
   if( g.perm.RdWiki ){
-    @ <li>%z(href("%R/wikihelp"))Wiki</a>
+    @ <li>%z(href("%R/wikihelp"))维基</a>
     @   <ul>
     if( srchFlags & SRCH_WIKI ){
-      @     <li>%z(href("%R/wikisrch"))Wiki Search</a></li>
+      @     <li>%z(href("%R/wikisrch"))维基搜索</a></li>
     }
-    @     <li>%z(href("%R/wcontent"))List of Wiki Pages</a></li>
-    @     <li>%z(href("%R/timeline?y=w"))Recent activity</a></li>
-    @     <li>%z(href("%R/wikiedit?name=Sandbox"))Wiki Sandbox</a></li>
-    @     <li>%z(href("%R/attachlist"))List of Attachments</a></li>
-    @     <li>%z(href("%R/pikchrshow"))Pikchr Sandbox</a></li>
+    @     <li>%z(href("%R/wcontent"))维基页面列表</a></li>
+    @     <li>%z(href("%R/timeline?y=w"))近期活动</a></li>
+    @     <li>%z(href("%R/wikiedit?name=Sandbox"))维基沙盒</a></li>
+    @     <li>%z(href("%R/attachlist"))附件列表</a></li>
+    @     <li>%z(href("%R/pikchrshow"))Pikchr沙盒</a></li>
     @   </ul>
     @ </li>
   }
 
   if( !g.zLogin ){
-    @ <li>%z(href("%R/login"))Login</a>
+    @ <li>%z(href("%R/login"))登录</a>
     @ <ul>
     if( login_self_register_available(0) ){
-       @ <li>%z(href("%R/register"))Create a new account</a></li>
+       @ <li>%z(href("%R/register"))创建新账户</a></li>
     }
   }else {
-    @ <li>%z(href("%R/logout"))Logout from %h(g.zLogin)</a>
+    @ <li>%z(href("%R/logout"))退出登录 %h(g.zLogin)</a>
     @ <ul>
     if( g.perm.Password ){
-      @ <li>%z(href("%R/logout"))Change Password for %h(g.zLogin)</a></li>
+      @ <li>%z(href("%R/logout"))修改密码 %h(g.zLogin)</a></li>
     }
   }
   if( alert_enabled() && g.perm.EmailAlert ){
     if( login_is_individual() ){
-      @ <li>%z(href("%R/alerts"))Email Alerts for %h(g.zLogin)</a></li>
+      @ <li>%z(href("%R/alerts"))邮件提醒 %h(g.zLogin)</a></li>
     }else{
-      @ <li>%z(href("%R/subscribe"))Subscribe to Email Alerts</a></li>
+      @ <li>%z(href("%R/subscribe"))订阅邮件提醒</a></li>
     }
   }
-  @ <li>%z(href("%R/cookies"))Cookies</a></li>
+  @ <li>%z(href("%R/cookies"))Cookie设置</a></li>
   @ </ul>
   @ </li>
 
   if( g.perm.Read ){
-    @ <li>%z(href("%R/stat"))Repository Status</a>
+    @ <li>%z(href("%R/stat"))仓库状态</a>
     @   <ul>
-    @   <li>%z(href("%R/hash-collisions"))Collisions on hash prefixes</a></li>
+    @   <li>%z(href("%R/hash-collisions"))哈希前缀冲突</a></li>
     if( g.perm.Admin ){
-      @   <li>%z(href("%R/urllist"))List of URLs used to access
-      @       this repository</a></li>
+      @   <li>%z(href("%R/urllist"))访问此仓库的URL列表</a></li>
     }
-    @   <li>%z(href("%R/bloblist"))List of Artifacts</a></li>
+    @   <li>%z(href("%R/bloblist"))制品列表</a></li>
     @   </ul>
     @ </li>
   }
-  @ <li>%z(href("%R/help"))Help</a>
+  @ <li>%z(href("%R/help"))帮助</a>
   @   <ul>
   if( g.perm.Admin || g.perm.Write ||
       g.perm.WrForum || g.perm.WrTForum ||
       g.perm.NewWiki || g.perm.ApndWiki || g.perm.WrWiki || g.perm.ModWiki ||
       g.perm.NewTkt  || g.perm.ApndTkt  || g.perm.WrTkt  || g.perm.ModTkt ){
-    @   <li>%z(href("%R/wiki_rules"))Wiki Formatting Rules</a></li>
-    @   <li>%z(href("%R/md_rules"))Markdown Formatting Rules</a></li>
+    @   <li>%z(href("%R/wiki_rules"))维基格式规则</a></li>
+    @   <li>%z(href("%R/md_rules"))Markdown格式规则</a></li>
   }
-  @   <li>%z(href("%R/test-all-help"))All "help" text on a single page</a></li>
+  @   <li>%z(href("%R/test-all-help"))所有帮助文本（单页显示）</a></li>
   if( g.perm.Admin || g.perm.Write || g.perm.WrUnver ){
     @   <li>%z(href("%R/mimetype_list"))\
-    @ Filename suffix to MIME type map</a></li>
+    @ 文件名后缀到MIME类型映射</a></li>
   }
   @   </ul></li>
   if( g.perm.Admin ){
-    @ <li><a href="%R/setup">Administration Pages</a>
+    @ <li><a href="%R/setup">管理页面</a>
     @   <ul>
-    @   <li><a href="%R/secaudit0">Security Audit</a></li>
-    @   <li><a href="%R/modreq">Pending Moderation Requests</a></li>
+    @   <li><a href="%R/secaudit0">安全审计</a></li>
+    @   <li><a href="%R/modreq">待审核请求</a></li>
     @   </ul></li>
   }
-  @ <li>%z(href("%R/skins"))Skins</a></li>
-  @ <li>%z(href("%R/sitemap-test"))Test Pages</a></li>
+  @ <li>%z(href("%R/skins"))皮肤</a></li>
+  @ <li>%z(href("%R/sitemap-test"))测试页面</a></li>
   if( isPopup ){
-    @ <li>%z(href("%R/sitemap"))Site Map</a></li>
+    @ <li>%z(href("%R/sitemap"))站点地图</a></li>
   }
 
 end_of_sitemap:
@@ -282,34 +281,34 @@ void sitemap_test_page(void){
     g.jsHref = 0;
   }
   if( !isPopup ){
-    style_header("Test Page Map");
+    style_header("测试页面地图");
     style_adunit_config(ADUNIT_RIGHT_OK);
   }
   @ <ul id="sitemap" class="columns" style="column-width:20em">
   if( g.perm.Admin || db_get_boolean("test_env_enable",0) ){
-    @ <li>%z(href("%R/test-env"))CGI Environment Test</a></li>
+    @ <li>%z(href("%R/test-env"))CGI环境测试</a></li>
   }
   if( g.perm.Read ){
-    @ <li>%z(href("%R/test-rename-list"))List of file renames</a></li>
+    @ <li>%z(href("%R/test-rename-list"))文件重命名列表</a></li>
   }
-  @ <li>%z(href("%R/test-builtin-files"))List of built-in files</a></li>
-  @ <li>%z(href("%R/mimetype_list"))List of MIME types</a></li>
-  @ <li>%z(href("%R/hash-color-test"))Hash color test</a>
-  @ <li>%z(href("%R/test-bgcolor"))Background color test</a>
+  @ <li>%z(href("%R/test-builtin-files"))内置文件列表</a></li>
+  @ <li>%z(href("%R/mimetype_list"))MIME类型列表</a></li>
+  @ <li>%z(href("%R/hash-color-test"))哈希颜色测试</a>
+  @ <li>%z(href("%R/test-bgcolor"))背景颜色测试</a>
   if( g.perm.Admin ){
-    @ <li>%z(href("%R/test-backlinks"))List of backlinks</a></li>
-    @ <li>%z(href("%R/test-backlink-timeline"))Backlink timeline</a></li>
-    @ <li>%z(href("%R/phantoms"))List of phantom artifacts</a></li>
-    @ <li>%z(href("%R/test-warning"))Error Log test page</a></li>
-    @ <li>%z(href("%R/repo_stat1"))Repository <tt>sqlite_stat1</tt> table</a>
-    @ <li>%z(href("%R/repo_schema"))Repository schema</a></li>
+    @ <li>%z(href("%R/test-backlinks"))反向链接列表</a></li>
+    @ <li>%z(href("%R/test-backlink-timeline"))反向链接时间线</a></li>
+    @ <li>%z(href("%R/phantoms"))幻影制品列表</a></li>
+    @ <li>%z(href("%R/test-warning"))错误日志测试页面</a></li>
+    @ <li>%z(href("%R/repo_stat1"))仓库 <tt>sqlite_stat1</tt> 表</a>
+    @ <li>%z(href("%R/repo_schema"))仓库架构</a></li>
   }
   if( g.perm.Read && g.perm.Hyperlink ){
-    @ <li>%z(href("%R/timewarps"))Timeline of timewarps</a></li>
+    @ <li>%z(href("%R/timewarps"))时间扭曲时间线</a></li>
   }
-  @ <li>%z(href("%R/cookies"))Content of display preference cookie</a></li>
-  @ <li>%z(href("%R/test-captcha"))Random ASCII-art Captcha image</a></li>
-  @ <li>%z(href("%R/test-piechart"))Pie-Chart generator test</a></li>
+  @ <li>%z(href("%R/cookies"))显示首选项Cookie内容</a></li>
+  @ <li>%z(href("%R/test-captcha"))随机ASCII艺术验证码图片</a></li>
+  @ <li>%z(href("%R/test-piechart"))饼图生成器测试</a></li>
   if( !isPopup ){
     style_finish_page();
   }
@@ -334,22 +333,22 @@ void sitemap_timeline_page(void){
     g.jsHref = 0;
   }
   if( !isPopup ){
-    style_header("Timeline Examples");
+    style_header("时间线示例");
     style_adunit_config(ADUNIT_RIGHT_OK);
   }
   @ <ul id="sitemap" class="columns" style="column-width:20em">
-  @ <li>%z(href("%R/timeline?ymd"))Current day</a></li>
-  @ <li>%z(href("%R/timeline?yw"))Current week</a></li>
-  @ <li>%z(href("%R/timeline?ym"))Current month</a></li>
-  @ <li>%z(href("%R/thisdayinhistory"))Today in history</a></li>
-  @ <li>%z(href("%R/timeline?a=1970-01-01&y=ci&n=10"))First 10
-  @     check-ins</a></li>
-  @ <li>%z(href("%R/timeline?namechng"))File name changes</a></li>
-  @ <li>%z(href("%R/timeline?forks"))Forks</a></li>
-  @ <li>%z(href("%R/timeline?cherrypicks"))Cherrypick merges</a></li>
-  @ <li>%z(href("%R/timewarps"))Timewarps</a></li>
-  @ <li>%z(href("%R/timeline?ubg"))Color-coded by user</a></li>
-  @ <li>%z(href("%R/timeline?deltabg"))Delta vs. baseline manifests</a></li>
+  @ <li>%z(href("%R/timeline?ymd"))当天</a></li>
+  @ <li>%z(href("%R/timeline?yw"))当周</a></li>
+  @ <li>%z(href("%R/timeline?ym"))当月</a></li>
+  @ <li>%z(href("%R/thisdayinhistory"))历史上的今天</a></li>
+  @ <li>%z(href("%R/timeline?a=1970-01-01&y=ci&n=10"))前10个
+  @     检出</a></li>
+  @ <li>%z(href("%R/timeline?namechng"))文件名变更</a></li>
+  @ <li>%z(href("%R/timeline?forks"))分支</a></li>
+  @ <li>%z(href("%R/timeline?cherrypicks"))摘樱桃合并</a></li>
+  @ <li>%z(href("%R/timewarps"))时间扭曲</a></li>
+  @ <li>%z(href("%R/timeline?ubg"))按用户彩色编码</a></li>
+  @ <li>%z(href("%R/timeline?deltabg"))与基准清单的差异</a></li>
   @ </ul>
   if( !isPopup ){
     style_finish_page();

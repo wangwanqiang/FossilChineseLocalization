@@ -101,7 +101,7 @@ void shun_page(void){
     }
     zUuid = zCanonical;
   }
-  style_header("Shunned Artifacts");
+  style_header("被回避的制品");
   if( zUuid && P("sub") && cgi_csrf_safe(2) ){
     const char *p = zUuid;
     int allExist = 1;
@@ -114,20 +114,19 @@ void shun_page(void){
       p += strlen(p)+1;
     }
     if( allExist ){
-      cgi_printf("<p class=\"noMoreShun\">Artifact(s)<br>\n");
+      cgi_printf("<p class=\"noMoreShun\">制品<br>\n");
       for( p = zUuid ; *p ; p += strlen(p)+1 ){
         cgi_printf("<a href=\"%R/artifact/%s\">%s</a><br>\n",(p),(p));
       }
-      cgi_printf("are no longer being shunned.</p>\n");
+      cgi_printf("已不再被回避。</p>\n");
     }else{
-      cgi_printf("<p class=\"noMoreShun\">Artifact(s)<br>\n");
+      cgi_printf("<p class=\"noMoreShun\">制品<br>\n");
       for( p = zUuid ; *p ; p += strlen(p)+1 ){
         cgi_printf("%s<br>\n",(p));
       }
-      cgi_printf("will no longer be shunned but they may not exist in the repository.\n"
-             "It may be necessary to rebuild the repository\n"
-             "before the artifact content can be pulled in\n"
-             "from other repositories.</p>\n");
+      cgi_printf("将不再被回避，但它们可能在仓库中不存在。\n"
+             "可能需要先重建仓库，\n"
+             "然后才能从其他仓库拉取制品内容。</p>\n");
     }
   }
   if( zUuid && P("add") && cgi_csrf_safe(2) ){
@@ -151,13 +150,13 @@ void shun_page(void){
       admin_log("Shunned %Q", p);
       p += strlen(p)+1;
     }
-    cgi_printf("<p class=\"shunned\">Artifact(s)<br>\n");
+    cgi_printf("<p class=\"shunned\">制品<br>\n");
     for( p = zUuid ; *p ; p += strlen(p)+1 ){
       cgi_printf("<a href=\"%R/artifact/%s\">%s</a><br>\n",(p),(p));
     }
-    cgi_printf("have been shunned.  They will no longer be pushed.\n"
-           "They will be removed from the repository the next time the repository\n"
-           "is rebuilt using the <b>fossil rebuild</b> command-line</p>\n");
+    cgi_printf("已被回避。它们将不再被推送。\n"
+           "它们将在下次使用 <b>fossil rebuild</b> 命令行重建\n"
+           "仓库时从仓库中移除。</p>\n");
   }
   if( zUuid && reviewList ){
     const char *p;
@@ -171,11 +170,11 @@ void shun_page(void){
         cgi_printf("Ambiguous<br>\n");
       }else if( rid == 0 ){
         if( !hname_validate(p, strlen(p)) ){
-          cgi_printf("Bad artifact<br>\n");
+          cgi_printf("无效制品<br>\n");
         }else if(db_int(0, "SELECT 1 FROM shun WHERE uuid=%Q", p)){
-          cgi_printf("Already shunned<br>\n");
+          cgi_printf("已被回避<br>\n");
         }else{
-          cgi_printf("Unknown<br>\n");
+          cgi_printf("未知<br>\n");
         }
       }else{
         char *zCmpUuid = db_text(0,
@@ -186,9 +185,9 @@ void shun_page(void){
             rid);
         if( fossil_strcmp(p, zCmpUuid)==0 ){
           nOk++;
-          cgi_printf("OK</br>\n");
+          cgi_printf("有效</br>\n");
         }else{
-          cgi_printf("Abbreviated<br>\n");
+          cgi_printf("缩写形式<br>\n");
         }
       }
     }
@@ -204,40 +203,36 @@ void shun_page(void){
     cgi_printf("</td></tr></tbody></table>\n"
            "<p class=\"shunned\">\n");
     if( nOk < nTotal){
-      cgi_printf("<b>Warning:</b> Not all artifacts\n");
+      cgi_printf("<b>警告：</b> 并非所有制品\n");
     }else if( nTotal==1 ){
-      cgi_printf("The artifact is present and\n");
+      cgi_printf("该制品存在且\n");
     }else{
-      cgi_printf("All %i artifacts are present and\n",(nOk));
+      cgi_printf("所有 %i 个制品存在且\n",(nOk));
     }
-    cgi_printf("can be shunned with its hash above.</p>\n");
+    cgi_printf("可以通过上方的哈希值被回避。</p>\n");
   }
   if( zRcvid ){
     nRcvid = atoi(zRcvid);
     numRows = db_int(0, "SELECT min(count(), 10) FROM blob WHERE rcvid=%d",
                      nRcvid);
   }
-  cgi_printf("<p>A shunned artifact will not be pushed nor accepted in a pull and the\n"
-         "artifact content will be purged from the repository the next time the\n"
-         "repository is rebuilt.  A list of shunned artifacts can be seen at the\n"
-         "bottom of this page.</p>\n"
+  cgi_printf("<p>被回避的制品不会被推送，也不会在拉取时被接受，并且该制品\n"
+         "内容将在下次重建仓库时从仓库中清除。本页面底部可以查看\n"
+         "已被回避的制品列表。</p>\n"
          "\n"
          "<a name=\"addshun\"></a>\n"
-         "<p>To shun artifacts, enter their artifact hashes (the 40- or\n"
-         "64-character lowercase hexadecimal hash of the artifact content) in the\n"
-         "following box and press the \"Shun\" button.  This will cause the artifacts\n"
-         "to be removed from the repository and will prevent the artifacts from being\n"
-         "readded to the repository by subsequent sync operation.</p>\n"
+         "<p>要回避制品，请在下方输入框中输入制品哈希值（制品内容的\n"
+         "40或64字符小写十六进制哈希值），然后点击\"回避\"按钮。\n"
+         "这将导致制品从仓库中移除，并防止后续同步操作将其重新添加\n"
+         "到仓库中。</p>\n"
          "\n"
-         "<p>Note that you must enter full artifact hashes, not abbreviations\n"
-         "or symbolic tags.</p>\n"
+         "<p>请注意，您必须输入完整的制品哈希值，而不是缩写\n"
+         "或符号标签。</p>\n"
          "\n"
-         "<p>Warning:  Shunning should only be used to remove inappropriate content\n"
-         "from the repository.  Inappropriate content includes such things as\n"
-         "spam added to Wiki, files that violate copyright or patent agreements,\n"
-         "or artifacts that by design or accident interfere with the processing\n"
-         "of the repository.  Do not shun artifacts merely to remove them from\n"
-         "sight - set the \"hidden\" tag on such artifacts instead.</p>\n"
+         "<p>警告：回避功能仅应用于从仓库中移除不适当的内容。\n"
+         "不适当的内容包括添加到Wiki的垃圾内容、违反版权或专利协议的文件，\n"
+         "或因设计或意外干扰仓库处理的制品。不要仅仅为了将制品\n"
+         "从视野中移除而回避它们——对这些制品设置\"hidden\"标签即可。</p>\n"
          "\n"
          "<blockquote>\n"
          "<form method=\"post\" action=\"%R/%s\"><div>\n",(g.zPath));
@@ -260,17 +255,15 @@ void shun_page(void){
     }
   }
   cgi_printf("</textarea>\n"
-         "<input type=\"submit\" name=\"add\" value=\"Shun\">\n"
-         "<input type=\"submit\" name=\"review\" value=\"Review\">\n"
+         "<input type=\"submit\" name=\"add\" value=\"回避\">\n"
+         "<input type=\"submit\" name=\"review\" value=\"查看\">\n"
          "</div></form>\n"
          "</blockquote>\n"
          "\n"
          "<a name=\"delshun\"></a>\n"
-         "<p>Enter the UUIDs of previously shunned artifacts to cause them to be\n"
-         "accepted again in the repository.  The artifacts content is not\n"
-         "restored because the content is unknown.  The only change is that\n"
-         "the formerly shunned artifacts will be accepted on subsequent sync\n"
-         "operations.</p>\n"
+         "<p>输入先前被回避的制品的UUID，使其重新被仓库接受。\n"
+         "制品内容不会被恢复，因为内容未知。唯一的变化是，\n"
+         "先前被回避的制品将在后续同步操作中被接受。</p>\n"
          "\n"
          "<blockquote>\n"
          "<form method=\"post\" action=\"%R/%s\"><div>\n",(g.zPath));
@@ -288,23 +281,22 @@ void shun_page(void){
     }
   }
   cgi_printf("</textarea>\n"
-         "<input type=\"submit\" name=\"sub\" value=\"Accept\">\n"
+         "<input type=\"submit\" name=\"sub\" value=\"接受\">\n"
          "</div></form>\n"
          "</blockquote>\n"
          "\n"
-         "<p>Press the Rebuild button below to rebuild the repository.  The\n"
-         "content of newly shunned artifacts is not purged until the repository\n"
-         "is rebuilt.  On larger repositories, the rebuild may take minute or\n"
-         "two, so be patient after pressing the button.</p>\n"
+         "<p>点击下方的重建按钮来重建仓库。新被回避的制品\n"
+         "内容不会被清除，直到仓库被重建。在较大的仓库中，重建可能需要几分钟或\n"
+         "更长时间，因此点击按钮后请耐心等待。</p>\n"
          "\n"
          "<blockquote>\n"
          "<form method=\"post\" action=\"%R/%s\"><div>\n",(g.zPath));
   login_insert_csrf_secret();
-  cgi_printf("<input type=\"submit\" name=\"rebuild\" value=\"Rebuild\">\n"
+  cgi_printf("<input type=\"submit\" name=\"rebuild\" value=\"重建\">\n"
          "</div></form>\n"
          "</blockquote>\n"
          "\n"
-         "<hr><p>Shunned Artifacts:</p>\n"
+         "<hr><p>已被回避的制品：</p>\n"
          "<blockquote><p>\n");
   db_prepare(&q,
      "SELECT uuid, EXISTS(SELECT 1 FROM blob WHERE blob.uuid=shun.uuid)"
@@ -320,7 +312,7 @@ void shun_page(void){
     }
   }
   if( cnt==0 ){
-    cgi_printf("<i>no artifacts are shunned on this server</i>\n");
+    cgi_printf("<i>此服务器上没有被回避的制品</i>\n");
   }
   db_finalize(&q);
   cgi_printf("</p></blockquote>\n");
