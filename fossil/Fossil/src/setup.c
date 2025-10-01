@@ -1752,82 +1752,80 @@ void setup_logo(void){
     cgi_redirect("setup_logo");
   }
   style_set_current_feature("setup");
-  style_header("Edit Project Logo And Background");
-  @ <p>The current project logo has a MIME-Type of <b>%h(zLogoMime)</b>
-  @ and looks like this:</p>
+  style_header("编辑项目Logo和背景");
+  @ <p>当前项目Logo的MIME类型为 <b>%h(zLogoMime)</b>
+  @ ，显示如下：</p>
   @ <blockquote><p>
   @ <img src="%R/logo/%z(zLogoMtime)" alt="logo" border="1">
   @ </p></blockquote>
   @
   @ <form action="%R/setup_logo" method="post"
   @  enctype="multipart/form-data"><div>
-  @ <p>The logo is accessible to all users at this URL:
-  @ <a href="%s(g.zBaseURL)/logo">%s(g.zBaseURL)/logo</a>.
-  @ The logo may or may not appear on each
-  @ page depending on the <a href="setup_skinedit?w=0">CSS</a> and
-  @ <a href="setup_skinedit?w=2">header setup</a>.
-  @ To change the logo image, use the following form:</p>
+  @ <p>所有用户都可以通过以下URL访问Logo：
+  @ <a href="%s(g.zBaseURL)/logo">%s(g.zBaseURL)/logo</a>。
+  @ Logo是否在每个页面上显示，取决于
+  @ <a href="setup_skinedit?w=0">CSS</a>设置和
+  @ <a href="setup_skinedit?w=2">头部设置</a>。
+  @ 要更改Logo图像，请使用以下表单：</p>
   login_insert_csrf_secret();
-  @ Logo Image file:
+  @ Logo图像文件：
   @ <input type="file" name="logoim" size="60" accept="image/*">
   @ <p align="center">
-  @ <input type="submit" name="setlogo" value="Change Logo">
-  @ <input type="submit" name="clrlogo" value="Revert To Default"></p>
-  @ <p>(Properties: "logo-image" and "logo-mimetype")
+  @ <input type="submit" name="setlogo" value="更改Logo">
+  @ <input type="submit" name="clrlogo" value="恢复默认"></p>
+  @ <p>（属性："logo-image" 和 "logo-mimetype"）
   @ </div></form>
   @ <hr>
   @
-  @ <p>The current background image has a MIME-Type of <b>%h(zBgMime)</b>
-  @ and looks like this:</p>
+  @ <p>当前背景图像的MIME类型为 <b>%h(zBgMime)</b>
+  @ ，显示如下：</p>
   @ <blockquote><p><img src="%R/background/%z(zBgMtime)" \
   @ alt="background" border=1>
   @ </p></blockquote>
   @
   @ <form action="%R/setup_logo" method="post"
   @  enctype="multipart/form-data"><div>
-  @ <p>The background image is accessible to all users at this URL:
-  @ <a href="%s(g.zBaseURL)/background">%s(g.zBaseURL)/background</a>.
-  @ The background image may or may not appear on each
-  @ page depending on the <a href="setup_skinedit?w=0">CSS</a> and
-  @ <a href="setup_skinedit?w=2">header setup</a>.
-  @ To change the background image, use the following form:</p>
+  @ <p>所有用户都可以通过以下URL访问背景图像：
+  @ <a href="%s(g.zBaseURL)/background">%s(g.zBaseURL)/background</a>。
+  @ 背景图像是否在每个页面上显示，取决于
+  @ <a href="setup_skinedit?w=0">CSS</a>设置和
+  @ <a href="setup_skinedit?w=2">头部设置</a>。
+  @ 要更改背景图像，请使用以下表单：</p>
   login_insert_csrf_secret();
-  @ Background image file:
+  @ 背景图像文件：
   @ <input type="file" name="bgim" size="60" accept="image/*">
   @ <p align="center">
-  @ <input type="submit" name="setbg" value="Change Background">
-  @ <input type="submit" name="clrbg" value="Revert To Default"></p>
+  @ <input type="submit" name="setbg" value="更改背景">
+  @ <input type="submit" name="clrbg" value="恢复默认"></p>
   @ </div></form>
-  @ <p>(Properties: "background-image" and "background-mimetype")
+  @ <p>（属性："background-image" 和 "background-mimetype"）
   @ <hr>
   @
-  @ <p>The current icon image has a MIME-Type of <b>%h(zIconMime)</b>
-  @ and looks like this:</p>
+  @ <p>当前图标图像的MIME类型为 <b>%h(zIconMime)</b>
+  @ ，显示如下：</p>
   @ <blockquote><p><img src="%R/favicon.ico/%z(zIconMtime)" \
   @ alt="icon" border=1>
   @ </p></blockquote>
   @
   @ <form action="%R/setup_logo" method="post"
   @  enctype="multipart/form-data"><div>
-  @ <p>The icon image is accessible to all users at this URL:
-  @ <a href="%s(g.zBaseURL)/favicon.ico">%s(g.zBaseURL)/favicon.ico</a>.
-  @ The icon image may or may not appear on each
-  @ page depending on the web browser in use and the MIME-Types that it
-  @ supports for icon images.
-  @ To change the icon image, use the following form:</p>
+  @ <p>所有用户都可以通过以下URL访问图标图像：
+  @ <a href="%s(g.zBaseURL)/favicon.ico">%s(g.zBaseURL)/favicon.ico</a>。
+  @ 图标图像是否在每个页面上显示，取决于
+  @ 使用的Web浏览器以及它支持的图标图像MIME类型。
+  @ 要更改图标图像，请使用以下表单：</p>
   login_insert_csrf_secret();
-  @ Icon image file:
+  @ 图标图像文件：
   @ <input type="file" name="iconim" size="60" accept="image/*">
   @ <p align="center">
-  @ <input type="submit" name="seticon" value="Change Icon">
-  @ <input type="submit" name="clricon" value="Revert To Default"></p>
+  @ <input type="submit" name="seticon" value="更改图标">
+  @ <input type="submit" name="clricon" value="恢复默认"></p>
   @ </div></form>
-  @ <p>(Properties: "icon-image" and "icon-mimetype")
+  @ <p>（属性："icon-image" 和 "icon-mimetype"）
   @ <hr>
   @
-  @ <p><span class="note">Note:</span>  Your browser has probably cached these
-  @ images, so you may need to press the Reload button before changes will
-  @ take effect. </p>
+  @ <p><span class="note">注意：</span> 您的浏览器可能已经缓存了这些
+  @ 图像，因此您可能需要按下重新加载按钮，才能使更改生效。</p>
   style_finish_page();
   db_end_transaction(0);
 }
