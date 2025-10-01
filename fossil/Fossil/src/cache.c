@@ -412,8 +412,8 @@ void cache_page(void){
   login_check_credentials();
   if( !g.perm.Setup ){ login_needed(0); return; }
   style_set_current_feature("cache");
-  style_header("Web Cache Status");
-  style_submenu_element("Refresh","%R/cachestat");
+  style_header("网页缓存状态");
+  style_submenu_element("刷新","%R/cachestat");
   doInit = P("init")!=0 && cgi_csrf_safe(2);
   db = cacheOpen(doInit);
   if( db!=0 ){
@@ -431,15 +431,15 @@ void cache_page(void){
         const unsigned char *zName = sqlite3_column_text(pStmt,0);
         char *zHash = cache_hash_of_key((const char*)zName);
         if( nEntry==0 ){
-          @ <h2>Current Cache Entries:</h2>
+          @ <h2>当前缓存条目：</h2>
           @ <ol>
         }
         @ <li><p>%z(href("%R/cacheget?key=%T",zName))%h(zName)</a><br>
-        @ size: %,lld(sqlite3_column_int64(pStmt,1)),
-        @ hit-count: %d(sqlite3_column_int(pStmt,2)),
-        @ last-access: %s(sqlite3_column_text(pStmt,3))Z \
+        @ 大小：%,lld(sqlite3_column_int64(pStmt,1)),
+        @ 命中次数：%d(sqlite3_column_int(pStmt,2)),
+        @ 最后访问：%s(sqlite3_column_text(pStmt,3))Z \
         if( zHash ){
-          @ &rarr; %z(href("%R/timeline?c=%S",zHash))checkin info</a>\
+          @ &rarr; %z(href("%R/timeline?c=%S",zHash))检出信息</a>\
           fossil_free(zHash);
         }
         @ </p></li>
@@ -451,29 +451,25 @@ void cache_page(void){
       }
     }
   }
-  @ <h2>About The Web-Cache</h2>
+  @ <h2>关于网页缓存</h2>
   @ <p>
-  @ The web-cache is a separate database file that holds cached copies
-  @ tarballs, ZIP archives, and other pages that are expensive to compute
-  @ and are likely to be reused.
+  @ 网页缓存是一个单独的数据库文件，用于存储压缩包、ZIP归档文件和其他计算成本高且可能被重用的页面的缓存副本。
   @ <form method="post">
   login_insert_csrf_secret();
   @ <ul>
   if( db==0 ){
-    @ <li> Web-cache is currently disabled.
-    @ <input type="submit" name="init" value="Enable">
+    @ <li> 网页缓存当前已禁用。
+    @ <input type="submit" name="init" value="启用">
   }else{
     bigSizeName(sizeof(zBuf), zBuf, file_size(zDbName, ExtFILE));
     mxEntry = db_get_int("max-cache-entry",10);
-    @ <li> Filename of the cache database: <b>%h(zDbName)</b>
-    @ <li> Size of the cache database: %s(zBuf)
-    @ <li> Maximum number of entries: %d(mxEntry)
-    @ <li> Number of cache entries used: %d(nEntry)
-    @ <li> Change the max-cache-entry setting on the
-    @ <a href="%R/setup_settings">Settings</a> page to adjust the
-    @ maximum number of entries in the cache.
-    @ <li><input type="submit" name="clear" value="Clear the cache">
-    @ <li> Disable the cache by manually deleting the cache database file.
+    @ <li> 缓存数据库文件名：<b>%h(zDbName)</b>
+    @ <li> 缓存数据库大小：%s(zBuf)
+    @ <li> 最大条目数：%d(mxEntry)
+    @ <li> 已使用的缓存条目数：%d(nEntry)
+    @ <li> 在<a href="%R/setup_settings">设置</a>页面上更改max-cache-entry设置以调整缓存中的最大条目数。
+    @ <li><input type="submit" name="clear" value="清除缓存">
+    @ <li> 通过手动删除缓存数据库文件来禁用缓存。
   }
   @ </ul>
   @ </form>
@@ -501,8 +497,8 @@ void cache_getpage(void){
   blob_zero(&content);
   if( cache_read(&content, zKey)==0 ){
     style_set_current_feature("cache");
-    style_header("Cache Download Error");
-    @ The cache does not contain any entry with this key: "%h(zKey)"
+    style_header("缓存下载错误");
+    @ 缓存中不包含此键的任何条目："%h(zKey)"
     style_finish_page();
     return;
   }

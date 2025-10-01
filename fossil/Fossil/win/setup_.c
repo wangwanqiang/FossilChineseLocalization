@@ -77,28 +77,27 @@ void setup_page(void){
   setup_user = g.perm.Setup;
 
   style_set_current_feature("setup");
-  style_header("Server Administration");
+  style_header("服务器管理");
 
   /* Make sure the header contains <base href="...">.   Issue a warning
   ** if it does not. */
   if( !cgi_header_contains("<base href=") ){
-    cgi_printf("<p class=\"generalError\"><b>Configuration Error:</b> Please add\n"
-           "<tt>&lt;base href=\"$secureurl/$current_page\"&gt;</tt> after\n"
-           "<tt>&lt;head&gt;</tt> in the\n"
-           "<a href=\"setup_skinedit?w=2\">HTML header</a>!</p>\n");
+    cgi_printf("<p class=\"generalError\"><b>配置错误：</b>请在\n"
+           "<a href=\"setup_skinedit?w=2\">HTML 头部</a>的\n"
+           "<tt>&lt;head&gt;</tt>标签后添加\n"
+           "<tt>&lt;base href=\"$secureurl/$current_page\"&gt;</tt>!</p>\n");
   }
 
 #if !defined(_WIN32)
   /* Check for /dev/null and /dev/urandom.  We want both devices to be present,
   ** but they are sometimes omitted (by mistake) from chroot jails. */
   if( access("/dev/null", R_OK|W_OK) ){
-    cgi_printf("<p class=\"generalError\">WARNING: Device \"/dev/null\" is not available\n"
-           "for reading and writing.</p>\n");
+    cgi_printf("<p class=\"generalError\">警告：设备\"/dev/null\"无法用于\n"
+           "读取和写入。</p>\n");
   }
   if( access("/dev/urandom", R_OK) ){
-    cgi_printf("<p class=\"generalError\">WARNING: Device \"/dev/urandom\" is not available\n"
-           "for reading. This means that the pseudo-random number generator used\n"
-           "by SQLite will be poorly seeded.</p>\n");
+    cgi_printf("<p class=\"generalError\">警告：设备\"/dev/urandom\"无法用于\n"
+           "读取。这意味着SQLite使用的伪随机数生成器的种子质量会很差。</p>\n");
   }
 #endif
 
@@ -238,33 +237,29 @@ void setup_logmenu_page(void){
   }
 
   blob_appendf(&desc,
-    "A separate text file to which warning and error\n"
-    "messages are appended.  A single error log can and often is shared\n"
-    "across multiple repositories.\n"
+    "一个单独的文本文件，用于记录警告和错误消息。\n"
+    "单个错误日志可以并且经常在多个仓库之间共享。\n"
   );
   if( g.zErrlog==0 || fossil_strcmp(g.zErrlog,"-")==0 ){
-    blob_appendf(&desc,"<b>Disabled</b>: "
-                       "To enable the error log ");
+    blob_appendf(&desc,"<b>已禁用</b>: "
+                       "要启用错误日志 ");
     if( fossil_strcmp(g.zCmdName, "cgi")==0 ){
       blob_appendf(&desc,
-        "make an entry like \"errorlog: <i>FILENAME</i>\""
-        " in the CGI script at %h",
+        "在位于 %h 的CGI脚本中添加像 \"errorlog: <i>文件名</i>\" 这样的条目",
         P("SCRIPT_FILENAME")
       );
     }else{
       blob_appendf(&desc,
-        " add the \"--errorlog <i>FILENAME</i>\" option to the\n"
-        "\"%h %h\" command that launched the server.",
+        " 在启动服务器的命令 \"%h %h\" 中添加 \"--errorlog <i>文件名</i>\" 参数。",
         g.argv[0], g.zCmdName
       );
     }
     bErrLog = 0;
   }else{
-    blob_appendf(&desc,"In this repository, the error log is the file "
-       "named \"%s\".", g.zErrlog);
+    blob_appendf(&desc,"在本仓库中，错误日志是名为 \"%s\" 的文件。", g.zErrlog);
     bErrLog = 1;
   }
-  setup_menu_entry("Error Log", bErrLog ? "errorlog" : 0, blob_str(&desc));
+  setup_menu_entry("错误日志", bErrLog ? "errorlog" : 0, blob_str(&desc));
   blob_reset(&desc);
 
   cgi_printf("</table>\n");
@@ -2008,15 +2003,13 @@ void th1_page(void){
     return;
   }
   style_set_current_feature("setup");
-  style_header("Raw TH1 Commands");
-  cgi_printf("<p><b>Caution:</b> There are no restrictions on the TH1 that can be\n"
-         "run by this page.  If Tcl integration was enabled at compile-time and\n"
-         "the \"tcl\" setting is enabled, Tcl commands may be run as well.</p>\n"
+  style_header("原始TH1命令");
+  cgi_printf("<p><b>警告：</b>本页面运行的TH1命令没有任何限制。如果编译时启用了Tcl集成，并且\"tcl\"设置已启用，还可以运行Tcl命令。</p>\n"
          "\n");
   form_begin(0, "%R/admin_th1");
-  cgi_printf("TH1:<br>\n"
+  cgi_printf("TH1：<br>\n"
          "<textarea name=\"q\" rows=\"5\" cols=\"80\">%h</textarea><br>\n"
-         "<input type=\"submit\" name=\"go\" value=\"Run TH1\">\n"
+         "<input type=\"submit\" name=\"go\" value=\"运行TH1\">\n"
          "</form>\n",(zQ));
   if( go && cgi_csrf_safe(2) ){
     const char *zR;

@@ -1,0 +1,276 @@
+diff --git a/fossil/Fossil/src/setup.c b/fossil/Fossil/src/setup.c
+index 5c40ee3..d543251 100644
+--- a/fossil/Fossil/src/setup.c
++++ b/fossil/Fossil/src/setup.c
+@@ -1752,82 +1752,80 @@ void setup_logo(void){
+     cgi_redirect("setup_logo");
+   }
+   style_set_current_feature("setup");
+-  style_header("Edit Project Logo And Background");
+-  @ <p>The current project logo has a MIME-Type of <b>%h(zLogoMime)</b>
+-  @ and looks like this:</p>
++  style_header("编辑项目Logo和背景");
++  @ <p>当前项目Logo的MIME类型为 <b>%h(zLogoMime)</b>
++  @ ，显示如下：</p>
+   @ <blockquote><p>
+   @ <img src="%R/logo/%z(zLogoMtime)" alt="logo" border="1">
+   @ </p></blockquote>
+   @
+   @ <form action="%R/setup_logo" method="post"
+   @  enctype="multipart/form-data"><div>
+-  @ <p>The logo is accessible to all users at this URL:
+-  @ <a href="%s(g.zBaseURL)/logo">%s(g.zBaseURL)/logo</a>.
+-  @ The logo may or may not appear on each
+-  @ page depending on the <a href="setup_skinedit?w=0">CSS</a> and
+-  @ <a href="setup_skinedit?w=2">header setup</a>.
+-  @ To change the logo image, use the following form:</p>
++  @ <p>所有用户都可以通过以下URL访问Logo：
++  @ <a href="%s(g.zBaseURL)/logo">%s(g.zBaseURL)/logo</a>。
++  @ Logo是否在每个页面上显示，取决于
++  @ <a href="setup_skinedit?w=0">CSS</a>设置和
++  @ <a href="setup_skinedit?w=2">头部设置</a>。
++  @ 要更改Logo图像，请使用以下表单：</p>
+   login_insert_csrf_secret();
+-  @ Logo Image file:
++  @ Logo图像文件：
+   @ <input type="file" name="logoim" size="60" accept="image/*">
+   @ <p align="center">
+-  @ <input type="submit" name="setlogo" value="Change Logo">
+-  @ <input type="submit" name="clrlogo" value="Revert To Default"></p>
+-  @ <p>(Properties: "logo-image" and "logo-mimetype")
++  @ <input type="submit" name="setlogo" value="更改Logo">
++  @ <input type="submit" name="clrlogo" value="恢复默认"></p>
++  @ <p>（属性："logo-image" 和 "logo-mimetype"）
+   @ </div></form>
+   @ <hr>
+   @
+-  @ <p>The current background image has a MIME-Type of <b>%h(zBgMime)</b>
+-  @ and looks like this:</p>
++  @ <p>当前背景图像的MIME类型为 <b>%h(zBgMime)</b>
++  @ ，显示如下：</p>
+   @ <blockquote><p><img src="%R/background/%z(zBgMtime)" \
+   @ alt="background" border=1>
+   @ </p></blockquote>
+   @
+   @ <form action="%R/setup_logo" method="post"
+   @  enctype="multipart/form-data"><div>
+-  @ <p>The background image is accessible to all users at this URL:
+-  @ <a href="%s(g.zBaseURL)/background">%s(g.zBaseURL)/background</a>.
+-  @ The background image may or may not appear on each
+-  @ page depending on the <a href="setup_skinedit?w=0">CSS</a> and
+-  @ <a href="setup_skinedit?w=2">header setup</a>.
+-  @ To change the background image, use the following form:</p>
++  @ <p>所有用户都可以通过以下URL访问背景图像：
++  @ <a href="%s(g.zBaseURL)/background">%s(g.zBaseURL)/background</a>。
++  @ 背景图像是否在每个页面上显示，取决于
++  @ <a href="setup_skinedit?w=0">CSS</a>设置和
++  @ <a href="setup_skinedit?w=2">头部设置</a>。
++  @ 要更改背景图像，请使用以下表单：</p>
+   login_insert_csrf_secret();
+-  @ Background image file:
++  @ 背景图像文件：
+   @ <input type="file" name="bgim" size="60" accept="image/*">
+   @ <p align="center">
+-  @ <input type="submit" name="setbg" value="Change Background">
+-  @ <input type="submit" name="clrbg" value="Revert To Default"></p>
++  @ <input type="submit" name="setbg" value="更改背景">
++  @ <input type="submit" name="clrbg" value="恢复默认"></p>
+   @ </div></form>
+-  @ <p>(Properties: "background-image" and "background-mimetype")
++  @ <p>（属性："background-image" 和 "background-mimetype"）
+   @ <hr>
+   @
+-  @ <p>The current icon image has a MIME-Type of <b>%h(zIconMime)</b>
+-  @ and looks like this:</p>
++  @ <p>当前图标图像的MIME类型为 <b>%h(zIconMime)</b>
++  @ ，显示如下：</p>
+   @ <blockquote><p><img src="%R/favicon.ico/%z(zIconMtime)" \
+   @ alt="icon" border=1>
+   @ </p></blockquote>
+   @
+   @ <form action="%R/setup_logo" method="post"
+   @  enctype="multipart/form-data"><div>
+-  @ <p>The icon image is accessible to all users at this URL:
+-  @ <a href="%s(g.zBaseURL)/favicon.ico">%s(g.zBaseURL)/favicon.ico</a>.
+-  @ The icon image may or may not appear on each
+-  @ page depending on the web browser in use and the MIME-Types that it
+-  @ supports for icon images.
+-  @ To change the icon image, use the following form:</p>
++  @ <p>所有用户都可以通过以下URL访问图标图像：
++  @ <a href="%s(g.zBaseURL)/favicon.ico">%s(g.zBaseURL)/favicon.ico</a>。
++  @ 图标图像是否在每个页面上显示，取决于
++  @ 使用的Web浏览器以及它支持的图标图像MIME类型。
++  @ 要更改图标图像，请使用以下表单：</p>
+   login_insert_csrf_secret();
+-  @ Icon image file:
++  @ 图标图像文件：
+   @ <input type="file" name="iconim" size="60" accept="image/*">
+   @ <p align="center">
+-  @ <input type="submit" name="seticon" value="Change Icon">
+-  @ <input type="submit" name="clricon" value="Revert To Default"></p>
++  @ <input type="submit" name="seticon" value="更改图标">
++  @ <input type="submit" name="clricon" value="恢复默认"></p>
+   @ </div></form>
+-  @ <p>(Properties: "icon-image" and "icon-mimetype")
++  @ <p>（属性："icon-image" 和 "icon-mimetype"）
+   @ <hr>
+   @
+-  @ <p><span class="note">Note:</span>  Your browser has probably cached these
+-  @ images, so you may need to press the Reload button before changes will
+-  @ take effect. </p>
++  @ <p><span class="note">注意：</span> 您的浏览器可能已经缓存了这些
++  @ 图像，因此您可能需要按下重新加载按钮，才能使更改生效。</p>
+   style_finish_page();
+   db_end_transaction(0);
+ }
+diff --git a/fossil/Fossil/win/VERSION.h b/fossil/Fossil/win/VERSION.h
+index 682c7d4..b5cc678 100644
+--- a/fossil/Fossil/win/VERSION.h
++++ b/fossil/Fossil/win/VERSION.h
+@@ -1,6 +1,6 @@
+ #define MANIFEST_UUID "99675884a93c09125dbfbef0ca47959626c81545c132e247e67a08bd12ac7256"
+ #define MANIFEST_VERSION "[99675884a9]"
+-#define FOSSIL_BUILD_HASH "53ee9c0188ef2df3ed61fecfde97dee3"
++#define FOSSIL_BUILD_HASH "a8391a0f10feae2e39627f3868cf25f5"
+ #define MANIFEST_DATE "2025-09-30 11:03:45"
+ #define MANIFEST_YEAR "2025"
+ #define MANIFEST_NUMERIC_DATE 20250930
+diff --git a/fossil/Fossil/win/etag.h b/fossil/Fossil/win/etag.h
+index e3d9727..6f4e76e 100644
+--- a/fossil/Fossil/win/etag.h
++++ b/fossil/Fossil/win/etag.h
+@@ -354,7 +354,7 @@ int db_int(int iDflt,const char *zSql,...);
+ void md5sum_step_text(const char *zText,int nBytes);
+ void md5sum_init(void);
+ void etag_check(unsigned eFlags,const char *zHash);
+-#define FOSSIL_BUILD_HASH "53ee9c0188ef2df3ed61fecfde97dee3"
++#define FOSSIL_BUILD_HASH "a8391a0f10feae2e39627f3868cf25f5"
+ const char *fossil_exe_id(void);
+ #define ETAG_QUERY    0x10 /* Output depends on PATH_INFO and QUERY_STRING */
+ #define ETAG_HASH     0x08 /* Output depends on a hash */
+diff --git a/fossil/Fossil/win/setup_.c b/fossil/Fossil/win/setup_.c
+index 83f0f21..25f9a5b 100644
+--- a/fossil/Fossil/win/setup_.c
++++ b/fossil/Fossil/win/setup_.c
+@@ -1753,82 +1753,80 @@ void setup_logo(void){
+     cgi_redirect("setup_logo");
+   }
+   style_set_current_feature("setup");
+-  style_header("Edit Project Logo And Background");
+-  cgi_printf("<p>The current project logo has a MIME-Type of <b>%h</b>\n"
+-         "and looks like this:</p>\n"
++  style_header("编辑项目Logo和背景");
++  cgi_printf("<p>当前项目Logo的MIME类型为 <b>%h</b>\n"
++         "，显示如下：</p>\n"
+          "<blockquote><p>\n"
+          "<img src=\"%R/logo/%z\" alt=\"logo\" border=\"1\">\n"
+          "</p></blockquote>\n"
+          "\n"
+          "<form action=\"%R/setup_logo\" method=\"post\"\n"
+          " enctype=\"multipart/form-data\"><div>\n"
+-         "<p>The logo is accessible to all users at this URL:\n"
+-         "<a href=\"%s/logo\">%s/logo</a>.\n"
+-         "The logo may or may not appear on each\n"
+-         "page depending on the <a href=\"setup_skinedit?w=0\">CSS</a> and\n"
+-         "<a href=\"setup_skinedit?w=2\">header setup</a>.\n"
+-         "To change the logo image, use the following form:</p>\n",(zLogoMime),(zLogoMtime),(g.zBaseURL),(g.zBaseURL));
++         "<p>所有用户都可以通过以下URL访问Logo：\n"
++         "<a href=\"%s/logo\">%s/logo</a>。\n"
++         "Logo是否在每个页面上显示，取决于\n"
++         "<a href=\"setup_skinedit?w=0\">CSS</a>设置和\n"
++         "<a href=\"setup_skinedit?w=2\">头部设置</a>。\n"
++         "要更改Logo图像，请使用以下表单：</p>\n",(zLogoMime),(zLogoMtime),(g.zBaseURL),(g.zBaseURL));
+   login_insert_csrf_secret();
+-  cgi_printf("Logo Image file:\n"
++  cgi_printf("Logo图像文件：\n"
+          "<input type=\"file\" name=\"logoim\" size=\"60\" accept=\"image/*\">\n"
+          "<p align=\"center\">\n"
+-         "<input type=\"submit\" name=\"setlogo\" value=\"Change Logo\">\n"
+-         "<input type=\"submit\" name=\"clrlogo\" value=\"Revert To Default\"></p>\n"
+-         "<p>(Properties: \"logo-image\" and \"logo-mimetype\")\n"
++         "<input type=\"submit\" name=\"setlogo\" value=\"更改Logo\">\n"
++         "<input type=\"submit\" name=\"clrlogo\" value=\"恢复默认\"></p>\n"
++         "<p>（属性：\"logo-image\" 和 \"logo-mimetype\"）\n"
+          "</div></form>\n"
+          "<hr>\n"
+          "\n"
+-         "<p>The current background image has a MIME-Type of <b>%h</b>\n"
+-         "and looks like this:</p>\n"
++         "<p>当前背景图像的MIME类型为 <b>%h</b>\n"
++         "，显示如下：</p>\n"
+          "<blockquote><p><img src=\"%R/background/%z\" "
+          "alt=\"background\" border=1>\n"
+          "</p></blockquote>\n"
+          "\n"
+          "<form action=\"%R/setup_logo\" method=\"post\"\n"
+          " enctype=\"multipart/form-data\"><div>\n"
+-         "<p>The background image is accessible to all users at this URL:\n"
+-         "<a href=\"%s/background\">%s/background</a>.\n"
+-         "The background image may or may not appear on each\n"
+-         "page depending on the <a href=\"setup_skinedit?w=0\">CSS</a> and\n"
+-         "<a href=\"setup_skinedit?w=2\">header setup</a>.\n"
+-         "To change the background image, use the following form:</p>\n",(zBgMime),(zBgMtime),(g.zBaseURL),(g.zBaseURL));
++         "<p>所有用户都可以通过以下URL访问背景图像：\n"
++         "<a href=\"%s/background\">%s/background</a>。\n"
++         "背景图像是否在每个页面上显示，取决于\n"
++         "<a href=\"setup_skinedit?w=0\">CSS</a>设置和\n"
++         "<a href=\"setup_skinedit?w=2\">头部设置</a>。\n"
++         "要更改背景图像，请使用以下表单：</p>\n",(zBgMime),(zBgMtime),(g.zBaseURL),(g.zBaseURL));
+   login_insert_csrf_secret();
+-  cgi_printf("Background image file:\n"
++  cgi_printf("背景图像文件：\n"
+          "<input type=\"file\" name=\"bgim\" size=\"60\" accept=\"image/*\">\n"
+          "<p align=\"center\">\n"
+-         "<input type=\"submit\" name=\"setbg\" value=\"Change Background\">\n"
+-         "<input type=\"submit\" name=\"clrbg\" value=\"Revert To Default\"></p>\n"
++         "<input type=\"submit\" name=\"setbg\" value=\"更改背景\">\n"
++         "<input type=\"submit\" name=\"clrbg\" value=\"恢复默认\"></p>\n"
+          "</div></form>\n"
+-         "<p>(Properties: \"background-image\" and \"background-mimetype\")\n"
++         "<p>（属性：\"background-image\" 和 \"background-mimetype\"）\n"
+          "<hr>\n"
+          "\n"
+-         "<p>The current icon image has a MIME-Type of <b>%h</b>\n"
+-         "and looks like this:</p>\n"
++         "<p>当前图标图像的MIME类型为 <b>%h</b>\n"
++         "，显示如下：</p>\n"
+          "<blockquote><p><img src=\"%R/favicon.ico/%z\" "
+          "alt=\"icon\" border=1>\n"
+          "</p></blockquote>\n"
+          "\n"
+          "<form action=\"%R/setup_logo\" method=\"post\"\n"
+          " enctype=\"multipart/form-data\"><div>\n"
+-         "<p>The icon image is accessible to all users at this URL:\n"
+-         "<a href=\"%s/favicon.ico\">%s/favicon.ico</a>.\n"
+-         "The icon image may or may not appear on each\n"
+-         "page depending on the web browser in use and the MIME-Types that it\n"
+-         "supports for icon images.\n"
+-         "To change the icon image, use the following form:</p>\n",(zIconMime),(zIconMtime),(g.zBaseURL),(g.zBaseURL));
++         "<p>所有用户都可以通过以下URL访问图标图像：\n"
++         "<a href=\"%s/favicon.ico\">%s/favicon.ico</a>。\n"
++         "图标图像是否在每个页面上显示，取决于\n"
++         "使用的Web浏览器以及它支持的图标图像MIME类型。\n"
++         "要更改图标图像，请使用以下表单：</p>\n",(zIconMime),(zIconMtime),(g.zBaseURL),(g.zBaseURL));
+   login_insert_csrf_secret();
+-  cgi_printf("Icon image file:\n"
++  cgi_printf("图标图像文件：\n"
+          "<input type=\"file\" name=\"iconim\" size=\"60\" accept=\"image/*\">\n"
+          "<p align=\"center\">\n"
+-         "<input type=\"submit\" name=\"seticon\" value=\"Change Icon\">\n"
+-         "<input type=\"submit\" name=\"clricon\" value=\"Revert To Default\"></p>\n"
++         "<input type=\"submit\" name=\"seticon\" value=\"更改图标\">\n"
++         "<input type=\"submit\" name=\"clricon\" value=\"恢复默认\"></p>\n"
+          "</div></form>\n"
+-         "<p>(Properties: \"icon-image\" and \"icon-mimetype\")\n"
++         "<p>（属性：\"icon-image\" 和 \"icon-mimetype\"）\n"
+          "<hr>\n"
+          "\n"
+-         "<p><span class=\"note\">Note:</span>  Your browser has probably cached these\n"
+-         "images, so you may need to press the Reload button before changes will\n"
+-         "take effect. </p>\n");
++         "<p><span class=\"note\">注意：</span> 您的浏览器可能已经缓存了这些\n"
++         "图像，因此您可能需要按下重新加载按钮，才能使更改生效。</p>\n");
+   style_finish_page();
+   db_end_transaction(0);
+ }
+

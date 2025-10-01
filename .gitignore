@@ -1,1 +1,6 @@
 fossil.fossil
+/fossil/Fossil/win/*.obj
+/fossil/Fossil/compat/zlib/*.obj
+/fossil/Fossil/compat/zlib/*.pdb
+/fossil/bin/fossil.exe
+/fossil/Fossil/win/fossil.exe

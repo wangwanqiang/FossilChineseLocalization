@@ -413,8 +413,8 @@ void cache_page(void){
   login_check_credentials();
   if( !g.perm.Setup ){ login_needed(0); return; }
   style_set_current_feature("cache");
-  style_header("Web Cache Status");
-  style_submenu_element("Refresh","%R/cachestat");
+  style_header("网页缓存状态");
+  style_submenu_element("刷新","%R/cachestat");
   doInit = P("init")!=0 && cgi_csrf_safe(2);
   db = cacheOpen(doInit);
   if( db!=0 ){
@@ -432,15 +432,15 @@ void cache_page(void){
         const unsigned char *zName = sqlite3_column_text(pStmt,0);
         char *zHash = cache_hash_of_key((const char*)zName);
         if( nEntry==0 ){
-          cgi_printf("<h2>Current Cache Entries:</h2>\n"
+          cgi_printf("<h2>当前缓存条目：</h2>\n"
                  "<ol>\n");
         }
         cgi_printf("<li><p>%z%h</a><br>\n"
-               "size: %,lld,\n"
-               "hit-count: %d,\n"
-               "last-access: %sZ ",(href("%R/cacheget?key=%T",zName)),(zName),(sqlite3_column_int64(pStmt,1)),(sqlite3_column_int(pStmt,2)),(sqlite3_column_text(pStmt,3)));
+               "大小：%,lld,\n"
+               "命中次数：%d,\n"
+               "最后访问：%sZ ",(href("%R/cacheget?key=%T",zName)),(zName),(sqlite3_column_int64(pStmt,1)),(sqlite3_column_int(pStmt,2)),(sqlite3_column_text(pStmt,3)));
         if( zHash ){
-          cgi_printf("&rarr; %zcheckin info</a>",(href("%R/timeline?c=%S",zHash)));
+          cgi_printf("&rarr; %z检出信息</a>",(href("%R/timeline?c=%S",zHash)));
           fossil_free(zHash);
         }
         cgi_printf("</p></li>\n");
@@ -452,29 +452,25 @@ void cache_page(void){
       }
     }
   }
-  cgi_printf("<h2>About The Web-Cache</h2>\n"
+  cgi_printf("<h2>关于网页缓存</h2>\n"
          "<p>\n"
-         "The web-cache is a separate database file that holds cached copies\n"
-         "tarballs, ZIP archives, and other pages that are expensive to compute\n"
-         "and are likely to be reused.\n"
+         "网页缓存是一个单独的数据库文件，用于存储压缩包、ZIP归档文件和其他计算成本高且可能被重用的页面的缓存副本。\n"
          "<form method=\"post\">\n");
   login_insert_csrf_secret();
   cgi_printf("<ul>\n");
   if( db==0 ){
-    cgi_printf("<li> Web-cache is currently disabled.\n"
-           "<input type=\"submit\" name=\"init\" value=\"Enable\">\n");
+    cgi_printf("<li> 网页缓存当前已禁用。\n"
+           "<input type=\"submit\" name=\"init\" value=\"启用\">\n");
   }else{
     bigSizeName(sizeof(zBuf), zBuf, file_size(zDbName, ExtFILE));
     mxEntry = db_get_int("max-cache-entry",10);
-    cgi_printf("<li> Filename of the cache database: <b>%h</b>\n"
-           "<li> Size of the cache database: %s\n"
-           "<li> Maximum number of entries: %d\n"
-           "<li> Number of cache entries used: %d\n"
-           "<li> Change the max-cache-entry setting on the\n"
-           "<a href=\"%R/setup_settings\">Settings</a> page to adjust the\n"
-           "maximum number of entries in the cache.\n"
-           "<li><input type=\"submit\" name=\"clear\" value=\"Clear the cache\">\n"
-           "<li> Disable the cache by manually deleting the cache database file.\n",(zDbName),(zBuf),(mxEntry),(nEntry));
+    cgi_printf("<li> 缓存数据库文件名：<b>%h</b>\n"
+           "<li> 缓存数据库大小：%s\n"
+           "<li> 最大条目数：%d\n"
+           "<li> 已使用的缓存条目数：%d\n"
+           "<li> 在<a href=\"%R/setup_settings\">设置</a>页面上更改max-cache-entry设置以调整缓存中的最大条目数。\n"
+           "<li><input type=\"submit\" name=\"clear\" value=\"清除缓存\">\n"
+           "<li> 通过手动删除缓存数据库文件来禁用缓存。\n",(zDbName),(zBuf),(mxEntry),(nEntry));
   }
   cgi_printf("</ul>\n"
          "</form>\n");
@@ -502,8 +498,8 @@ void cache_getpage(void){
   blob_zero(&content);
   if( cache_read(&content, zKey)==0 ){
     style_set_current_feature("cache");
-    style_header("Cache Download Error");
-    cgi_printf("The cache does not contain any entry with this key: \"%h\"\n",(zKey));
+    style_header("缓存下载错误");
+    cgi_printf("缓存中不包含此键的任何条目：\"%h\"\n",(zKey));
     style_finish_page();
     return;
   }
