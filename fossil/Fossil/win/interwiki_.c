@@ -344,12 +344,10 @@ void interwiki_page(void){
   }
 
   style_set_current_feature("interwiki");
-  style_header("Interwiki Map Configuration");
-  cgi_printf("<p>Interwiki links are hyperlink targets of the form\n"
-         "<blockquote><i>Tag</i><b>:</b><i>PageName</i></blockquote>\n"
-         "<p>Such links resolve to links to <i>PageName</i> on a separate server\n"
-         "identified by <i>Tag</i>.  The Interwiki Map or \"intermap\" is a mapping\n"
-         "from <i>Tags</i> to complete Server URLs.\n");
+  style_header("Interwiki 映射配置");
+  cgi_printf("<p>Interwiki 链接是以下形式的超链接目标\n"
+         "<blockquote><i>标记</i><b>:</b><i>页面名</i></blockquote>\n"
+         "<p>此类链接将解析为指向由标记标识的单独服务器上的页面名的链接。Interwiki 映射（或简称\"intermap\"）是从标记到完整服务器 URL 的映射。\n");
   db_prepare(&q,
     "SELECT substr(name,11),"
     "       value->>'base', value->>'hash', value->>'wiki'"
@@ -357,23 +355,23 @@ void interwiki_page(void){
   );
   while( db_step(&q)==SQLITE_ROW ){
     if( n==0 ){
-      cgi_printf("The current mapping is as follows:\n"
+      cgi_printf("当前映射如下：\n"
              "<ol>\n");
     }
     cgi_printf("<li><p> %h\n"
            "<ul>\n"
-           "<li> Base-URL: <tt>%h</tt>\n",(db_column_text(&q,0)),(db_column_text(&q,1)));
+           "<li> 基础 URL: <tt>%h</tt>\n",(db_column_text(&q,0)),(db_column_text(&q,1)));
     z = db_column_text(&q,2);
     if( z==0 ){
-      cgi_printf("<li> Hash-path: <i>NULL</i>\n");
+      cgi_printf("<li> 哈希路径: <i>空</i>\n");
     }else{
-      cgi_printf("<li> Hash-path: <tt>%h</tt>\n",(z));
+      cgi_printf("<li> 哈希路径: <tt>%h</tt>\n",(z));
     }
     z = db_column_text(&q,3);
     if( z==0 ){
-      cgi_printf("<li> Wiki-path: <i>NULL</i>\n");
+      cgi_printf("<li> Wiki 路径: <i>空</i>\n");
     }else{
-      cgi_printf("<li> Wiki-path: <tt>%h</tt>\n",(z));
+      cgi_printf("<li> Wiki 路径: <tt>%h</tt>\n",(z));
     }
     cgi_printf("</ul>\n");
     n++;
@@ -382,41 +380,38 @@ void interwiki_page(void){
   if( n ){
     cgi_printf("</ol>\n");
   }else{
-    cgi_printf("No mappings are currently defined.\n");
+    cgi_printf("当前没有定义映射。\n");
   }
 
   if( !g.perm.Setup ){
-    /* Do not show intermap editing fields to non-setup users */
+    /* 不为非设置用户显示 intermap 编辑字段 */
     style_finish_page();
     return;
   }
 
-  cgi_printf("<p>To add a new mapping, fill out the form below providing a unique name\n"
-         "for the tag.  To edit an exist mapping, fill out the form and use the\n"
-         "existing name as the tag.  To delete an existing mapping, fill in the\n"
-         "tag field but leave the \"Base URL\" field blank.</p>\n");
+  cgi_printf("<p>要添加新映射，请填写下面的表单并为标记提供唯一名称。要编辑现有映射，请填写表单并使用现有名称作为标记。要删除现有映射，请填写标记字段，但将\"基础 URL\"字段留空。</p>\n");
   if( zErr ){
     cgi_printf("<p class=\"error\">%h</p>\n",(zErr));
   }
   cgi_printf("<form method=\"POST\" action=\"%R/intermap\">\n");
   login_insert_csrf_secret();
   cgi_printf("<table border=\"0\">\n"
-         "<tr><td class=\"form_label\" id=\"imtag\">Tag:</td>\n"
+         "<tr><td class=\"form_label\" id=\"imtag\">标记：</td>\n"
          "<td><input type=\"text\" id=\"tag\" aria-labeledby=\"imtag\" name=\"tag\" "
          "size=\"15\" value=\"%h\"></td></tr>\n"
-         "<tr><td class=\"form_label\" id=\"imbase\">Base&nbsp;URL:</td>\n"
+         "<tr><td class=\"form_label\" id=\"imbase\">基础 URL：</td>\n"
          "<td><input type=\"text\" id=\"base\" aria-labeledby=\"imbase\" name=\"base\" "
          "size=\"70\" value=\"%h\"></td></tr>\n"
-         "<tr><td class=\"form_label\" id=\"imhash\">Hash-path:</td>\n"
+         "<tr><td class=\"form_label\" id=\"imhash\">哈希路径：</td>\n"
          "<td><input type=\"text\" id=\"hash\" aria-labeledby=\"imhash\" name=\"hash\" "
          "size=\"20\" value=\"%h\">\n"
-         "(use \"<tt>/info/</tt>\" when the target is Fossil)</td></tr>\n"
-         "<tr><td class=\"form_label\" id=\"imwiki\">Wiki-path:</td>\n"
+         "（当目标是 Fossil 时使用\"<tt>/info/</tt>\"）</td></tr>\n"
+         "<tr><td class=\"form_label\" id=\"imwiki\">Wiki 路径：</td>\n"
          "<td><input type=\"text\" id=\"wiki\" aria-labeledby=\"imwiki\" name=\"wiki\" "
          "size=\"20\" value=\"%h\">\n"
-         "(use \"<tt>/wiki?name=</tt>\" when the target is Fossil)</td></tr>\n"
+         "（当目标是 Fossil 时使用\"<tt>/wiki?name=</tt>\"）</td></tr>\n"
          "<tr><td></td>\n"
-         "<td><input type=\"submit\" name=\"submit\" value=\"Apply Changes\"></td></tr>\n"
+         "<td><input type=\"submit\" name=\"submit\" value=\"应用更改\"></td></tr>\n"
          "</table>\n"
          "</form>\n",(zTag),(zBase),(zHash),(zWiki));
 

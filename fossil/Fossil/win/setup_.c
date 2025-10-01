@@ -466,54 +466,46 @@ void setup_robots(void){
     return;
   }
   style_set_current_feature("setup");
-  style_header("Robot Defense Settings");
+  style_header("机器人防御设置");
   db_begin_transaction();
-  cgi_printf("<p>A Fossil website can have billions of pages in its tree, even for a\n"
-         "modest project.  Many of those pages (examples: diffs and tarballs)\n"
-         "might be expensive to compute. A robot that tries to walk the entire\n"
-         "website can present a crippling CPU and bandwidth load.\n"
+  cgi_printf("<p>即使是一个适度的项目，Fossil网站的树结构中也可能有数以十亿计的页面。其中许多页面（例如：差异比较和压缩包）\n"
+         "可能需要大量计算资源。尝试遍历整个网站的机器人可能会造成严重的CPU和带宽负载。\n"
          "\n"
-         "<p>The settings on this page are intended to help site administrators\n"
-         "defend the site against robots.\n"
+         "<p>本页面的设置旨在帮助站点管理员保护站点免受机器人的影响。\n"
          "\n"
          "<form action=\"%R/setup_robot\" method=\"post\"><div>\n");
   login_insert_csrf_secret();
-  cgi_printf("<input type=\"submit\"  name=\"submit\" value=\"Apply Changes\"></p>\n"
+  cgi_printf("<input type=\"submit\"  name=\"submit\" value=\"应用更改\"></p>\n"
          "<hr>\n"
-         "<p><b>Do not allow robots access to these pages.</b><br>\n"
-         "If the page name matches the GLOB pattern of this setting, and the\n"
-         "users is \"nobody\", and the client has not previously passed a captcha\n"
-         "test to show that it is not a robot, then the page is not displayed.\n"
-         "A captcha test is is rendered instead.\n"
-         "The recommended value for this setting is:\n"
+         "<p><b>不允许机器人访问这些页面。</b><br>\n"
+         "如果页面名称与此设置的GLOB模式匹配，且用户是\"nobody\"，且客户端之前未通过验证码\n"
+         "测试以证明它不是机器人，则不显示该页面。而是显示验证码测试。\n"
+         "此设置的推荐值为：\n"
          "<p>\n"
          "&emsp;&emsp;&emsp;<tt>%h</tt>\n"
          "<p>\n"
-         "The \"diff\" tag covers all diffing pages such as /vdiff, /fdiff, and \n"
-         "/vpatch.  The \"annotate\" tag covers /annotate and also /blame and\n"
-         "/praise.  The \"zip\" covers itself and also /tarball and /sqlar. If a\n"
-         "tag has an \"X\" character appended, then it only applies if query\n"
-         "parameters are such that the page is particularly difficult to compute.\n"
-         "In all other case, the tag should exactly match the page name.\n"
+         "\"diff\"标签涵盖所有差异比较页面，如/vdiff、/fdiff和\n"
+         "/vpatch。\"annotate\"标签涵盖/annotate以及/blame和\n"
+         "/praise。\"zip\"涵盖自身以及/tarball和/sqlar。如果一个\n"
+         "标签后附加了\"X\"字符，则仅当查询参数使页面特别难以计算时才适用。\n"
+         "在所有其他情况下，标签应与页面名称完全匹配。\n"
          "\n"
-         "To disable robot restrictions, change this setting to \"off\".\n"
-         "(Property: robot-restrict)\n"
+         "要禁用机器人限制，请将此设置更改为\"off\"。\n"
+         "(属性: robot-restrict)\n"
          "<br>\n",(robot_restrict_default()));
   textarea_attribute("", 2, 80,
       "robot-restrict", "rbrestrict", robot_restrict_default(), 0);
 
   cgi_printf("<hr>\n"
-         "<p><b>Exceptions to anti-robot restrictions</b><br>\n"
-         "The entry below is a list of regular expressions, one per line.\n"
-         "If any of these regular expressions match the input URL, then the\n"
-         "request is exempt from anti-robot defenses.  Use this, for example,\n"
-         "to allow scripts to download release tarballs using a pattern\n"
-         "like:</p>\n"
+         "<p><b>反机器人限制的例外情况</b><br>\n"
+         "下面的条目是一个正则表达式列表，每行一个。\n"
+         "如果这些正则表达式中的任何一个与输入URL匹配，则该\n"
+         "请求免受反机器人防御。例如，使用如下模式\n"
+         "允许脚本下载发布压缩包：</p>\n"
          "<p>\n"
          "&emsp;&emsp;<tt>^/tarball\\b.*\\b(version-|release)\\b</tt>\n"
-         "<p>The pattern should match against the REQUEST_URI with the\n"
-         "SCRIPT_NAME prefix removed, and with QUERY_STRING appended following\n"
-         "a \"?\" if QUERY_STRING exists.  (Property: robot-exception)<br>\n");
+         "<p>该模式应匹配已删除SCRIPT_NAME前缀的REQUEST_URI，并在QUERY_STRING存在时\n"
+         "在其后附加\"?\"和QUERY_STRING。(属性: robot-exception)<br>\n");
   textarea_attribute("", 3, 80,
       "robot-exception", "rbexcept", "", 0);
 
@@ -521,26 +513,23 @@ void setup_robots(void){
   addAutoHyperlinkSettings();
 
   cgi_printf("<hr>\n");
-  entry_attribute("Anonymous Login Validity", 11, "anon-cookie-lifespan",
+  entry_attribute("匿名登录有效期", 11, "anon-cookie-lifespan",
                   "anoncookls", "840", 0);
-  cgi_printf("<p>The number of minutes for which an anonymous login cookie is valid.\n"
-         "Set to zero to disable anonymous login.\n"
-         "(property: anon-cookie-lifespan)\n");
+  cgi_printf("<p>匿名登录Cookie的有效分钟数。\n"
+         "设置为零可禁用匿名登录。\n"
+         "(属性: anon-cookie-lifespan)\n");
 
   cgi_printf("<hr>\n");
-  entry_attribute("Server Load Average Limit", 11, "max-loadavg", "mxldavg",
+  entry_attribute("服务器负载平均限制", 11, "max-loadavg", "mxldavg",
                   "0.0", 0);
-  cgi_printf("<p>Some expensive operations (such as computing tarballs, zip archives,\n"
-         "or annotation/blame pages) are prohibited if the load average on the host\n"
-         "computer is too large.  Set the threshold for disallowing expensive\n"
-         "computations here.  Set this to 0.0 to disable the load average limit.\n"
-         "This limit is only enforced on Unix servers.  On Linux systems,\n"
-         "access to the /proc virtual filesystem is required, which means this limit\n"
-         "might not work inside a chroot() jail.\n"
-         "(Property: \"max-loadavg\")</p>\n"
+  cgi_printf("<p>如果主机计算机的负载平均值过大，则禁止某些昂贵的操作（如计算tarball、zip归档\n"
+         "或注释/归咎页面）。在此设置禁止昂贵计算的阈值。设置为0.0可禁用负载平均限制。\n"
+         "此限制仅在Unix服务器上强制执行。在Linux系统上，\n"
+         "需要访问/proc虚拟文件系统，这意味着此限制可能在chroot()监狱内不起作用。\n"
+         "(属性: \"max-loadavg\")</p>\n"
          "\n"
          "<hr>\n"
-         "<p><input type=\"submit\"  name=\"submit\" value=\"Apply Changes\"></p>\n"
+         "<p><input type=\"submit\"  name=\"submit\" value=\"应用更改\"></p>\n"
          "</div></form>\n");
   db_end_transaction(0);
   style_finish_page();
@@ -553,9 +542,9 @@ void setup_robots(void){
 */
 void setup_access(void){
   static const char *const azRedirectOpts[] = {
-    "0", "Off",
-    "1", "Login Page Only",
-    "2", "All Pages"
+    "0", "关闭",
+    "1", "仅登录页面",
+    "2", "所有页面"
   };
   login_check_credentials();
   if( !g.perm.Setup ){
@@ -564,124 +553,103 @@ void setup_access(void){
   }
 
   style_set_current_feature("setup");
-  style_header("Access Control Settings");
+  style_header("访问控制设置");
   db_begin_transaction();
   cgi_printf("<form action=\"%R/setup_access\" method=\"post\"><div>\n");
   login_insert_csrf_secret();
-  cgi_printf("<input type=\"submit\"  name=\"submit\" value=\"Apply Changes\"></p>\n"
+  cgi_printf("<input type=\"submit\"  name=\"submit\" value=\"应用更改\"></p>\n"
          "<hr>\n");
-  multiple_choice_attribute("Redirect to HTTPS",
+  multiple_choice_attribute("重定向到HTTPS",
      "redirect-to-https", "redirhttps", "0",
      count(azRedirectOpts)/2, azRedirectOpts);
-  cgi_printf("<p>Force the use of HTTPS by redirecting to HTTPS when an\n"
-         "unencrypted request is received.  This feature can be enabled\n"
-         "for the Login page only, or for all pages.\n"
-         "<p>Further details:  When enabled, this option causes the $secureurl TH1\n"
-         "variable is set to an \"https:\" variant of $baseurl.  Otherwise,\n"
-         "$secureurl is just an alias for $baseurl.\n"
-         "(Property: \"redirect-to-https\".  \"0\" for off, \"1\" for Login page only,\n"
-         "\"2\" otherwise.)\n"
+  cgi_printf("<p>当接收到未加密请求时，通过重定向到HTTPS强制使用HTTPS。此功能可以仅对登录页面启用，或对所有页面启用。\n"
+         "<p>进一步详情：启用此选项后，$secureurl TH1变量将被设置为$baseurl的\"https:\"变体。否则，\n"
+         "$secureurl仅作为$baseurl的别名。\n"
+         "(属性: \"redirect-to-https\"。\"0\"表示关闭，\"1\"表示仅登录页面，\n"
+         "\"2\"表示所有页面。)\n"
          "<hr>\n");
-  onoff_attribute("Require password for local access",
+  onoff_attribute("本地访问需要密码",
      "localauth", "localauth", 0, 0);
-  cgi_printf("<p>When enabled, the password sign-in is always required for\n"
-         "web access.  When disabled, unrestricted web access from 127.0.0.1\n"
-         "is allowed for the <a href=\"%R/help/ui\">fossil ui</a> command or\n"
-         "from the <a href=\"%R/help/server\">fossil server</a>,\n"
-         "<a href=\"%R/help/http\">fossil http</a> commands when the\n"
-         "\"--localauth\" command line options is used, or from the\n"
-         "<a href=\"%R/help/cgi\">fossil cgi</a> if a line containing\n"
-         "the word \"localauth\" appears in the CGI script.\n"
+  cgi_printf("<p>启用后，Web访问始终需要密码登录。禁用时，当使用\n"
+         "<a href=\"%R/help/ui\">fossil ui</a>命令，或使用\n"
+         "<a href=\"%R/help/server\">fossil server</a>、\n"
+         "<a href=\"%R/help/http\">fossil http</a>命令并添加\"--localauth\"命令行选项时，\n"
+         "允许从127.0.0.1进行无限制的Web访问。如果CGI脚本中包含\"localauth\"关键字，\n"
+         "也允许从<a href=\"%R/help/cgi\">fossil cgi</a>进行无限制访问。\n"
          "\n"
-         "<p>A password is always required if any one or more\n"
-         "of the following are true:\n"
+         "<p>在以下任一情况下，始终需要密码：\n"
          "<ol>\n"
-         "<li> This button is checked\n"
-         "<li> The inbound TCP/IP connection is not from 127.0.0.1\n"
-         "<li> The server is started using either of the\n"
-         "<a href=\"%R/help/server\">fossil server</a> or\n"
-         "<a href=\"%R/help/server\">fossil http</a> commands\n"
-         "without the \"--localauth\" option.\n"
-         "<li> The server is started from CGI without the \"localauth\" keyword\n"
-         "in the CGI script.\n"
+         "<li> 此按钮被勾选\n"
+         "<li> 入站TCP/IP连接并非来自127.0.0.1\n"
+         "<li> 服务器使用<a href=\"%R/help/server\">fossil server</a>或\n"
+         "<a href=\"%R/help/server\">fossil http</a>命令启动，\n"
+         "但未使用\"--localauth\"选项。\n"
+         "<li> 服务器从CGI启动，但CGI脚本中没有\"localauth\"关键字。\n"
          "</ol>\n"
-         "(Property: \"localauth\")\n"
+         "(属性: \"localauth\")\n"
          "\n"
          "<hr>\n");
-  onoff_attribute("Enable /test-env",
+  onoff_attribute("启用 /test-env",
      "test_env_enable", "test_env_enable", 0, 0);
-  cgi_printf("<p>When enabled, the %h/test_env URL is available to all\n"
-         "users.  When disabled (the default) only users Admin and Setup can visit\n"
-         "the /test_env page.\n"
-         "(Property: \"test_env_enable\")\n"
+  cgi_printf("<p>启用后，%h/test_env URL对所有用户可用。禁用时（默认），只有Admin和Setup用户可以访问\n"
+         "/test_env页面。\n"
+         "(属性: \"test_env_enable\")\n"
          "</p>\n"
          "\n"
          "<hr>\n",(g.zBaseURL));
-  onoff_attribute("Enable /artifact_stats",
+  onoff_attribute("启用 /artifact_stats",
      "artifact_stats_enable", "artifact_stats_enable", 0, 0);
-  cgi_printf("<p>When enabled, the %h/artifact_stats URL is available to all\n"
-         "users.  When disabled (the default) only users with check-in privilege may\n"
-         "access the /artifact_stats page.\n"
-         "(Property: \"artifact_stats_enable\")\n"
+  cgi_printf("<p>启用后，%h/artifact_stats URL对所有用户可用。禁用时（默认），只有具有签入权限的用户可以访问\n"
+         "/artifact_stats页面。\n"
+         "(属性: \"artifact_stats_enable\")\n"
          "</p>\n"
          "\n"
          "<hr>\n",(g.zBaseURL));
-  onoff_attribute("Allow REMOTE_USER authentication",
+  onoff_attribute("允许REMOTE_USER认证",
      "remote_user_ok", "remote_user_ok", 0, 0);
-  cgi_printf("<p>When enabled, if the REMOTE_USER environment variable is set to the\n"
-         "login name of a valid user and no other login credentials are available,\n"
-         "then the REMOTE_USER is accepted as an authenticated user.\n"
-         "(Property: \"remote_user_ok\")\n"
+  cgi_printf("<p>启用后，如果REMOTE_USER环境变量设置为有效用户的登录名，且没有其他登录凭据可用，\n"
+         "则REMOTE_USER将被视为已认证用户。\n"
+         "(属性: \"remote_user_ok\")\n"
          "</p>\n"
          "\n"
          "<hr>\n");
-  onoff_attribute("Allow HTTP_AUTHENTICATION authentication",
+  onoff_attribute("允许HTTP_AUTHENTICATION认证",
      "http_authentication_ok", "http_authentication_ok", 0, 0);
-  cgi_printf("<p>When enabled, allow the use of the HTTP_AUTHENTICATION environment\n"
-         "variable or the \"Authentication:\" HTTP header to find the username and\n"
-         "password. This is another way of supporting Basic Authentication.\n"
-         "(Property: \"http_authentication_ok\")\n"
+  cgi_printf("<p>启用后，允许使用HTTP_AUTHENTICATION环境变量或\"Authentication:\" HTTP头来查找用户名和\n"
+         "密码。这是支持Basic Authentication的另一种方式。\n"
+         "(属性: \"http_authentication_ok\")\n"
          "</p>\n"
          "\n"
          "<hr>\n");
-  entry_attribute("Login expiration time", 6, "cookie-expire", "cex",
+  entry_attribute("登录过期时间", 6, "cookie-expire", "cex",
                   "8766", 0);
-  cgi_printf("<p>The number of hours for which a login is valid.  This must be a\n"
-         "positive number.  The default is 8766 hours which is approximately equal\n"
-         "to a year.\n"
-         "(Property: \"cookie-expire\")</p>\n");
+  cgi_printf("<p>登录有效的小时数。必须是正数。默认值为8766小时，约等于一年。\n"
+         "(属性: \"cookie-expire\")</p>\n");
 
   cgi_printf("<hr>\n");
-  entry_attribute("Download packet limit", 10, "max-download", "mxdwn",
+  entry_attribute("下载数据包限制", 10, "max-download", "mxdwn",
                   "5000000", 0);
-  cgi_printf("<p>Fossil tries to limit out-bound sync, clone, and pull packets\n"
-         "to this many bytes, uncompressed.  If the client requires more data\n"
-         "than this, then the client will issue multiple HTTP requests.\n"
-         "Values below 1 million are not recommended.  5 million is a\n"
-         "reasonable number.  (Property: \"max-download\")</p>\n");
+  cgi_printf("<p>Fossil尝试将出站同步、克隆和拉取数据包限制为不压缩状态下的此字节数。如果客户端需要更多数据，\n"
+         "则客户端将发出多个HTTP请求。不建议将值设置为低于100万。500万是一个合理的数值。\n"
+         "(属性: \"max-download\")</p>\n");
 
   cgi_printf("<hr>\n");
-  entry_attribute("Download time limit", 11, "max-download-time", "mxdwnt",
+  entry_attribute("下载时间限制", 11, "max-download-time", "mxdwnt",
                   "30", 0);
 
-  cgi_printf("<p>Fossil tries to spend less than this many seconds gathering\n"
-         "the out-bound data of sync, clone, and pull packets.\n"
-         "If the client request takes longer, a partial reply is given similar\n"
-         "to the download packet limit. 30s is a reasonable default.\n"
-         "(Property: \"max-download-time\")</p>\n");
+  cgi_printf("<p>Fossil尝试在收集同步、克隆和拉取数据包的出站数据时花费少于此秒数。\n"
+         "如果客户端请求耗时更长，则会给出部分回复，类似于下载数据包限制。30秒是一个合理的默认值。\n"
+         "(属性: \"max-download-time\")</p>\n");
 
   cgi_printf("<a id=\"slal\"></a>\n"
          "<hr>\n");
-  entry_attribute("Server Load Average Limit", 11, "max-loadavg", "mxldavg",
+  entry_attribute("服务器负载平均限制", 11, "max-loadavg", "mxldavg",
                   "0.0", 0);
-  cgi_printf("<p>Some expensive operations (such as computing tarballs, zip archives,\n"
-         "or annotation/blame pages) are prohibited if the load average on the host\n"
-         "computer is too large.  Set the threshold for disallowing expensive\n"
-         "computations here.  Set this to 0.0 to disable the load average limit.\n"
-         "This limit is only enforced on Unix servers.  On Linux systems,\n"
-         "access to the /proc virtual filesystem is required, which means this limit\n"
-         "might not work inside a chroot() jail.\n"
-         "(Property: \"max-loadavg\")</p>\n");
+  cgi_printf("<p>如果主机计算机的负载平均值过大，则禁止某些昂贵的操作（如计算tarball、zip归档\n"
+         "或注释/归咎页面）。在此设置禁止昂贵计算的阈值。设置为0.0可禁用负载平均限制。\n"
+         "此限制仅在Unix服务器上强制执行。在Linux系统上，\n"
+         "需要访问/proc虚拟文件系统，这意味着此限制可能在chroot()监狱内不起作用。\n"
+         "(属性: \"max-loadavg\")</p>\n");
 
   /* Add the auto-hyperlink settings controls.  These same controls
   ** are also accessible from the /setup_robot page.
@@ -690,103 +658,94 @@ void setup_access(void){
   addAutoHyperlinkSettings();
 
   cgi_printf("<hr>\n");
-  onoff_attribute("Require a CAPTCHA if not logged in",
+  onoff_attribute("未登录时需要验证码",
                   "require-captcha", "reqcapt", 1, 0);
-  cgi_printf("<p>Require a CAPTCHA for edit operations (appending, creating, or\n"
-         "editing wiki or tickets or adding attachments to wiki or tickets)\n"
-         "for users who are not logged in. (Property: \"require-captcha\")</p>\n");
+  cgi_printf("<p>对于未登录用户的编辑操作（追加、创建或编辑wiki或工单，或向wiki或工单添加附件）需要验证码。\n"
+         "(属性: \"require-captcha\")</p>\n");
 
   cgi_printf("<hr>\n");
-  entry_attribute("Public pages", 30, "public-pages",
+  entry_attribute("公开页面", 30, "public-pages",
                   "pubpage", "", 0);
-  cgi_printf("<p>A comma-separated list of glob patterns for pages that are accessible\n"
-         "without needing a login and using the privileges given by the\n"
-         "\"Default privileges\" setting below.\n"
+  cgi_printf("<p>一组逗号分隔的glob模式，指定无需登录即可访问的页面，使用下方\n"
+         "\"默认权限\"设置提供的权限。\n"
          "\n"
-         "<p>Example use case: Set this field to \"/doc/trunk/www/*\" and set\n"
-         "the \"Default privileges\" to include the \"o\" privilege\n"
-         "to give anonymous users read-only permission to the\n"
-         "latest version of the embedded documentation in the www/ folder without\n"
-         "allowing them to see the rest of the source code.\n"
-         "(Property: \"public-pages\")\n"
+         "<p>使用示例：将此字段设置为\"/doc/trunk/www/*\"，并将\n"
+         "\"默认权限\"设置为包含\"o\"权限，\n"
+         "从而为匿名用户提供对www/文件夹中嵌入文档最新版本的只读权限，而不允许\n"
+         "他们查看源代码的其余部分。\n"
+         "(属性: \"public-pages\")\n"
          "</p>\n");
 
   cgi_printf("<hr>\n");
-  onoff_attribute("Allow users to register themselves",
+  onoff_attribute("允许用户自行注册",
                   "self-register", "selfreg", 0, 0);
-  cgi_printf("<p>Allow users to register themselves on the /register webpage.\n"
-         "A self-registration creates a new entry in the USER table and\n"
-         "perhaps also in the SUBSCRIBER table if email notification is\n"
-         "enabled.\n"
-         "(Property: \"self-register\")</p>\n");
+  cgi_printf("<p>允许用户在/register网页上自行注册。\n"
+         "自行注册会在USER表中创建一个新条目，\n"
+         "如果启用了电子邮件通知，可能还会在SUBSCRIBER表中创建一个条目。\n"
+         "(属性: \"self-register\")</p>\n");
 
   cgi_printf("<hr>\n");
-  onoff_attribute("Allow users to reset their own passwords",
+  onoff_attribute("允许用户重置自己的密码",
                   "self-pw-reset", "selfpw", 0, 0);
-  cgi_printf("<p>Allow users to request that an email contains a hyperlink to a\n"
-         "password reset page be sent to their email address of record.  This\n"
-         "enables forgetful users to recover their forgotten passwords without\n"
-         "administrator intervention.\n"
-         "(Property: \"self-pw-reset\")</p>\n");
+  cgi_printf("<p>允许用户请求发送包含指向密码重置页面的超链接的电子邮件到他们的记录邮箱地址。\n"
+         "这使健忘的用户能够在无需管理员干预的情况下恢复忘记的密码。\n"
+         "(属性: \"self-pw-reset\")</p>\n");
 
   cgi_printf("<hr>\n");
-  onoff_attribute("Email verification required for self-registration",
+  onoff_attribute("自行注册需要电子邮件验证",
                   "selfreg-verify", "sfverify", 0, 0);
-  cgi_printf("<p>If enabled, self-registration creates a new entry in the USER table\n"
-         "with only capabilities \"7\".  The default user capabilities are not\n"
-         "added until the email address associated with the self-registration\n"
-         "has been verified. This setting only makes sense if\n"
-         "email notifications are enabled.\n"
-         "(Property: \"selfreg-verify\")</p>\n");
+  cgi_printf("<p>如果启用，自行注册会在USER表中创建一个新条目，\n"
+         "仅具有\"7\"权限。默认用户权限不会被添加，直到与自行注册相关联的\n"
+         "电子邮件地址已被验证。此设置仅在\n"
+         "启用电子邮件通知时才有意义。\n"
+         "(属性: \"selfreg-verify\")</p>\n");
 
   cgi_printf("<hr>\n");
-  onoff_attribute("Allow anonymous subscriptions",
+  onoff_attribute("允许匿名订阅",
                   "anon-subscribe", "anonsub", 1, 0);
-  cgi_printf("<p>If disabled, email notification subscriptions are only allowed\n"
-         "for users with a login.  If Nobody or Anonymous visit the /subscribe\n"
-         "page, they are redirected to /register or /login.\n"
-         "(Property: \"anon-subscribe\")</p>\n");
+  cgi_printf("<p>如果禁用，电子邮件通知订阅仅允许\n"
+         "具有登录账户的用户使用。如果匿名用户访问/subscribe\n"
+         "页面，他们将被重定向到/register或/login。\n"
+         "(属性: \"anon-subscribe\")</p>\n");
 
   cgi_printf("<hr>\n");
-  entry_attribute("Authorized subscription email addresses", 35,
+  entry_attribute("授权的订阅电子邮件地址", 35,
                   "auth-sub-email", "asemail", "", 0);
-  cgi_printf("<p>This is a comma-separated list of GLOB patterns that specify\n"
-         "email addresses that are authorized to subscriptions.  If blank\n"
-         "(the usual case), then any email address can be used to self-register.\n"
-         "This setting is used to limit subscriptions to members of a particular\n"
-         "organization or group based on their email address.\n"
-         "(Property: \"auth-sub-email\")</p>\n");
+  cgi_printf("<p>这是一个逗号分隔的GLOB模式列表，指定\n"
+         "有权订阅的电子邮件地址。如果为空\n"
+        "（通常情况），则任何电子邮件地址都可用于自行注册。\n"
+         "此设置用于基于电子邮件地址将订阅限制为特定\n"
+         "组织或团体的成员。\n"
+         "(属性: \"auth-sub-email\")</p>\n");
 
   cgi_printf("<hr>\n");
-  entry_attribute("Default privileges", 10, "default-perms",
+  entry_attribute("默认权限", 10, "default-perms",
                   "defaultperms", "u", 0);
-  cgi_printf("<p>Permissions given to users that... <ul><li>register themselves using\n"
-         "the self-registration procedure (if enabled), or <li>access \"public\"\n"
-         "pages identified by the public-pages glob pattern above, or <li>\n"
-         "are users newly created by the administrator.</ul>\n"
-         "<p>Recommended value: \"u\" for Reader.\n"
-         "<a href=\"%R/setup_ucap_list\">Capability Key</a>.\n"
-         "(Property: \"default-perms\")\n"
+  cgi_printf("<p>授予以下用户的权限：<ul><li>使用自行注册程序注册的用户（如果启用），或<li>访问由上述public-pages glob模式标识的\"公开\"\n"
+         "页面的用户，或<li>\n"
+         "由管理员新创建的用户。</ul>\n"
+         "<p>推荐值：\"u\"表示只读权限。\n"
+         "<a href=\"%R/setup_ucap_list\">权限密钥</a>。\n"
+         "(属性: \"default-perms\")\n"
          "</p>\n");
 
   cgi_printf("<hr>\n");
-  onoff_attribute("Show javascript button to fill in CAPTCHA",
+  onoff_attribute("显示自动填写验证码的JavaScript按钮",
                   "auto-captcha", "autocaptcha", 0, 0);
-  cgi_printf("<p>When enabled, a button appears on the login screen for user\n"
-         "\"anonymous\" that will automatically fill in the CAPTCHA password.\n"
-         "This is less secure than forcing the user to do it manually, but is\n"
-         "probably secure enough and it is certainly more convenient for\n"
-         "anonymous users.  (Property: \"auto-captcha\")</p>\n");
+  cgi_printf("<p>启用后，匿名用户的登录屏幕上会出现一个按钮，可自动填写验证码密码。\n"
+         "这比强制用户手动填写安全性较低，但可能足够安全，并且对\n"
+         "匿名用户来说肯定更方便。\n"
+         "(属性: \"auto-captcha\")</p>\n");
 
   cgi_printf("<hr>\n");
-  entry_attribute("Anonymous Login Validity", 11, "anon-cookie-lifespan",
+  entry_attribute("匿名登录有效期", 11, "anon-cookie-lifespan",
                   "anoncookls", "840", 0);
-  cgi_printf("<p>The number of minutes for which an anonymous login cookie is valid.\n"
-         "Set to zero to disable anonymous logins.\n"
-         "(property: anon-cookie-lifespan)\n");
+  cgi_printf("<p>匿名登录Cookie有效的分钟数。\n"
+         "设置为零可禁用匿名登录。\n"
+         "(属性: anon-cookie-lifespan)\n");
 
   cgi_printf("<hr>\n"
-         "<p><input type=\"submit\"  name=\"submit\" value=\"Apply Changes\"></p>\n"
+         "<p><input type=\"submit\"  name=\"submit\" value=\"应用更改\"></p>\n"
          "</div></form>\n");
   db_end_transaction(0);
   style_finish_page();
@@ -973,11 +932,11 @@ void setup_timeline(void){
   double tmDiff;
   char zTmDiff[20];
   static const char *const azTimeFormats[] = {
-      "0", "HH:MM",
-      "1", "HH:MM:SS",
-      "2", "YYYY-MM-DD HH:MM",
-      "3", "YYMMDD HH:MM",
-      "4", "(off)"
+      "0", "时:分",
+      "1", "时:分:秒",
+      "2", "年-月-日 时:分",
+      "3", "年月日 时:分",
+      "4", "(关闭)"
   };
   login_check_credentials();
   if( !g.perm.Admin ){
@@ -986,128 +945,115 @@ void setup_timeline(void){
   }
 
   style_set_current_feature("setup");
-  style_header("Timeline Display Preferences");
+  style_header("时间线显示偏好");
   db_begin_transaction();
   cgi_printf("<form action=\"%R/setup_timeline\" method=\"post\"><div>\n");
   login_insert_csrf_secret();
-  cgi_printf("<p><input type=\"submit\"  name=\"submit\" value=\"Apply Changes\"></p>\n");
+  cgi_printf("<p><input type=\"submit\"  name=\"submit\" value=\"应用更改\"></p>\n");
 
   cgi_printf("<hr>\n");
-  onoff_attribute("Plaintext comments on timelines",
+  onoff_attribute("时间线上的纯文本评论",
                   "timeline-plaintext", "tpt", 0, 0);
-  cgi_printf("<p>In timeline displays, check-in comments are displayed literally,\n"
-         "without any wiki or HTML interpretation.  Use CSS to change\n"
-         "display formatting features such as fonts and line-wrapping behavior.\n"
-         "(Property: \"timeline-plaintext\")</p>\n");
+  cgi_printf("<p>在时间线显示中，签入评论将按字面显示，\n"
+         "不进行任何 wiki 或 HTML 解释。使用 CSS 更改\n"
+         "显示格式特性，如字体和换行行为。\n"
+         "(属性: \"timeline-plaintext\")</p>\n");
 
   cgi_printf("<hr>\n");
-  onoff_attribute("Truncate comment at first blank line (Git-style)",
+  onoff_attribute("在第一个空行截断评论 (Git风格)",
                   "timeline-truncate-at-blank", "ttb", 0, 0);
-  cgi_printf("<p>In timeline displays, check-in comments are displayed only through\n"
-         "the first blank line.  This is the traditional way to display comments\n"
-         "in Git repositories (Property: \"timeline-truncate-at-blank\")</p>\n");
+  cgi_printf("<p>在时间线显示中，签入评论仅显示到\n"
+         "第一个空行。这是在 Git 仓库中显示评论的传统方式\n"
+         "(属性: \"timeline-truncate-at-blank\")</p>\n");
 
   cgi_printf("<hr>\n");
-  onoff_attribute("Break comments at newline characters",
+  onoff_attribute("在换行符处断开评论",
                   "timeline-hard-newlines", "thnl", 0, 0);
-  cgi_printf("<p>In timeline displays, newline characters in check-in comments force\n"
-         "a line break on the display.\n"
-         "(Property: \"timeline-hard-newlines\")</p>\n");
+  cgi_printf("<p>在时间线显示中，签入评论中的换行符强制\n"
+         "显示时换行。\n"
+         "(属性: \"timeline-hard-newlines\")</p>\n");
 
   cgi_printf("<hr>\n");
-  onoff_attribute("Do not adjust user-selected background colors",
+  onoff_attribute("不调整用户选择的背景颜色",
                   "raw-bgcolor", "rbgc", 0, 0);
-  cgi_printf("<p>Fossil normally attempts to adjust the saturation and intensity of\n"
-         "user-specified background colors on check-ins and branches so that the\n"
-         "foreground text is easily readable on all skins.  Enable this setting\n"
-         "to omit that adjustment and use exactly the background color specified\n"
-         "by users.\n"
-         "(Property: \"raw-bgcolor\")</p>\n");
+  cgi_printf("<p>Fossil 通常会尝试调整签入和分支上用户指定的背景颜色的饱和度和强度，以便\n"
+         "前景文本在所有皮肤中都易于阅读。启用此设置\n"
+         "可省略该调整，并完全使用用户指定的背景颜色。\n"
+         "(属性: \"raw-bgcolor\")</p>\n");
 
   cgi_printf("<hr>\n");
-  onoff_attribute("Use Universal Coordinated Time (UTC)",
+  onoff_attribute("使用协调世界时 (UTC)",
                   "timeline-utc", "utc", 1, 0);
-  cgi_printf("<p>Show times as UTC (also sometimes called Greenwich Mean Time (GMT) or\n"
-         "Zulu) instead of in local time.  On this server, local time is currently\n");
+  cgi_printf("<p>显示 UTC 时间（有时也称为格林威治标准时间 (GMT) 或\n"
+         "祖鲁时间）而不是本地时间。在此服务器上，本地时间当前\n");
   tmDiff = db_double(0.0, "SELECT julianday('now')");
   tmDiff = db_double(0.0,
         "SELECT (julianday(%.17g,'localtime')-julianday(%.17g))*24.0",
         tmDiff, tmDiff);
   sqlite3_snprintf(sizeof(zTmDiff), zTmDiff, "%.1f", tmDiff);
   if( strcmp(zTmDiff, "0.0")==0 ){
-    cgi_printf("the same as UTC and so this setting will make no difference in\n"
-           "the display.</p>\n");
+    cgi_printf("与 UTC 相同，因此此设置在显示中不会有任何区别。</p>\n");
   }else if( tmDiff<0.0 ){
     sqlite3_snprintf(sizeof(zTmDiff), zTmDiff, "%.1f", -tmDiff);
-    cgi_printf("%s hours behind UTC.</p>\n",(zTmDiff));
+    cgi_printf("比 UTC 晚 %s 小时。</p>\n",(zTmDiff));
   }else{
-    cgi_printf("%s hours ahead of UTC.</p>\n",(zTmDiff));
+    cgi_printf("比 UTC 早 %s 小时。</p>\n",(zTmDiff));
   }
-  cgi_printf("<p>(Property: \"timeline-utc\")\n");
+  cgi_printf("<p>(属性: \"timeline-utc\")\n");
 
   cgi_printf("<hr>\n");
-  multiple_choice_attribute("Style", "timeline-default-style",
+  multiple_choice_attribute("样式", "timeline-default-style",
             "tdss", "0", N_TIMELINE_VIEW_STYLE, timeline_view_styles);
-  cgi_printf("<p>The default timeline viewing style, for when the user has not\n"
-         "specified an alternative.  (Property: \"timeline-default-style\")</p>\n");
+  cgi_printf("<p>默认时间线查看样式，适用于用户未指定替代样式的情况。\n"
+         "(属性: \"timeline-default-style\")</p>\n");
 
   cgi_printf("<hr>\n");
-  entry_attribute("Default Number Of Rows", 6, "timeline-default-length",
+  entry_attribute("默认行数", 6, "timeline-default-length",
                   "tldl", "50", 0);
-  cgi_printf("<p>The maximum number of rows to show on a timeline in the absence\n"
-         "of a user display preference cookie setting or an explicit n= query\n"
-         "parameter.  (Property: \"timeline-default-length\")</p>\n");
+  cgi_printf("<p>在没有用户显示偏好 cookie 设置或显式 n= 查询参数的情况下，时间线上显示的最大行数。\n"
+         "(属性: \"timeline-default-length\")</p>\n");
 
   cgi_printf("<hr>\n");
-  multiple_choice_attribute("Per-Item Time Format", "timeline-date-format",
+  multiple_choice_attribute("每项时间格式", "timeline-date-format",
             "tdf", "0", count(azTimeFormats)/2, azTimeFormats);
-  cgi_printf("<p>If the \"HH:MM\" or \"HH:MM:SS\" format is selected, then the date is shown\n"
-         "in a separate box (using CSS class \"timelineDate\") whenever the date\n"
-         "changes.  With the \"YYYY-MM-DD&nbsp;HH:MM\" and \"YYMMDD ...\" formats,\n"
-         "the complete date and time is shown on every timeline entry using the\n"
-         "CSS class \"timelineTime\". (Property: \"timeline-date-format\")</p>\n");
+  cgi_printf("<p>如果选择了 \"HH:MM\" 或 \"HH:MM:SS\" 格式，那么每当日期更改时，日期将显示在单独的框中\n"
+        "（使用 CSS 类 \"timelineDate\"）。使用 \"YYYY-MM-DD&nbsp;HH:MM\" 和 \"YYMMDD ...\" 格式时，\n"
+         "每个时间线条目都使用 CSS 类 \"timelineTime\" 显示完整的日期和时间。\n"
+         "(属性: \"timeline-date-format\")</p>\n");
 
   cgi_printf("<hr>\n");
-  entry_attribute("Max timeline comment length", 6,
+  entry_attribute("最大时间线评论长度", 6,
                   "timeline-max-comment", "tmc", "0", 0);
-  cgi_printf("<p>The maximum length of a comment to be displayed in a timeline.\n"
-         "\"0\" there is no length limit.\n"
-         "(Property: \"timeline-max-comment\")</p>\n");
+  cgi_printf("<p>在时间线中显示的评论的最大长度。\n"
+         "\"0\" 表示没有长度限制。\n"
+         "(属性: \"timeline-max-comment\")</p>\n");
 
   cgi_printf("<hr>\n");
-  entry_attribute("Tooltip dwell time (milliseconds)", 6,
+  entry_attribute("工具提示停留时间 (毫秒)", 6,
                   "timeline-dwelltime", "tdt", "100", 0);
   cgi_printf("<br>\n");
-  entry_attribute("Tooltip close time (milliseconds)", 6,
+  entry_attribute("工具提示关闭时间 (毫秒)", 6,
                   "timeline-closetime", "tct", "250", 0);
-  cgi_printf("<p>The <strong>dwell time</strong> defines how long the mouse pointer\n"
-         "should be stationary above an object of the graph before a tooltip\n"
-         "appears.<br>\n"
-         "The <strong>close time</strong> defines how long the mouse pointer\n"
-         "can be away from an object before a tooltip is closed.</p>\n"
-         "<p>Set <strong>dwell time</strong> to \"0\" to disable tooltips.<br>\n"
-         "Set <strong>close time</strong> to \"0\" to keep tooltips visible until\n"
-         "the mouse is clicked elsewhere.<p>\n"
-         "<p>(Properties: \"timeline-dwelltime\", \"timeline-closetime\")</p>\n");
+  cgi_printf("<p><strong>停留时间</strong> 定义了鼠标指针在图表对象上方静止多长时间后才会显示工具提示。<br>\n"
+         "<strong>关闭时间</strong> 定义了鼠标指针离开对象多长时间后工具提示会关闭。</p>\n"
+         "<p>将 <strong>停留时间</strong> 设置为 \"0\" 可禁用工具提示。<br>\n"
+         "将 <strong>关闭时间</strong> 设置为 \"0\" 可使工具提示保持可见，直到\n"
+         "鼠标在其他位置点击。<p>\n"
+         "<p>(属性: \"timeline-dwelltime\", \"timeline-closetime\")</p>\n");
 
   cgi_printf("<hr>\n");
-  onoff_attribute("Timestamp hyperlinks to /info",
+  onoff_attribute("时间戳超链接到 /info",
                   "timeline-tslink-info", "ttlti", 0, 0);
-  cgi_printf("<p>The hyperlink on the timestamp associated with each timeline entry,\n"
-         "on the far left-hand side of the screen, normally targets another\n"
-         "/timeline page that shows the entry in context.  However, if this\n"
-         "option is turned on, that hyperlink targets the /info page showing\n"
-         "the details of the entry.\n"
-         "<p>The /timeline link is the default since it is often useful to\n"
-         "see an entry in context, and because that link is not otherwise\n"
-         "accessible on the timeline.  The /info link is also accessible by\n"
-         "double-clicking the timeline node or by clicking on the hash that\n"
-         "follows \"check-in:\" in the supplemental information section on the\n"
-         "right of the entry.\n"
-         "<p>(Properties: \"timeline-tslink-info\")\n");
+  cgi_printf("<p>屏幕最左侧与每个时间线条目关联的时间戳上的超链接，通常指向另一个\n"
+         "/timeline 页面，该页面在上下文中显示该条目。但是，如果启用此选项，\n"
+         "该超链接将指向显示条目详细信息的 /info 页面。\n"
+         "<p>/timeline 链接是默认值，因为在上下文中查看条目通常很有用，\n"
+         "并且该链接在时间线上无法通过其他方式访问。/info 链接也可以通过\n"
+         "双击时间线节点或点击右侧补充信息部分中 \"check-in:\" 后面的哈希值来访问。\n"
+         "<p>(属性: \"timeline-tslink-info\")\n");
 
   cgi_printf("<hr>\n"
-         "<p><input type=\"submit\"  name=\"submit\" value=\"Apply Changes\"></p>\n"
+         "<p><input type=\"submit\"  name=\"submit\" value=\"应用更改\"></p>\n"
          "</div></form>\n");
   db_end_transaction(0);
   style_finish_page();
@@ -1133,7 +1079,7 @@ void setup_settings(void){
   }
 
   style_set_current_feature("setup");
-  style_header("Settings");
+  style_header("设置");
   if(!g.repositoryOpen){
     /* Provide read-only access to versioned settings,
        but only if no repo file was explicitly provided. */
@@ -1141,21 +1087,19 @@ void setup_settings(void){
   }
   db_begin_transaction();
   if( bIfChng ){
-    cgi_printf("<p>Only settings whose value is different from the default are shown.\n"
-           "Click the \"All\" button above to set all settings.\n");
+    cgi_printf("<p>仅显示值与默认值不同的设置。\n"
+           "点击上方的\"全部\"按钮可设置所有设置。\n");
   }
-  cgi_printf("<p>Settings marked with (v) are \"versionable\" and will be overridden\n"
-         "by the contents of managed files named\n"
-         "\"<tt>.fossil-settings/</tt><i>SETTING-NAME</i>\".\n"
-         "If the file for a versionable setting exists, the value cannot be\n"
-         "changed on this screen.</p><hr><p>\n"
+  cgi_printf("<p>标记为(v)的设置是\"可版本化\"的，会被命名为\n"
+         "\"<tt>.fossil-settings/</tt><i>SETTING-NAME</i>\"的托管文件内容覆盖。\n"
+         "如果可版本化设置的文件存在，则无法在此屏幕上更改其值。</p><hr><p>\n"
          "\n"
          "<form action=\"%R/setup_settings\" method=\"post\"><div>\n");
   if( bIfChng ){
-    style_submenu_element("All", "%R/setup_settings?all");
+    style_submenu_element("全部", "%R/setup_settings?all");
   }else{
     cgi_printf("<input type=\"hidden\" name=\"all\" value=\"1\">\n");
-    style_submenu_element("Changes-Only", "%R/setup_settings");
+    style_submenu_element("仅显示变更", "%R/setup_settings");
   }
   cgi_printf("<table border=\"0\"><tr><td valign=\"top\">\n");
   login_insert_csrf_secret();
@@ -1177,7 +1121,7 @@ void setup_settings(void){
       }
     }
   }
-  cgi_printf("<br><input type=\"submit\"  name=\"submit\" value=\"Apply Changes\">\n"
+  cgi_printf("<br><input type=\"submit\"  name=\"submit\" value=\"应用更改\">\n"
          "</td><td style=\"width:50px;\"></td><td valign=\"top\">\n"
          "<table>\n");
   for(i=0, pSet=aSetting; i<nSetting; i++, pSet++){
@@ -1292,135 +1236,122 @@ void setup_config(void){
   }
 
   style_set_current_feature("setup");
-  style_header("WWW Configuration");
+  style_header("WWW 配置");
   db_begin_transaction();
   cgi_printf("<form action=\"%R/setup_config\" method=\"post\"><div>\n");
   login_insert_csrf_secret();
-  cgi_printf("<input type=\"submit\"  name=\"submit\" value=\"Apply Changes\"></p>\n"
+  cgi_printf("<input type=\"submit\"  name=\"submit\" value=\"应用更改\"></p>\n"
          "<hr>\n");
-  entry_attribute("Project Name", 60, "project-name", "pn", "", 0);
-  cgi_printf("<p>A brief project name so visitors know what this site is about.\n"
-         "The project name will also be used as the RSS feed title.\n"
-         "(Property: \"project-name\")\n"
+  entry_attribute("项目名称", 60, "project-name", "pn", "", 0);
+  cgi_printf("<p>简短的项目名称，以便访问者了解本网站的内容。\n"
+         "项目名称也将用作RSS feed标题。\n"
+         "(属性: \"project-name\")\n"
          "</p>\n"
          "<hr>\n");
-  textarea_attribute("Project Description", 3, 80,
+  textarea_attribute("项目描述", 3, 80,
                      "project-description", "pd", "", 0);
-  cgi_printf("<p>Describe your project. This will be used in page headers for search\n"
-         "engines, the repository listing and a short RSS description.\n"
-         "(Property: \"project-description\")</p>\n"
+  cgi_printf("<p>描述您的项目。这将用于搜索引擎的页面标题、\n"
+         "仓库列表和简短的RSS描述。\n"
+         "(属性: \"project-description\")</p>\n"
          "<hr>\n");
-  entry_attribute("Canonical Server URL", 40, "email-url",
+  entry_attribute("规范服务器URL", 40, "email-url",
                    "eurl", "", 0);
-  cgi_printf("<p>This is the URL used to access this repository as a server.\n"
-         "Other repositories use this URL to clone or sync against this repository.\n"
-         "This is also the basename for hyperlinks included in email alert text.\n"
-         "Omit the trailing \"/\".\n"
-         "If this repo will not be set up as a persistent server and will not\n"
-         "be sending email alerts, then leave this entry blank.\n"
-         "Suggested value: \"%h\"\n"
-         "(Property: \"email-url\")</p>\n"
+  cgi_printf("<p>这是用于作为服务器访问此仓库的URL。\n"
+         "其他仓库使用此URL来克隆或与此仓库同步。\n"
+         "这也是电子邮件通知文本中包含的超链接的基础URL。\n"
+         "请省略尾部的\"/\"。\n"
+         "如果此仓库不会设置为持久服务器且不会发送电子邮件通知，\n"
+         "则将此条目留空。\n"
+         "建议值: \"%h\"\n"
+         "(属性: \"email-url\")</p>\n"
          "<hr>\n",(g.zBaseURL));
-  entry_attribute("Tarball and ZIP-archive Prefix", 20, "short-project-name",
+  entry_attribute("Tarball和ZIP归档前缀", 20, "short-project-name",
                   "spn", "", 0);
-  cgi_printf("<p>This is used as a prefix on the names of generated tarballs and\n"
-         "ZIP archive. For best results, keep this prefix brief and avoid special\n"
-         "characters such as \"/\" and \"\\\".\n"
-         "If no tarball prefix is specified, then the full Project Name above is used.\n"
-         "(Property: \"short-project-name\")\n"
+  cgi_printf("<p>这用作生成的tarball和ZIP归档名称的前缀。为获得最佳效果，\n"
+         "请保持此前缀简短，并避免使用特殊字符如\"/\"和\"\\\".\n"
+         "如果未指定tarball前缀，则使用上面的完整项目名称。\n"
+         "(属性: \"short-project-name\")\n"
          "</p>\n"
          "<hr>\n");
-  entry_attribute("Download Tag", 20, "download-tag", "dlt", "trunk", 0);
-  cgi_printf("<p>The <a href='%R/download'>/download</a> page is designed to provide\n"
-         "a convenient place for newbies\n"
-         "to download a ZIP archive or a tarball of the project.  By default,\n"
-         "the latest trunk check-in is downloaded.  Change this tag to something\n"
-         "else (ex: release) to alter the behavior of the /download page.\n"
-         "(Property: \"download-tag\")\n"
+  entry_attribute("下载标签", 20, "download-tag", "dlt", "trunk", 0);
+  cgi_printf("<p><a href='%R/download'>/download</a>页面旨在为新手提供方便的位置，\n"
+         "以下载项目的ZIP归档或tarball。默认情况下，\n"
+         "下载最新的trunk签入。将此标签更改为其他内容（例如：release）\n"
+         "可以更改/download页面的行为。\n"
+         "(属性: \"download-tag\")\n"
          "</p>\n"
          "<hr>\n");
-  entry_attribute("Index Page", 60, "index-page", "idxpg", "/home", 0);
-  cgi_printf("<p>Enter the pathname of the page to display when the \"Home\" menu\n"
-         "option is selected and when no pathname is\n"
-         "specified in the URL.  For example, if you visit the url:</p>\n"
+  entry_attribute("索引页", 60, "index-page", "idxpg", "/home", 0);
+  cgi_printf("<p>输入当选择\"主页\"菜单选项以及URL中未指定路径名时显示的页面路径名。\n"
+         "例如，如果您访问以下URL：</p>\n"
          "\n"
          "<blockquote><p>%h</p></blockquote>\n"
          "\n"
-         "<p>And you have specified an index page of \"/home\" the above will\n"
-         "automatically redirect to:</p>\n"
+         "<p>并且您已指定索引页为\"/home\"，上述URL将自动重定向到：</p>\n"
          "\n"
          "<blockquote><p>%h/home</p></blockquote>\n"
          "\n"
-         "<p>The default \"/home\" page displays a Wiki page with the same name\n"
-         "as the Project Name specified above.  Some sites prefer to redirect\n"
-         "to a documentation page (ex: \"/doc/trunk/index.wiki\") or to \"/timeline\".</p>\n"
+         "<p>默认的\"/home\"页面显示与上面指定的项目名称同名的Wiki页面。\n"
+         "一些站点更喜欢重定向到文档页面（例如：\"/doc/trunk/index.wiki\"）或\"/timeline\"。</p>\n"
          "\n"
-         "<p>Note:  To avoid a redirect loop or other problems, this entry must\n"
-         "begin with \"/\" and it must specify a valid page.  For example,\n"
-         "\"<b>/home</b>\" will work but \"<b>home</b>\" will not, since it omits the\n"
-         "leading \"/\".</p>\n"
-         "<p>(Property: \"index-page\")\n"
+         "<p>注意：为避免重定向循环或其他问题，此条目必须以\"/\"开头，\n"
+         "并且必须指定有效的页面。例如，\n"
+         "\"<b>/home</b>\"将起作用，但\"<b>home</b>\"不会，因为它省略了前导的\"/\"。</p>\n"
+         "<p>(属性: \"index-page\")\n"
          "<hr>\n"
-         "<p>The main menu for the web interface\n"
+         "<p>Web界面的主菜单\n"
          "<p>\n"
          "\n"
-         "<p>This setting should be a TCL list.  Each set of four consecutive\n"
-         "values defines a single main menu item:\n"
+         "<p>此设置应为TCL列表。每组连续的四个值定义一个主菜单项：\n"
          "<ol>\n"
-         "<li> The first term is text that appears on the menu.\n"
-         "<li> The second term is a hyperlink to take when a user clicks on the\n"
-         "     entry.  Hyperlinks that start with \"/\" are relative to the\n"
-         "     repository root.\n"
-         "<li> The third term is an argument to the TH1 \"capexpr\" command.\n"
-         "     If capexpr evaluates to true, then the entry is shown.  If not,\n"
-         "     the entry is omitted.  \"*\" is always true.  \"{}\" is never true.\n"
-         "<li> The fourth term is a list of extra class names to apply to the new\n"
-         "     menu entry.  Some skins use classes \"desktoponly\" and \"wideonly\"\n"
-         "     to only show the entries when the web browser screen is wide or\n"
-         "     very wide, respectively.\n"
+         "<li> 第一个项是显示在菜单上的文本。\n"
+         "<li> 第二个项是当用户点击该条目时要跳转到的超链接。\n"
+         "     以\"/\"开头的超链接相对于仓库根目录。\n"
+         "<li> 第三个项是TH1 \"capexpr\"命令的参数。\n"
+         "     如果capexpr求值为true，则显示该条目。否则，省略该条目。\n"
+         "     \"*\"始终为true。\"{}\"始终为false。\n"
+         "<li> 第四个项是应用于新菜单项的额外类名列表。\n"
+         "     一些皮肤使用类\"desktoponly\"和\"wideonly\"分别仅在Web浏览器屏幕较宽或\n"
+         "     非常宽时显示条目。\n"
          "</ol>\n"
          "\n"
-         "<p>Some custom skins might not use this property. Whether the property\n"
-         "is used or not a choice made by the skin designer. Some skins may add extra\n"
-         "choices (such as the hamburger button) to the menu that are not shown\n"
-         "on this list. (Property: mainmenu)\n"
+         "<p>一些自定义皮肤可能不使用此属性。是否使用此属性是由皮肤设计师做出的选择。\n"
+         "一些皮肤可能会向菜单中添加额外的选项（例如汉堡按钮），这些选项在此列表中未显示。\n"
+         "(属性: mainmenu)\n"
          "<p>\n",(g.zBaseURL),(g.zBaseURL));
   if(P("resetMenu")!=0){
     db_unset("mainmenu", 0);
     cgi_delete_parameter("mmenu");
   }
-  textarea_attribute("Main Menu", 12, 80,
+  textarea_attribute("主菜单", 12, 80,
       "mainmenu", "mmenu", style_default_mainmenu(), 0);
   cgi_printf("</p>\n"
          "<p><input type='checkbox' id='cbResetMenu' name='resetMenu' value='1'>\n"
-         "<label for='cbResetMenu'>Reset menu to default value</label>\n"
+         "<label for='cbResetMenu'>将菜单重置为默认值</label>\n"
          "</p>\n"
          "<hr>\n"
-         "<p>Extra links to appear on the <a href=\"%R/sitemap\">/sitemap</a> page,\n"
-         "as sub-items of the \"Home Page\" entry, appearing before the\n"
-         "\"Documentation Search\" entry (if any).  In skins that use the /sitemap\n"
-         "page to construct a hamburger menu dropdown, new entries added here\n"
-         "will appear on the hamburger menu.\n"
+         "<p>出现在<a href=\"%R/sitemap\">/sitemap</a>页面上的额外链接，\n"
+         "作为\"主页\"条目的子项，出现在\"文档搜索\"条目（如果有）之前。\n"
+         "在使用/sitemap页面构建汉堡菜单下拉菜单的皮肤中，\n"
+         "此处添加的新条目将出现在汉堡菜单上。\n"
          "\n"
-         "<p>This setting should be a TCL list divided into triples.  Each\n"
-         "triple defines a new entry:\n"
+         "<p>此设置应为分为三元组的TCL列表。每个三元组定义一个新条目：\n"
          "<ol>\n"
-         "<li> The first term is the display name of the /sitemap entry\n"
-         "<li> The second term is a hyperlink to take when a user clicks on the\n"
-         "     entry.  Hyperlinks that start with \"/\" are relative to the\n"
-         "     repository root.\n"
-         "<li> The third term is an argument to the TH1 \"capexpr\" command.\n"
-         "     If capexpr evaluates to true, then the entry is shown.  If not,\n"
-         "     the entry is omitted.  \"*\" is always true.\n"
+         "<li> 第一个项是/sitemap条目的显示名称\n"
+         "<li> 第二个项是当用户点击该条目时要跳转到的超链接。\n"
+         "     以\"/\"开头的超链接相对于仓库根目录。\n"
+         "<li> 第三个项是TH1 \"capexpr\"命令的参数。\n"
+         "     如果capexpr求值为true，则显示该条目。否则，省略该条目。\n"
+         "     \"*\"始终为true。\n"
          "</ol>\n"
          "\n"
-         "<p>The default value is blank, meaning no added entries.\n"
-         "(Property: sitemap-extra)\n"
+         "<p>默认值为空，意味着没有添加的条目。\n"
+         "(属性: sitemap-extra)\n"
          "<p>\n");
-  textarea_attribute("Custom Sitemap Entries", 8, 80,
+  textarea_attribute("自定义站点地图条目", 8, 80,
       "sitemap-extra", "smextra", "", 0);
   cgi_printf("<hr>\n"
-         "<p><input type=\"submit\"  name=\"submit\" value=\"Apply Changes\"></p>\n"
+         "<p><input type=\"submit\"  name=\"submit\" value=\"应用更改\"></p>\n"
          "</div></form>\n");
   db_end_transaction(0);
   style_finish_page();
@@ -1439,66 +1370,55 @@ void setup_wiki(void){
   }
 
   style_set_current_feature("setup");
-  style_header("Wiki Configuration");
+  style_header("Wiki 配置");
   db_begin_transaction();
   cgi_printf("<form action=\"%R/setup_wiki\" method=\"post\"><div>\n");
   login_insert_csrf_secret();
-  cgi_printf("<input type=\"submit\"  name=\"submit\" value=\"Apply Changes\"></p>\n"
+  cgi_printf("<input type=\"submit\"  name=\"submit\" value=\"应用更改\"></p>\n"
          "<hr>\n");
-  onoff_attribute("Associate Wiki Pages With Branches, Tags, Tickets, or Checkins",
+  onoff_attribute("将Wiki页面与分支、标签、工单或签入关联",
                   "wiki-about", "wiki-about", 1, 0);
   cgi_printf("<p>\n"
-         "Associate wiki pages with branches, tags, tickets, or checkins, based on\n"
-         "the wiki page name.  Wiki pages that begin with \"branch/\", \"checkin/\",\n"
-         "\"tag/\" or \"ticket\" and which continue with the name of an existing branch,\n"
-         "check-in, tag or ticket are treated specially when this feature is enabled.\n"
+         "根据Wiki页面名称将Wiki页面与分支、标签、工单或签入关联。当此功能启用时，以\"branch/\"、\"checkin/\"、\n"
+         "\"tag/\"或\"ticket\"开头并后跟现有分支、签入、标签或工单名称的Wiki页面将被特殊处理。\n"
          "<ul>\n"
-         "<li> <b>branch/</b><i>branch-name</i>\n"
-         "<li> <b>checkin/</b><i>full-check-in-hash</i>\n"
-         "<li> <b>tag/</b><i>tag-name</i>\n"
-         "<li> <b>ticket/</b><i>full-ticket-hash</i>\n"
+         "<li> <b>branch/</b><i>分支名称</i>\n"
+         "<li> <b>checkin/</b><i>完整签入哈希值</i>\n"
+         "<li> <b>tag/</b><i>标签名称</i>\n"
+         "<li> <b>ticket/</b><i>完整工单哈希值</i>\n"
          "</ul>\n"
-         "(Property: \"wiki-about\")</p>\n"
+         "(属性: \"wiki-about\")</p>\n"
          "<hr>\n");
-  entry_attribute("Allow Unsafe HTML In Markdown", 6,
+  entry_attribute("允许在Markdown中使用不安全HTML", 6,
                   "safe-html", "safe-html", "", 0);
-  cgi_printf("<p>Allow \"unsafe\" HTML (ex: &lt;script&gt;, &lt;form&gt;, etc) to be\n"
-         "generated by <a href=\"%R/md_rules\">Markdown-formatted</a> documents.\n"
-         "This setting is a string where each character indicates a \"type\" of\n"
-         "document in which to allow unsafe HTML:\n"
+  cgi_printf("<p>允许在<a href=\"%R/md_rules\">Markdown格式</a>文档中生成\"不安全\"HTML（例如：&lt;script&gt;、&lt;form&gt;等）。\n"
+         "此设置是一个字符串，其中每个字符表示允许使用不安全HTML的文档\"类型\"：\n"
          "<ul>\n"
-         "<li> <b>b</b> &rarr; checked-in files, embedded documentation\n"
-         "<li> <b>f</b> &rarr; forum posts\n"
-         "<li> <b>t</b> &rarr; tickets\n"
-         "<li> <b>w</b> &rarr; wiki pages\n"
+         "<li> <b>b</b> &rarr; 签入文件、嵌入式文档\n"
+         "<li> <b>f</b> &rarr; 论坛帖子\n"
+         "<li> <b>t</b> &rarr; 工单\n"
+         "<li> <b>w</b> &rarr; Wiki页面\n"
          "</ul>\n"
-         "Include letters for each type of document for which unsafe HTML should\n"
-         "be allowed.  For example, to allow unsafe HTML only for checked-in files,\n"
-         "make this setting be just \"<b>b</b>\".  To allow unsafe HTML anywhere except\n"
-         "in forum posts, make this setting be \"<b>btw</b>\".  The default is an\n"
-         "empty string which means that Fossil never allows Markdown documents\n"
-         "to generate unsafe HTML.\n"
-         "(Property: \"safe-html\")</p>\n"
+         "为每种应允许不安全HTML的文档类型包含相应字母。例如，仅允许在签入文件中使用不安全HTML，\n"
+         "请将此设置设为仅\"<b>b</b>\"。要允许在除论坛帖子外的任何地方使用不安全HTML，请将此设置设为\"<b>btw</b>\"。\n"
+         "默认值为空字符串，表示Fossil从不允许Markdown文档生成不安全HTML。\n"
+         "(属性: \"safe-html\")</p>\n"
          "<hr>\n"
-         "The current interwiki tag map is as follows:\n");
+         "当前的跨Wiki标签映射如下：\n");
   interwiki_append_map_table(cgi_output_blob());
-  cgi_printf("<p>Visit <a href=\"./intermap\">%R/intermap</a> for details or to\n"
-         "modify the interwiki tag map.\n"
+  cgi_printf("<p>访问 <a href=\"./intermap\">%R/intermap</a> 了解详情或修改跨Wiki标签映射。\n"
          "<hr>\n");
-  onoff_attribute("Use HTML as wiki markup language",
+  onoff_attribute("使用HTML作为Wiki标记语言",
     "wiki-use-html", "wiki-use-html", 0, 0);
-  cgi_printf("<p>Use HTML as the wiki markup language. Wiki links will still be parsed\n"
-         "but all other wiki formatting will be ignored.</p>\n"
-         "<p><strong>CAUTION:</strong> when\n"
-         "enabling, <i>all</i> HTML tags and attributes are accepted in the wiki.\n"
-         "No sanitization is done. This means that it is very possible for malicious\n"
-         "users to inject dangerous HTML, CSS and JavaScript code into your wiki.</p>\n"
-         "<p>This should <strong>only</strong> be enabled when wiki editing is limited\n"
-         "to trusted users. It should <strong>not</strong> be used on a publicly\n"
-         "editable wiki.</p>\n"
-         "(Property: \"wiki-use-html\")\n"
+  cgi_printf("<p>使用HTML作为Wiki标记语言。Wiki链接仍将被解析，\n"
+         "但所有其他Wiki格式将被忽略。</p>\n"
+         "<p><strong>警告：</strong>启用时，Wiki中将接受<i>所有</i>HTML标签和属性。\n"
+         "不会进行任何清理。这意味着恶意用户很可能向您的Wiki注入危险的HTML、CSS和JavaScript代码。</p>\n"
+         "<p>仅当Wiki编辑限于受信任用户时才应<strong>启用</strong>此功能。\n"
+         "不应在可公开编辑的Wiki上使用此功能。</p>\n"
+         "(属性: \"wiki-use-html\")\n"
          "<hr>\n"
-         "<p><input type=\"submit\"  name=\"submit\" value=\"Apply Changes\"></p>\n"
+         "<p><input type=\"submit\"  name=\"submit\" value=\"应用更改\"></p>\n"
          "</div></form>\n");
   db_end_transaction(0);
   style_finish_page();
@@ -1511,10 +1431,10 @@ void setup_wiki(void){
 */
 void setup_chat(void){
   static const char *const azAlerts[] = {
-    "alerts/plunk.wav",  "Plunk",
-    "alerts/bflat3.wav", "Tone-1",
-    "alerts/bflat2.wav", "Tone-2",
-    "alerts/bloop.wav",  "Bloop",
+    "alerts/plunk.wav",  "叮咚声",
+    "alerts/bflat3.wav", "提示音1",
+    "alerts/bflat2.wav", "提示音2",
+    "alerts/bloop.wav",  "嘟嘟声",
   };
 
   login_check_credentials();
@@ -1524,62 +1444,51 @@ void setup_chat(void){
   }
 
   style_set_current_feature("setup");
-  style_header("Chat Configuration");
+  style_header("聊天配置");
   db_begin_transaction();
   cgi_printf("<form action=\"%R/setup_chat\" method=\"post\"><div>\n");
   login_insert_csrf_secret();
-  cgi_printf("<input type=\"submit\"  name=\"submit\" value=\"Apply Changes\"></p>\n"
+  cgi_printf("<input type=\"submit\"  name=\"submit\" value=\"应用更改\"></p>\n"
          "<hr>\n");
-  entry_attribute("Initial Chat History Size", 10,
+  entry_attribute("初始聊天历史记录大小", 10,
                   "chat-initial-history", "chatih", "50", 0);
-  cgi_printf("<p>When /chat first starts up, it preloads up to this many historical\n"
-         "messages.\n"
-         "(Property: \"chat-initial-history\")</p>\n"
+  cgi_printf("<p>当/chat首次启动时，它会预加载最多此数量的历史消息。\n"
+         "(属性: \"chat-initial-history\")</p>\n"
          "<hr>\n");
-  entry_attribute("Minimum Number Of Historical Messages To Retain", 10,
+  entry_attribute("保留的历史消息最小数量", 10,
                   "chat-keep-count", "chatkc", "50", 0);
-  cgi_printf("<p>The chat subsystem purges older messages.  But it will always retain\n"
-         "the N most recent messages where N is the value of this setting.\n"
-         "(Property: \"chat-keep-count\")</p>\n"
+  cgi_printf("<p>聊天子系统会清理较旧的消息，但它将始终保留最近的N条消息，其中N是此设置的值。\n"
+         "(属性: \"chat-keep-count\")</p>\n"
          "<hr>\n");
-  entry_attribute("Maximum Message Age In Days", 10,
+  entry_attribute("消息最大保留天数", 10,
                   "chat-keep-days", "chatkd", "7", 0);
-  cgi_printf("<p>Chat message are removed after N days, where N is the value of\n"
-         "this setting.  N may be fractional.  So, for example, to only keep\n"
-         "an historical record of chat messages for 12 hours, set this value\n"
-         "to 0.5.\n"
-         "(Property: \"chat-keep-days\")</p>\n"
+  cgi_printf("<p>聊天消息在N天后被移除，其中N是此设置的值。N可以是小数。例如，若只想保留12小时的聊天历史记录，\n"
+         "请将此值设置为0.5。\n"
+         "(属性: \"chat-keep-days\")</p>\n"
          "<hr>\n");
-  entry_attribute("Chat Polling Timeout", 10,
+  entry_attribute("聊天轮询超时时间", 10,
                   "chat-poll-timeout", "chatpt", "420", 0);
-  cgi_printf("<p>New chat content is downloaded using the \"long poll\" technique.\n"
-         "HTTP requests are made to /chat-poll which blocks waiting on new\n"
-         "content to arrive.  But the /chat-poll cannot block forever.  It\n"
-         "eventual must give up and return an empty message set.  This setting\n"
-         "determines how long /chat-poll will wait before giving up.  The\n"
-         "default setting of approximately 7 minutes works well on many systems.\n"
-         "Shorter delays might be required on installations that use proxies\n"
-         "or web-servers with short timeouts.  For best efficiency, this value\n"
-         "should be larger rather than smaller.\n"
-         "(Property: \"chat-poll-timeout\")</p>\n"
+  cgi_printf("<p>新的聊天内容使用\"长轮询\"技术下载。系统向/chat-poll发送HTTP请求，该请求会阻塞等待新内容到达。\n"
+         "但/chat-poll不能永远阻塞，最终必须放弃并返回空消息集。此设置决定/chat-poll在放弃前等待的时间。\n"
+         "默认约7分钟的设置在许多系统上运行良好。使用代理或具有短超时的Web服务器的安装可能需要更短的延迟。\n"
+         "为获得最佳效率，此值应尽可能大。\n"
+         "(属性: \"chat-poll-timeout\")</p>\n"
          "<hr>\n");
-  entry_attribute("Chat Timeline Robot Username", 15,
+  entry_attribute("聊天时间线机器人用户名", 15,
                   "chat-timeline-user", "chatrobot", "", 0);
-  cgi_printf("<p>If this setting is not an empty string, then any changes that appear\n"
-         "on the timeline are announced in the chatroom under the username\n"
-         "supplied.  The username does not need to actually exist in the USER table.\n"
-         "Suggested username:  \"chat-robot\".\n"
-         "(Property: \"chat-timeline-user\")</p>\n"
+  cgi_printf("<p>如果此设置不为空字符串，则时间线上出现的任何更改都会在聊天室中以提供的用户名进行公告。\n"
+         "该用户名不需要实际存在于USER表中。\n"
+         "建议的用户名: \"chat-robot\"。\n"
+         "(属性: \"chat-timeline-user\")</p>\n"
          "<hr>\n");
 
-  multiple_choice_attribute("Alert sound",
+  multiple_choice_attribute("提示音",
      "chat-alert-sound", "snd", azAlerts[0],
      count(azAlerts)/2, azAlerts);
-  cgi_printf("<p>The sound used in the client-side chat to indicate that a new\n"
-         "chat message has arrived.\n"
-         "(Property: \"chat-alert-sound\")</p>\n"
+  cgi_printf("<p>客户端聊天中用于指示新聊天消息到达的声音。\n"
+         "(属性: \"chat-alert-sound\")</p>\n"
          "<hr/>\n"
-         "<p><input type=\"submit\"  name=\"submit\" value=\"Apply Changes\"></p>\n"
+         "<p><input type=\"submit\"  name=\"submit\" value=\"应用更改\"></p>\n"
          "</div></form>\n");
   db_end_transaction(0);
   cgi_printf("<script nonce=\"%h\">\n"
@@ -1608,35 +1517,33 @@ void setup_modreq(void){
   }
 
   style_set_current_feature("setup");
-  style_header("Moderator For Wiki And Tickets");
+  style_header("Wiki和工单审核设置");
   db_begin_transaction();
   cgi_printf("<form action=\"%R/setup_modreq\" method=\"post\"><div>\n");
   login_insert_csrf_secret();
   cgi_printf("<hr>\n");
-  onoff_attribute("Moderate ticket changes",
+  onoff_attribute("审核工单变更",
      "modreq-tkt", "modreq-tkt", 0, 0);
-  cgi_printf("<p>When enabled, any change to tickets is subject to the approval\n"
-         "by a ticket moderator - a user with the \"q\" or Mod-Tkt privilege.\n"
-         "Ticket changes enter the system and are shown locally, but are not\n"
-         "synced until they are approved.  The moderator has the option to\n"
-         "delete the change rather than approve it.  Ticket changes made by\n"
-         "a user who has the Mod-Tkt privilege are never subject to\n"
-         "moderation. (Property: \"modreq-tkt\")\n"
+  cgi_printf("<p>启用后，任何工单变更都需要工单审核员的批准\n"
+         "- 拥有\"q\"或Mod-Tkt权限的用户。\n"
+         "工单变更会进入系统并在本地显示，但在获得批准前不会同步。\n"
+         "审核员可以选择删除变更而不是批准它。\n"
+         "拥有Mod-Tkt权限的用户所做的工单变更永远不受审核限制。\n"
+         "(属性: \"modreq-tkt\")\n"
          "\n"
          "<hr>\n");
-  onoff_attribute("Moderate wiki changes",
+  onoff_attribute("审核Wiki变更",
      "modreq-wiki", "modreq-wiki", 0, 0);
-  cgi_printf("<p>When enabled, any change to wiki is subject to the approval\n"
-         "by a wiki moderator - a user with the \"l\" or Mod-Wiki privilege.\n"
-         "Wiki changes enter the system and are shown locally, but are not\n"
-         "synced until they are approved.  The moderator has the option to\n"
-         "delete the change rather than approve it.  Wiki changes made by\n"
-         "a user who has the Mod-Wiki privilege are never subject to\n"
-         "moderation. (Property: \"modreq-wiki\")\n"
+  cgi_printf("<p>启用后，任何Wiki变更都需要Wiki审核员的批准\n"
+         "- 拥有\"l\"或Mod-Wiki权限的用户。\n"
+         "Wiki变更会进入系统并在本地显示，但在获得批准前不会同步。\n"
+         "审核员可以选择删除变更而不是批准它。\n"
+         "拥有Mod-Wiki权限的用户所做的Wiki变更永远不受审核限制。\n"
+         "(属性: \"modreq-wiki\")\n"
          "</p>\n");
 
   cgi_printf("<hr>\n"
-         "<p><input type=\"submit\"  name=\"submit\" value=\"Apply Changes\"></p>\n"
+         "<p><input type=\"submit\"  name=\"submit\" value=\"应用更改\"></p>\n"
          "</div></form>\n");
   db_end_transaction(0);
   style_finish_page();
@@ -1666,37 +1573,36 @@ void setup_adunit(void){
   }
 
   style_set_current_feature("setup");
-  style_header("Edit Ad Unit");
+  style_header("编辑广告单元");
   cgi_printf("<form action=\"%R/setup_adunit\" method=\"post\"><div>\n");
   login_insert_csrf_secret();
-  cgi_printf("<b>Banner Ad-Unit:</b><br>\n");
+  cgi_printf("<b>横幅广告单元：</b><br>\n");
  textarea_attribute("", 6, 80, "adunit", "adunit", "", 0);
   cgi_printf("<br>\n"
-         "<b>Right-Column Ad-Unit:</b><br>\n");
+         "<b>右侧栏广告单元：</b><br>\n");
   textarea_attribute("", 6, 80, "adunit-right", "adright", "", 0);
   cgi_printf("<br>\n");
-  onoff_attribute("Omit ads to administrator",
+  onoff_attribute("向管理员隐藏广告",
      "adunit-omit-if-admin", "oia", 0, 0);
   cgi_printf("<br>\n");
-  onoff_attribute("Omit ads to logged-in users",
+  onoff_attribute("向已登录用户隐藏广告",
      "adunit-omit-if-user", "oiu", 0, 0);
   cgi_printf("<br>\n");
-  onoff_attribute("Temporarily disable all ads",
+  onoff_attribute("临时禁用所有广告",
      "adunit-disable", "oall", 0, 0);
   cgi_printf("<br>\n"
-         "<input type=\"submit\" name=\"submit\" value=\"Apply Changes\">\n"
-         "<input type=\"submit\" name=\"clear\" value=\"Delete Ad-Unit\">\n"
+         "<input type=\"submit\" name=\"submit\" value=\"应用更改\">\n"
+         "<input type=\"submit\" name=\"clear\" value=\"删除广告单元\">\n"
          "</div></form>\n"
          "<hr>\n"
-         "<b>Ad-Unit Notes:</b><ul>\n"
-         "<li>Leave both Ad-Units blank to disable all advertising.\n"
-         "<li>The \"Banner Ad-Unit\" is used for wide pages.\n"
-         "<li>The \"Right-Column Ad-Unit\" is used on pages with tall, narrow content.\n"
-         "<li>If the \"Right-Column Ad-Unit\" is blank, the \"Banner Ad-Unit\" is\n"
-         "    used on all pages.\n"
-         "<li>Properties: \"adunit\", \"adunit-right\", \"adunit-omit-if-admin\", and\n"
-         "    \"adunit-omit-if-user\".\n"
-         "<li>Suggested <a href=\"setup_skinedit?w=0\">CSS</a> changes:\n"
+         "<b>广告单元说明：</b><ul>\n"
+         "<li>将两个广告单元都留空可禁用所有广告。\n"
+         "<li>\"横幅广告单元\"用于宽页面。\n"
+         "<li>\"右侧栏广告单元\"用于内容高而窄的页面。\n"
+         "<li>如果\"右侧栏广告单元\"为空，则所有页面都使用\"横幅广告单元\"。\n"
+         "<li>属性：\"adunit\"、\"adunit-right\"、\"adunit-omit-if-admin\"和\n"
+         "    \"adunit-omit-if-user\"。\n"
+         "<li>建议的 <a href=\"setup_skinedit?w=0\">CSS</a> 更改：\n"
          "<blockquote><pre>\n"
          "div.adunit_banner {\n"
          "  margin: auto;\n"
@@ -1706,11 +1612,10 @@ void setup_adunit(void){
          "  float: right;\n"
          "}\n"
          "div.adunit_right_container {\n"
-         "  min-height: <i>height-of-right-column-ad-unit</i>;\n"
+         "  min-height: <i>右侧栏广告单元高度</i>;\n"
          "}\n"
          "</pre></blockquote>\n"
-         "<li>For a place-holder Ad-Unit for testing, Copy/Paste the following\n"
-         "with appropriate adjustments to \"width:\" and \"height:\".\n"
+         "<li>如需测试用的占位广告单元，请复制粘贴以下内容，并适当调整\"width:\"和\"height:\"。\n"
          "<blockquote><pre>\n"
          "&lt;div style='\n"
          "  margin: 0 auto;\n"
@@ -1718,7 +1623,7 @@ void setup_adunit(void){
          "  height: 90px;\n"
          "  border: 1px solid #f11;\n"
          "  background-color: #fcc;\n"
-         "'&gt;Demo Ad&lt;/div&gt;\n"
+         "'&gt;演示广告&lt;/div&gt;\n"
          "</pre></blockquote>\n"
          "</li>\n");
   style_finish_page();
@@ -2150,19 +2055,19 @@ void page_admin_log(){
     return;
   }
   style_set_current_feature("setup");
-  style_header("Admin Log");
-  style_submenu_element("Log-Menu", "setup-logmenu");
+  style_header("管理日志");
+  style_submenu_element("日志菜单", "setup-logmenu");
   create_admin_log_table();
   limit = atoi(PD("n","200"));
   ofst = atoi(PD("x","0"));
   fLogEnabled = db_get_boolean("admin-log", 1);
-  cgi_printf("<div>Admin logging is %s.\n"
-         "(Change this on the <a href=\"setup_settings\">settings</a> page.)</div>\n",(fLogEnabled?"on":"off"));
+  cgi_printf("<div>管理日志功能处于%s状态。\n"
+         "可在<a href=\"setup_settings\">设置</a>页面更改此设置。</div>\n",(fLogEnabled?"开启":"关闭"));
 
   if( ofst>0 ){
     int prevx = ofst - limit;
     if( prevx<0 ) prevx = 0;
-    cgi_printf("<p><a href=\"admin_log?n=%d&x=%d\">[Newer]</a></p>\n",(limit),(prevx));
+    cgi_printf("<p><a href=\"admin_log?n=%d&x=%d\">[较新]</a></p>\n",(limit),(prevx));
   }
   db_prepare(&stLog,
     "SELECT datetime(time,'unixepoch'), who, page, what "
@@ -2172,10 +2077,10 @@ void page_admin_log(){
   cgi_printf("<table class=\"sortable adminLogTable\" width=\"100%%\" "
          " data-column-types='Tttx' data-init-sort='1'>\n"
          "<thead>\n"
-         "<th>Time</th>\n"
-         "<th>User</th>\n"
-         "<th>Page</th>\n"
-         "<th width=\"60%%\">Message</th>\n"
+         "<th>时间</th>\n"
+         "<th>用户</th>\n"
+         "<th>页面</th>\n"
+         "<th width=\"60%%\">消息</th>\n"
          "</thead><tbody>\n");
   while( SQLITE_ROW == db_step(&stLog) ){
     const char *zTime = db_column_text(&stLog, 0);
@@ -2195,7 +2100,7 @@ void page_admin_log(){
   db_finalize(&stLog);
   cgi_printf("</tbody></table>\n");
   if( counter>ofst+limit ){
-    cgi_printf("<p><a href=\"admin_log?n=%d&x=%d\">[Older]</a></p>\n",(limit),(limit+ofst));
+    cgi_printf("<p><a href=\"admin_log?n=%d&x=%d\">[较旧]</a></p>\n",(limit),(limit+ofst));
   }
   style_finish_page();
 }
@@ -2207,12 +2112,12 @@ void page_admin_log(){
 */
 static void select_fts_tokenizer(void){
   const char *const aTokenizer[] = {
-  "off",     "None",
-  "porter",  "Porter Stemmer",
-  "unicode61", "Unicode without stemming",
-  "trigram", "Trigram",
+  "off",     "无",
+  "porter",  "Porter词干提取器",
+  "unicode61", "不使用词干提取的Unicode",
+  "trigram", "三元组",
   };
-  multiple_choice_attribute("FTS Tokenizer", "search-tokenizer",
+  multiple_choice_attribute("FTS分词器", "search-tokenizer",
                             "ftstok", "off", 4, aTokenizer);
 }
 
@@ -2228,51 +2133,47 @@ void page_srchsetup(){
     return;
   }
   style_set_current_feature("setup");
-  style_header("Search Configuration");
+  style_header("搜索配置");
   cgi_printf("<form action=\"%R/srchsetup\" method=\"post\"><div>\n");
   login_insert_csrf_secret();
   cgi_printf("<div style=\"text-align:center;font-weight:bold;\">\n"
-         "Server-specific settings that affect the\n"
-         "<a href=\"%R/search\">/search</a> webpage.\n"
+         "影响<a href=\"%R/search\">/search</a>网页的服务器特定设置。\n"
          "</div>\n"
          "<hr>\n");
-  textarea_attribute("Document Glob List", 3, 35, "doc-glob", "dg", "", 0);
-  cgi_printf("<p>The \"Document Glob List\" is a comma- or newline-separated list\n"
-         "of GLOB expressions that identify all documents within the source\n"
-         "tree that are to be searched when \"Document Search\" is enabled.\n"
-         "Some examples:\n"
+  textarea_attribute("文档全局列表", 3, 35, "doc-glob", "dg", "", 0);
+  cgi_printf("<p>\"文档全局列表\"是用逗号或换行符分隔的GLOB表达式列表，\n"
+         "用于标识当\"文档搜索\"启用时，源代码树中所有需要搜索的文档。\n"
+         "一些示例：\n"
          "<table border=0 cellpadding=2 align=center>\n"
          "<tr><td>*.wiki,*.html,*.md,*.txt<td style=\"width: 4x;\">\n"
-         "<td>Search all wiki, HTML, Markdown, and Text files</tr>\n"
+         "<td>搜索所有wiki、HTML、Markdown和文本文件</tr>\n"
          "<tr><td>doc/*.md,*/README.txt,README.txt<td>\n"
-         "<td>Search all Markdown files in the doc/ subfolder and all README.txt\n"
-         "files.</tr>\n"
-         "<tr><td>*<td><td>Search all checked-in files</tr>\n"
-         "<tr><td><i>(blank)</i><td>\n"
-         "<td>Search nothing. (Disables document search).</tr>\n"
+         "<td>搜索doc/子文件夹中的所有Markdown文件和所有README.txt\n"
+         "文件。</tr>\n"
+         "<tr><td>*<td><td>搜索所有已签入文件</tr>\n"
+         "<tr><td><i>(空白)</i><td>\n"
+         "<td>不搜索任何内容。（禁用文档搜索）</tr>\n"
          "</table>\n"
          "<hr>\n");
-  entry_attribute("Document Branches", 20, "doc-branch", "db", "trunk", 0);
-  cgi_printf("<p>When searching documents, use the versions of the files found at the\n"
-         "type of the \"Document Branches\" branch.  Recommended value: \"trunk\".\n"
-         "Document search is disabled if blank. It may be a list of branch names\n"
-         "separated by spaces and/or commas.\n"
+  entry_attribute("文档分支", 20, "doc-branch", "db", "trunk", 0);
+  cgi_printf("<p>搜索文档时，使用在\"文档分支\"分支类型中找到的文件版本。推荐值：\"trunk\"。\n"
+         "如果为空则禁用文档搜索。可以是用空格和/或逗号分隔的分支名称列表。\n"
          "<hr>\n");
-  onoff_attribute("Search Check-in Comments", "search-ci", "sc", 0, 0);
+  onoff_attribute("搜索签入注释", "search-ci", "sc", 0, 0);
   cgi_printf("<br>\n");
-  onoff_attribute("Search Documents", "search-doc", "sd", 0, 0);
+  onoff_attribute("搜索文档", "search-doc", "sd", 0, 0);
   cgi_printf("<br>\n");
-  onoff_attribute("Search Tickets", "search-tkt", "st", 0, 0);
+  onoff_attribute("搜索工单", "search-tkt", "st", 0, 0);
   cgi_printf("<br>\n");
-  onoff_attribute("Search Wiki", "search-wiki", "sw", 0, 0);
+  onoff_attribute("搜索Wiki", "search-wiki", "sw", 0, 0);
   cgi_printf("<br>\n");
-  onoff_attribute("Search Tech Notes", "search-technote", "se", 0, 0);
+  onoff_attribute("搜索技术笔记", "search-technote", "se", 0, 0);
   cgi_printf("<br>\n");
-  onoff_attribute("Search Forum", "search-forum", "sf", 0, 0);
+  onoff_attribute("搜索论坛", "search-forum", "sf", 0, 0);
   cgi_printf("<br>\n");
-  onoff_attribute("Search Built-in Help Text", "search-help", "sh", 0, 0);
+  onoff_attribute("搜索内置帮助文本", "search-help", "sh", 0, 0);
   cgi_printf("<hr>\n"
-         "<p><input type=\"submit\"  name=\"submit\" value=\"Apply Changes\"></p>\n"
+         "<p><input type=\"submit\"  name=\"submit\" value=\"应用更改\"></p>\n"
          "<hr>\n");
   if( P("fts0") ){
     search_drop_index();
@@ -2292,20 +2193,19 @@ void page_srchsetup(){
                                " AND name LIKE 'fts%%'")*pgsz;
     char zSize[30];
     approxSizeName(sizeof(zSize),zSize,nFts);
-    cgi_printf("<p>Currently using an SQLite FTS%d search index.\n"
-           "The index helps search run faster, especially on large repositories,\n"
-           "but takes up space.  The index is currently using about %s\n"
-           "or %.1f%% of the repository.</p>\n",(search_index_type(0)),(zSize),(100.0*(double)nFts/(double)nTotal));
+    cgi_printf("<p>当前使用SQLite FTS%d搜索索引。\n"
+           "该索引有助于加快搜索速度，特别是在大型代码仓库中，\n"
+           "但会占用空间。索引当前使用约%s的空间，\n"
+           "占代码仓库的%.1f%%。</p>\n",(search_index_type(0)),(zSize),(100.0*(double)nFts/(double)nTotal));
     select_fts_tokenizer();
-    cgi_printf("<p><input type=\"submit\" name=\"fts0\" value=\"Delete The Full-Text Index\">\n"
-           "<input type=\"submit\" name=\"fts1\" value=\"Rebuild The Full-Text Index\">\n");
-    style_submenu_element("FTS Index Debugging","%R/test-ftsdocs");
+    cgi_printf("<p><input type=\"submit\" name=\"fts0\" value=\"删除全文索引\">\n"
+           "<input type=\"submit\" name=\"fts1\" value=\"重建全文索引\">\n");
+    style_submenu_element("FTS索引调试","%R/test-ftsdocs");
   }else{
-    cgi_printf("<p>The SQLite search index is disabled.  All searching will be\n"
-           "a full-text scan.  This usually works fine, but can be slow for\n"
-           "larger repositories.</p>\n");
+    cgi_printf("<p>SQLite搜索索引已禁用。所有搜索都将进行全文扫描。\n"
+           "这通常可以正常工作，但对于大型代码仓库可能会很慢。</p>\n");
     select_fts_tokenizer();
-    cgi_printf("<p><input type=\"submit\" name=\"fts1\" value=\"Create A Full-Text Index\">\n");
+    cgi_printf("<p><input type=\"submit\" name=\"fts1\" value=\"创建全文索引\">\n");
   }
   cgi_printf("</div></form>\n");
   style_finish_page();
@@ -2368,7 +2268,8 @@ void page_waliassetup(){
     return;
   }
   style_set_current_feature("setup");
-  style_header("URL Alias Configuration");
+  style_header("URL别名配置");
+
   if( P("submit")!=0 && cgi_csrf_safe(2) ){
     Blob token;
     Blob sql;
@@ -2406,7 +2307,7 @@ void page_waliassetup(){
   cgi_printf("<form action=\"%R/waliassetup\" method=\"post\"><div>\n");
   login_insert_csrf_secret();
   cgi_printf("<table border=0 cellpadding=5>\n"
-         "<tr><th>Alias<th>URI That The Alias Maps Into\n");
+         "<tr><th>别名<th>别名映射到的URI\n");
   blob_init(&namelist, 0, 0);
   while( db_step(&q)==SQLITE_ROW ){
     const char *zName = db_column_text(&q, 0);
@@ -2423,48 +2324,31 @@ void page_waliassetup(){
   db_finalize(&q);
   cgi_printf("<tr><td>\n"
          "<input type='hidden' name='namelist' value='%h'>\n"
-         "<input type='submit' name='submit' value=\"Apply Changes\">\n"
+         "<input type='submit' name='submit' value=\"应用更改\">\n"
          "</td><td></td></tr>\n"
          "</table></form>\n"
          "<hr>\n"
-         "<p>When the first term of an incoming URL exactly matches one of\n"
-         "the \"Aliases\" on the left-hand side (LHS) above, the URL is\n"
-         "converted into the corresponding form on the right-hand side (RHS).\n"
+         "<p>当传入URL的第一个部分与上方左侧(LHS)的\"别名\"完全匹配时，URL将转换为右侧(RHS)的相应形式。\n"
          "<ul>\n"
          "<li><p>\n"
-         "The LHS is compared against only the first term of the incoming URL.\n"
-         "All LHS entries in the alias table should therefore begin with a\n"
-         "single \"/\" followed by a single path element.\n"
+         "左侧(LHS)仅与传入URL的第一个部分进行比较。因此，别名表中的所有左侧条目都应该以单个\"/\"开头，后跟单个路径元素。\n"
          "<li><p>\n"
-         "The RHS entries in the alias table should begin with a single \"/\"\n"
-         "followed by a path element, and optionally followed by \"?\" and a\n"
-         "list of query parameters.\n"
+         "别名表中的右侧(RHS)条目应该以单个\"/\"开头，后跟路径元素，可选地后跟\"?\"和查询参数列表。\n"
          "<li><p>\n"
-         "Query parameters on the RHS are added to the set of query parameters\n"
-         "in the incoming URL.\n"
+         "右侧(RHS)的查询参数会添加到传入URL的查询参数集中。\n"
          "<li><p>\n"
-         "If the same query parameter appears in both the incoming URL and\n"
-         "on the RHS of the alias, the RHS query parameter value overwrites\n"
-         "the value on the incoming URL.\n"
+         "如果相同的查询参数同时出现在传入URL和别名的右侧(RHS)，则右侧(RHS)的查询参数值会覆盖传入URL上的值。\n"
          "<li><p>\n"
-         "If a query parameter on the RHS of the alias is of the form \"X!\"\n"
-         "(a name followed by \"!\") then the X query parameter is removed\n"
-         "from the incoming URL if\n"
-         "it exists.\n"
+         "如果别名右侧(RHS)的查询参数形式为\"X!\"（名称后跟\"!\"），则如果存在X查询参数，它将从传入URL中移除。\n"
          "<li><p>\n"
-         "Only a single alias operation occurs.  It is not possible to nest aliases.\n"
-         "The RHS entries must be built-in webpage names.\n"
+         "只发生单个别名操作。不可能嵌套别名。右侧(RHS)条目必须是内置网页名称。\n"
          "<li><p>\n"
-         "The alias table is only checked if no built-in webpage matches\n"
-         "the incoming URL.\n"
-         "Hence, it is not possible to override a built-in webpage using aliases.\n"
-         "This is by design.\n"
+         "只有当没有内置网页与传入URL匹配时，才会检查别名表。\n"
+         "因此，无法使用别名覆盖内置网页。这是设计使然。\n"
          "</ul>\n"
          "\n"
-         "<p>To delete an entry from the alias table, change its name or value to an\n"
-         "empty string and press \"Apply Changes\".\n"
+         "<p>要从别名表中删除条目，请将其名称或值更改为空字符串，然后按\"应用更改\"。\n"
          "\n"
-         "<p>To add a new alias, fill in the name and value in the bottom row\n"
-         "of the table above and press \"Apply Changes\".\n",(blob_str(&namelist)));
+         "<p>要添加新别名，请在上面表格的最后一行填写名称和值，然后按\"应用更改\"。\n",(blob_str(&namelist)));
   style_finish_page();
 }

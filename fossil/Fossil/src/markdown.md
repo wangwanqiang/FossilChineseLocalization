@@ -1,214 +1,182 @@
-# Markdown Overview #
+# Markdown 概述 #
 
-## Paragraphs ##
+## 段落 ##
 
-> Paragraphs are divided by blank lines.  
-> End a line with two or more spaces to force a mid-paragraph line break.
+> 段落之间用空行分隔。
+> 行末添加两个或更多空格可以强制段落内换行。
 
-## Headings ##
+## 标题 ##
 
 >
-    # Top Level Heading                 Alternative Top Level Heading
-    # Top Level Heading Variant #       =============================
+    # 顶级标题                 替代顶级标题格式
+    # 顶级标题变体 #       =============================
 >
-    ## 2nd Level Heading                Alternative 2nd Level Heading
-    ## 2nd Level Heading Variant ##     -----------------------------
+    ## 二级标题                替代二级标题格式
+    ## 二级标题变体 ##     -----------------------------
 >
-    ### 3rd Level Heading               ### 3rd Level Heading Variant ###
-    #### 4th Level Heading              #### 4th Level Heading Variant ####
-    ##### 5th Level Heading             ##### 5th Level Heading Variant #####
-    ###### 6th Level Heading            ###### 6th Level Heading Variant ######
+    ### 三级标题               ### 三级标题变体 ###
+    #### 四级标题              #### 四级标题变体 ####
+    ##### 五级标题             ##### 五级标题变体 #####
+    ###### 六级标题            ###### 六级标题变体 ######
 
-## Links ##
+## 链接 ##
 
-> 1.  **\[display text\]\(URL\)**
-> 2.  **\[display text\]\(URL "Title"\)**
-> 3.  **\[display text\]\(URL 'Title'\)**
+> 1.  **\[显示文本\]\(URL\)**
+> 2.  **\[显示文本\]\(URL "标题"\)**
+> 3.  **\[显示文本\]\(URL '标题'\)**
 > 4.  **\<URL\>**
-> 5.  **\[display text\]\[label\]**
-> 6.  **\[display text\]\[\]**
-> 7.  **\[display text\]**
+> 5.  **\[显示文本\]\[标签\]**
+> 6.  **\[显示文本\]\[\]**
+> 7.  **\[显示文本\]**
 > 8.  **\[\]\(URL\)**
 
-> With link formats 5, 6, and 7 ("reference links"), the URL is supplied
-> elsewhere in the document, as shown below.  Link formats 6 and 7 reuse
-> the display text as the label.  Labels are case-insensitive.  The title
-> may be split onto the next line with optional indenting.
+> 对于链接格式 5、6 和 7（"引用链接"），URL 在文档的其他地方提供，如下所示。链接格式 6 和 7 重用显示文本作为标签。标签不区分大小写。标题可以分割到下一行，并可选择缩进。
 
-> * **\[label\]:&nbsp;URL**
-> * **\[label\]:&nbsp;URL&nbsp;"Title"**
-> * **\[label\]:&nbsp;URL&nbsp;'Title'**
-> * **\[label\]:&nbsp;URL&nbsp;(Title)**
+> * **\[标签\]:&nbsp;URL**
+> * **\[标签\]:&nbsp;URL&nbsp;"标题"**
+> * **\[标签\]:&nbsp;URL&nbsp;'标题'**
+> * **\[标签\]:&nbsp;URL&nbsp;(标题)**
 
-> If **URL** begins with "http:", "https:', "ftp:' or "mailto:",
-> it may optionally be written **\<URL\>** (format 4).
-> Other **URL** formats include:
+> 如果 **URL** 以 "http:"、"https:'、"ftp:' 或 "mailto:" 开头，它也可以选择写成 **\<URL\>**（格式 4）。
+> 其他 **URL** 格式包括：
 > <ul>
-> <li>  A relative pathname.
-> <li>  A pathname starting with "/" in which case the Fossil server
->       URL prefix is prepended
-> <li>  A wiki page name, or a wiki page name preceded by "wiki:"
-> <li>  An artifact or ticket hash or hash prefix
-> <li>  A date and time stamp: "YYYY-MM-DD HH:MM:SS" or a subset that
->       includes at least the day of the month.
-> <li>  An [interwiki link](#intermap) of the form "<i>Tag</i><b>:</b><i>PageName</i>"</ul>
+> <li> 相对路径名
+> <li> 以 "/" 开头的路径名，这种情况下会在前面加上 Fossil 服务器 URL 前缀
+> <li> wiki 页面名称，或前面带有 "wiki:" 的 wiki 页面名称
+> <li> 构件或工单哈希或哈希前缀
+> <li> 日期和时间戳："YYYY-MM-DD HH:MM:SS" 或包含至少月份中某一天的子集
+> <li> 形式为 "<i>标记</i><b>:</b><i>页面名</i>" 的 [interwiki 链接](#intermap)</ul>
 
-> In format 8, then the URL becomes the display text.  This is useful for
-> hyperlinks that refer to wiki pages and check-in and ticket hashes.
+> 在格式 8 中，URL 成为显示文本。这对于指向 wiki 页面、签入和工单哈希的超链接很有用。
 
-## Text Style ##
+## 文本样式 ##
 
-> *   _\*italic\*_
-> *   *\_italic\_*
-> *   __\*\*bold\*\*__
-> *   **\_\_bold\_\_**
-> *   ___\*\*\*italic+bold\*\*\*___
-> *   ***\_\_\_italic+bold\_\_\_***
-> *   \``code`\`
+> *   \_\*斜体\*\_
+> *   *\_斜体\_*
+> *   \_\_\*\*粗体\*\*\_\_
+> *   **\_\_粗体\_\_**
+> *   \_\_\_\*\*\*斜体+粗体\*\*\*\_\_\_
+> *   ***\_\_\_斜体+粗体\_\_\_***
+> *   \`\`\`code\`\`
 
-> The **\`code\`** construct disables HTML markup, so one can write, for
-> example, **\`\<html\>\`** to yield **`<html>`**.
+> **\`code\`** 构造禁用 HTML 标记，因此可以编写，例如，**\`\<html\>\`** 来生成 **`<html>`**。
 
-## Lists ##
+## 列表 ##
 
 > ~~~
-   *   bullet item
-   +   bullet item
-   -   bullet item
-   1.  numbered item
-   2)  numbered item
+   *   无序列表项
+   +   无序列表项
+   -   无序列表项
+   1.  有序列表项
+   2)  有序列表项
 ~~~
 
-> A two-level list is created by placing additional whitespace before the
-> **\***/**+**/**-**/**1.** of the secondary items.
+> 通过在次要项的 **\***\**+**\**-**\**1.** 前放置额外的空格来创建两级列表。
 
 > ~~~
-   *  top-level item
-      *  second-level item
+   *  顶层列表项
+      *  二级列表项
 ~~~
 
-## Block Quotes ##
+## 块引用 ##
 
-> Begin each line of a paragraph with **>** to block quote that paragraph.
+> 在段落的每一行开始处使用 **>** 来创建块引用。
 
 > >
-    > This paragraph is indented
+    > 这个段落被缩进了
 > >
-    > > Double-indented paragraph
+    > > 双重缩进的段落
 
-## Literal/Verbatim Text - Code Blocks ##
+## 文字/逐字文本 - 代码块 ##
 
-> For inline text, you can either use \``backticks`\` or the HTML
-> `<code>` tag.
+> 对于内联文本，可以使用 \`\`\`反引号\`\`\` 或 HTML `<code>` 标签。
 >
-> For blocks of text or code:
+> 对于文本或代码块：
 >
-> 1. Indent the text using a tab character or at least four spaces.
-> 2. Precede the block with an HTML `<pre>` tag and follow it with `</pre>`.
-> 3. Surround the block by <tt>\`\`\`</tt> (three or more) or <tt>\~\~\~</tt> either at the
-> left margin or indented no more than three spaces. The first word
-> on that same line (if any) is used in a “`language-WORD`” CSS style in
-> the HTML rendering of that code block and is intended for use by
-> code syntax highlighters. Thus <tt>\`\`\`c</tt> would mark a block of code
-> in the C programming language. Text to be rendered inside the code block
-> should therefore start on the next line, not be cuddled up with the
-> backticks or tildes.  See the "Diagrams" section below for the case where
-> "`language-WORD`" is "pikchr".
+> 1. 使用制表符或至少四个空格缩进文本
+> 2. 在块前放置 HTML `<pre>` 标签，并在后面跟随 `</pre>`
+> 3. 使用 <tt>\`\`\`</tt>（三个或更多）或 <tt>\~\~\~</tt> 包围块，要么在左边缘，要么缩进不超过三个空格。同一行上的第一个单词（如果有）在该代码块的 HTML 渲染中用于 "`language-WORD`" CSS 样式，旨在供代码语法高亮器使用。因此，<tt>\`\`\`c</tt> 会标记 C 编程语言的代码块。因此，要在代码块内呈现的文本应从下一行开始，而不是与反引号或波浪号靠在一起。有关 "`language-WORD`" 为 "pikchr" 的情况，请参见下面的"图表"部分。
 
-> With the standard skins, verbatim text is rendered in a fixed-width font,
-> but that is purely a presentation matter, controlled by the skin’s CSS.
+> 使用标准皮肤，逐字文本以等宽字体呈现，但这纯粹是一个呈现问题，由皮肤的 CSS 控制。
 
-
-## Tables ##
+## 表格 ##
 
 >
-    | Header 1     | Header 2    | Header 3      |
+    | 标题 1     | 标题 2    | 标题 3      |
     ----------------------------------------------
-    | Row 1 Col 1  | Row 1 Col 2 | Row 1 Col 3   |
-    |:Left-aligned |:Centered   :| Right-aligned:|
-    |              | ← Blank   → |               |
-    | Row 4 Col 1  | Row 4 Col 2 | Row 4 Col 3   |
+    | 行 1 列 1  | 行 1 列 2 | 行 1 列 3   |
+    |:左对齐      |:居中      :| 右对齐      :|
+    |            | ← 空白    → |             |
+    | 行 4 列 1  | 行 4 列 2 | 行 4 列 3   |
 
-> The first row is a header if followed by a horizontal rule or a blank line.
+> 如果第一行后面跟着水平线或空行，则第一行是标题。
 
-> Placing **:** at the left, both, or right sides of a cell gives left-aligned,
-> centered, or right-aligned text, respectively.  By default, both header and
-> body cells are left-aligned.
+> 在单元格的左侧、两侧或右侧放置 **:** 分别表示左对齐、居中或右对齐文本。默认情况下，标题和主体单元格都是左对齐的。
 
-> The leftmost or rightmost **\|** is required only if the first or last column,
-> respectively, contains at least one blank cell.
+> 最左侧或最右侧的 **|** 仅在第一列或最后一列（分别）包含至少一个空单元格时才需要。
 
-## Diagrams ##
+## 图表 ##
 
 >
 ~~~~~
 ~~~ pikchr
-oval "Start" fit; arrow; box "Hello, World!" fit; arrow; oval "Done" fit
+oval "开始" fit; arrow; box "你好，世界！" fit; arrow; oval "完成" fit
 ~~~
 ~~~~~
 
-> Formatted using [Pikchr](https://pikchr.org/home), resulting in:
+> 使用 [Pikchr](https://pikchr.org/home) 进行格式化，结果如下：
 
 >
 ~~~ pikchr
-oval "Start" fit; arrow; box "Hello, World!" fit; arrow; oval "Done" fit
+oval "开始" fit; arrow; box "你好，世界！" fit; arrow; oval "完成" fit
 ~~~
 
 <a id="ftnts"></a>
-## Footnotes ##
+## 脚注 ##
 
-> Footnotes (or "endnotes") is a Fossil extension of classical Markdown.
-> Fossil's syntax for footnotes is similar to links and
-> is distinguished by the use of character **^**
-> that *immediately* follows an opening bracket.
+> 脚注（或"尾注"）是 Fossil 对经典 Markdown 的扩展。
+> Fossil 的脚注语法类似于链接，
+> 通过使用紧跟在左括号后面的字符 **^** 来区分。
 
-> 1. **\(^** footnote's text **)**
-> 2. **\[** fragment of text **]\(^** a comment about that fragment **\)**
-> 3. **\[^**&nbsp;label&nbsp;**\]**
-> 4. **\[** fragment of text **\]\[^**&nbsp;label&nbsp;**\]**
-> 5. **\[** fragment of text **\]\[^\]**
+> 1. **\(^** 脚注文本 **)**
+> 2. **\[** 文本片段 **]\(^** 关于该片段的评论 **\)**
+> 3. **\[^**&nbsp;标签&nbsp;**\]**
+> 4. **\[** 文本片段 **]\[^**&nbsp;标签&nbsp;**\]**
+> 5. **\[** 文本片段 **]\[^\]**
 
-> With formats 1 and 2 ("inline footnotes") text of a footnote is provided
-> in the place where the corresponding numeric mark will be rendered.
-> With formats 3, 4, and 5 ("reference footnotes") text of a footnote
-> is supplied elsewhere in the document, as shown below.
-> Formats 2, 4 and 5 ("span-specific footnotes") mark a specific fragment
-> that is being commented in the footnote.
-> Format 5 reuses a fragment of text as a label.
-> Labels are case-insensitive.
+> 对于格式 1 和 2（"内联脚注"），脚注的文本在将呈现相应数字标记的位置提供。
+> 对于格式 3、4 和 5（"引用脚注"），脚注的文本在文档的其他地方提供，如下所示。
+> 格式 2、4 和 5（"特定跨度脚注"）标记脚注中评论的特定片段。
+> 格式 5 重用文本片段作为标签。
+> 标签不区分大小写。
 
 > ```
-> [^label]: Footnote definition must start on the first column.
->      The second line (if any) must be indented by two or more spaces.
->      Definition continues until indentation drops below that of the 2nd line.
+> [^标签]: 脚注定义必须从第一列开始。
+>      第二行（如果有）必须缩进两个或更多空格。
+>      定义持续到缩进低于第二行的缩进为止。
 >```
-> Character **^** is not part of a label, it is part of the syntax.
-> Both a footnote's text and a fragment to which a footnote applies
-> are subject to further interpretation as Markdown sources.
+> 字符 **^** 不是标签的一部分，它是语法的一部分。
+> 脚注文本和脚注应用的片段都将作为 Markdown 源进行进一步解释。
 
-## Miscellaneous ##
+## 其他功能 ##
 
-> *   In-line images are made using **\!\[alt-text\]\(image-URL\)**.
-> *   Use HTML for advanced formatting such as forms, noting that certain
->     tags are [disallowed in some contexts](/help?cmd=safe-html).
-> *   **\<!--** HTML-style comments **-->** are supported.
-> *   Escape special characters (ex: **\[** **\(** **\|** **\***)
->     using backslash (ex: **\\\[** **\\\(** **\\\|** **\\\***).
-> *   A line consisting of **---**, **\*\*\***, or **\_\_\_** is a horizontal
->     rule.  Spaces and extra **-**/**\***/**_** are allowed.
-> *   Paragraphs enclosed in **\<html\>...\</html\>** is passed through unchanged.
-> *   See [daringfireball.net][] for additional information.
-> *   See this page's [Markdown source](/md_rules?txt=1) for more examples.
+> *   内联图像使用 **\!\[替代文本\]\(图像-URL\)** 创建。
+> *   对于高级格式（如表单）使用 HTML，请注意某些
+>     标签在某些上下文中是[不允许的](/help?cmd=safe-html)。
+> *   支持 **\<!--** HTML 风格的注释 **-->**。
+> *   使用反斜杠转义特殊字符（例如：**\[** **\(** **\|** **\***）
+>     （例如：**\\\[** **\\\(** **\\\|** **\\\***）。
+> *   由 **---**、**\*\*\*** 或 **\_\_\_** 组成的行是水平线。允许空格和额外的 **-**\**\***\**_**。
+> *   包含在 **\<html\>...\</html\>** 中的段落将原样传递。
+> *   有关更多信息，请参阅 [daringfireball.net][]。
+> *   有关更多示例，请参阅此页面的 [Markdown 源](/md_rules?txt=1)。
 
-## Special Features For Fossil ##
+## Fossil 的特殊功能 ##
 
-> *  In hyperlinks, if the URL begins with **/** then the root of the Fossil
->    repository is prepended.  This allows for repository-relative hyperlinks.
-> *  For documents that begin with a top-level heading (ex: **# heading #**),
->    the heading is omitted from the body of the document and becomes the
->    document title displayed at the top of the Fossil page.
+> *  在超链接中，如果 URL 以 **/** 开头，则会在前面加上 Fossil 存储库的根目录。这允许使用相对于存储库的超链接。
+> *  对于以顶级标题开头的文档（例如：**# 标题 #**），标题将从文档主体中省略，并成为显示在 Fossil 页面顶部的文档标题。
 
 [daringfireball.net]: http://daringfireball.net/projects/markdown/syntax
 
 <a name="intermap"></a>
-## Interwiki Tag [Map](/intermap)
+## Interwiki 标记 [映射](/intermap)

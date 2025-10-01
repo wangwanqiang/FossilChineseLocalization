@@ -315,123 +315,112 @@ void setup_notification(void){
   alert_submenu_common();
   style_submenu_element("Send Announcement","%R/announce");
   style_set_current_feature("alerts");
-  style_header("Email Notification Setup");
+  style_header("电子邮件通知设置");
   @ <form action="%R/setup_notification" method="post"><div>
-  @ <h1>Status &ensp; <input type="submit"  name="submit" value="Refresh"></h1>
+  @ <h1>状态 &ensp; <input type="submit"  name="submit" value="刷新"></h1>
   @ </form>
   @ <table class="label-value">
   if( alert_enabled() ){
     stats_for_email();
   }else{
-    @ <th>Disabled</th>
+    @ <th>已禁用</th>
   }
   @ </table>
   @ <hr>
   @ <form action="%R/setup_notification" method="post"><div>
-  @ <h1> Configuration </h1>
-  @ <p><input type="submit"  name="submit" value="Apply Changes"></p>
+  @ <h1> 配置 </h1>
+  @ <p><input type="submit"  name="submit" value="应用更改"></p>
   @ <hr>
   login_insert_csrf_secret();
 
-  entry_attribute("Canonical Server URL", 40, "email-url",
+  entry_attribute("规范服务器URL", 40, "email-url",
                    "eurl", "", 0);
-  @ <p><b>Required.</b>
-  @ This URL is used as the basename for hyperlinks included in
-  @ email alert text.  Omit the trailing "/".
-  @ Suggested value: "%h(g.zBaseURL)"
-  @ (Property: "email-url")</p>
+  @ <p><b>必填项。</b>
+  @ 此URL用作电子邮件通知文本中包含的超链接的基础URL。请省略尾部的"/"。
+  @ 建议值: "%h(g.zBaseURL)"
+  @ (属性: "email-url")</p>
   @ <hr>
 
-  entry_attribute("Administrator email address", 40, "email-admin",
+  entry_attribute("管理员电子邮件地址", 40, "email-admin",
                    "eadmin", "", 0);
-  @ <p>This is the email for the human administrator for the system.
-  @ Abuse and trouble reports and password reset requests are send here.
-  @ (Property: "email-admin")</p>
+  @ <p>这是系统管理员的电子邮件地址。
+  @ 滥用和故障报告以及密码重置请求将发送到此处。
+  @ (属性: "email-admin")</p>
   @ <hr>
 
-  entry_attribute("\"Return-Path\" email address", 20, "email-self",
+  entry_attribute("\"Return-Path\"电子邮件地址", 20, "email-self",
                    "eself", "", 0);
-  @ <p><b>Required.</b>
-  @ This is the email to which email notification bounces should be sent.
-  @ In cases where the email notification does not align with a specific
-  @ Fossil login account (for example, digest messages), this is also
-  @ the "From:" address of the email notification.
-  @ The system administrator should arrange for emails sent to this address
-  @ to be handed off to the "fossil email incoming" command so that Fossil
-  @ can handle bounces. (Property: "email-self")</p>
+  @ <p><b>必填项。</b>
+  @ 这是接收电子邮件通知退信的地址。
+  @ 在电子邮件通知与特定Fossil登录账户不匹配的情况下（例如，摘要消息），
+  @ 这也是电子邮件通知的"From:"地址。
+  @ 系统管理员应安排将发送到此地址的电子邮件
+  @ 传递给"fossil email incoming"命令，以便Fossil可以处理退信。
+  @ (属性: "email-self")</p>
   @ <hr>
 
-  entry_attribute("List-ID", 40, "email-listid",
+  entry_attribute("列表ID", 40, "email-listid",
                    "elistid", "", 0);
   @ <p>
-  @ If this is not an empty string, then it becomes the argument to
-  @ a "List-ID:" header on all out-bound notification emails.
-  @ (Property: "email-listid")</p>
+  @ 如果此值不为空字符串，则它将成为所有出站通知电子邮件中"List-ID:"头的参数。
+  @ (属性: "email-listid")</p>
   @ <hr>
 
-  entry_attribute("Repository Nickname", 16, "email-subname",
+  entry_attribute("仓库昵称", 16, "email-subname",
                    "enn", "", 0);
-  @ <p><b>Required.</b>
-  @ This is short name used to identifies the repository in the
-  @ Subject: line of email alerts.  Traditionally this name is
-  @ included in square brackets.  Examples: "[fossil-src]", "[sqlite-src]".
-  @ (Property: "email-subname")</p>
+  @ <p><b>必填项。</b>
+  @ 这是用于在电子邮件通知的Subject:行中标识仓库的短名称。
+  @ 传统上，此名称包含在方括号中。例如："[fossil-src]"，"[sqlite-src]"。
+  @ (属性: "email-subname")</p>
   @ <hr>
 
-  entry_attribute("Subscription Renewal Interval In Days", 8,
+  entry_attribute("订阅续订间隔（天）", 8,
                   "email-renew-interval", "eri", "", 0);
   @ <p>
-  @ If this value is an integer N greater than or equal to 14, then email
-  @ notification subscriptions will be suspended N days after the last known
-  @ interaction with the user.  This prevents sending notifications
-  @ to abandoned accounts.  If a subscription comes within 7 days of expiring,
-  @ a separate email goes out with the daily digest that prompts the
-  @ subscriber to click on a link to the "/renew" webpage in order to
-  @ extend their subscription.  Subscriptions never expire if this setting
-  @ is less than 14 or is an empty string.
-  @ (Property: "email-renew-interval")</p>
+  @ 如果此值是大于或等于14的整数N，则电子邮件通知订阅
+  @ 将在用户最后一次已知交互后的N天后暂停。
+  @ 这可以防止向已废弃的账户发送通知。
+  @ 如果订阅在到期前7天内，每天摘要中会发送单独的电子邮件，
+  @ 提示订阅者点击到"/renew"网页的链接以延长其订阅。
+  @ 如果此设置小于14或是空字符串，则订阅永不过期。
+  @ (属性: "email-renew-interval")</p>
   @ <hr>
 
-  multiple_choice_attribute("Email Send Method", "email-send-method", "esm",
+  multiple_choice_attribute("电子邮件发送方法", "email-send-method", "esm",
        "off", count(azSendMethods)/2, azSendMethods);
-  @ <p>How to send email.  Requires auxiliary information from the fields
-  @ that follow.  Hint: Use the <a href="%R/announce">/announce</a> page
-  @ to send test message to debug this setting.
-  @ (Property: "email-send-method")</p>
+  @ <p>如何发送电子邮件。需要以下字段提供辅助信息。
+  @ 提示：使用<a href="%R/announce">/announce</a>页面发送测试消息来调试此设置。
+  @ (属性: "email-send-method")</p>
   alert_schema(1);
-  entry_attribute("SMTP Relay Host", 60, "email-send-relayhost",
+  entry_attribute("SMTP中继主机", 60, "email-send-relayhost",
                    "esrh", "localhost", 0);
-  @ <p>When the send method is "SMTP relay", each email message is
-  @ transmitted via the SMTP protocol (rfc5321) to a "Mail Submission
-  @ Agent" or "MSA" (rfc4409) at the hostname shown here.  Optionally
-  @ append a colon and TCP port number (ex: smtp.example.com:587).
-  @ The default TCP port number is 25.
-  @ Usage Hint:  If Fossil is running inside of a chroot jail, then it might
-  @ not be able to resolve hostnames.  Work around this by using a raw IP
-  @ address or create a "/etc/hosts" file inside the chroot jail.
-  @ (Property: "email-send-relayhost")</p>
+  @ <p>当发送方法为"SMTP中继"时，每条电子邮件消息通过SMTP协议（rfc5321）
+  @ 传输到此处以主机名标识的"邮件提交代理"或"MSA"（rfc4409）。
+  @ 可以选择附加冒号和TCP端口号（例如：smtp.example.com:587）。
+  @ 默认TCP端口号为25。
+  @ 使用提示：如果Fossil在chroot监狱内运行，则可能无法解析主机名。
+  @ 可以通过使用原始IP地址或在chroot监狱内创建"/etc/hosts"文件来解决此问题。
+  @ (属性: "email-send-relayhost")</p>
   @ 
-  entry_attribute("Store Emails In This Database", 60, "email-send-db",
+  entry_attribute("在此数据库中存储电子邮件", 60, "email-send-db",
                    "esdb", "", 0);
-  @ <p>When the send method is "store in a database", each email message is
-  @ stored in an SQLite database file with the name given here.
-  @ (Property: "email-send-db")</p>
-  entry_attribute("Pipe Email Text Into This Command", 60, "email-send-command",
+  @ <p>当发送方法为"存储在数据库中"时，每条电子邮件消息存储在此处指定名称的SQLite数据库文件中。
+  @ (属性: "email-send-db")</p>
+  entry_attribute("将电子邮件文本传送到此命令", 60, "email-send-command",
                    "ecmd", "sendmail -ti", 0);
-  @ <p>When the send method is "pipe to a command", this is the command
-  @ that is run.  Email messages are piped into the standard input of this
-  @ command.  The command is expected to extract the sender address,
-  @ recipient addresses, and subject from the header of the piped email
-  @ text.  (Property: "email-send-command")</p>
-  entry_attribute("Store Emails In This Directory", 60, "email-send-dir",
+  @ <p>当发送方法为"传送到命令"时，这是要运行的命令。
+  @ 电子邮件消息通过标准输入传递到此命令。
+  @ 该命令应该从传递的电子邮件文本的头部提取发件人地址、
+  @ 收件人地址和主题。
+  @ (属性: "email-send-command")</p>
+  entry_attribute("在此目录中存储电子邮件", 60, "email-send-dir",
                    "esdir", "", 0);
-  @ <p>When the send method is "store in a directory", each email message is
-  @ stored as a separate file in the directory shown here.
-  @ (Property: "email-send-dir")</p>
+  @ <p>当发送方法为"存储在目录中"时，每条电子邮件消息作为单独的文件存储在此处显示的目录中。
+  @ (属性: "email-send-dir")</p>
 
   @ <hr>
 
-  @ <p><input type="submit"  name="submit" value="Apply Changes"></p>
+  @ <p><input type="submit"  name="submit" value="应用更改"></p>
   @ </div></form>
   db_end_transaction(0);
   style_finish_page();

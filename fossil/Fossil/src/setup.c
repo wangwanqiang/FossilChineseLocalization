@@ -465,54 +465,46 @@ void setup_robots(void){
     return;
   }
   style_set_current_feature("setup");
-  style_header("Robot Defense Settings");
+  style_header("机器人防御设置");
   db_begin_transaction();
-  @ <p>A Fossil website can have billions of pages in its tree, even for a
-  @ modest project.  Many of those pages (examples: diffs and tarballs)
-  @ might be expensive to compute. A robot that tries to walk the entire
-  @ website can present a crippling CPU and bandwidth load.
+  @ <p>即使是一个适度的项目，Fossil网站的树结构中也可能有数以十亿计的页面。其中许多页面（例如：差异比较和压缩包）
+  @ 可能需要大量计算资源。尝试遍历整个网站的机器人可能会造成严重的CPU和带宽负载。
   @
-  @ <p>The settings on this page are intended to help site administrators
-  @ defend the site against robots.
+  @ <p>本页面的设置旨在帮助站点管理员保护站点免受机器人的影响。
   @
   @ <form action="%R/setup_robot" method="post"><div>
   login_insert_csrf_secret();
-  @ <input type="submit"  name="submit" value="Apply Changes"></p>
+  @ <input type="submit"  name="submit" value="应用更改"></p>
   @ <hr>
-  @ <p><b>Do not allow robots access to these pages.</b><br>
-  @ If the page name matches the GLOB pattern of this setting, and the
-  @ users is "nobody", and the client has not previously passed a captcha
-  @ test to show that it is not a robot, then the page is not displayed.
-  @ A captcha test is is rendered instead.
-  @ The recommended value for this setting is:
+  @ <p><b>不允许机器人访问这些页面。</b><br>
+  @ 如果页面名称与此设置的GLOB模式匹配，且用户是"nobody"，且客户端之前未通过验证码
+  @ 测试以证明它不是机器人，则不显示该页面。而是显示验证码测试。
+  @ 此设置的推荐值为：
   @ <p>
   @ &emsp;&emsp;&emsp;<tt>%h(robot_restrict_default())</tt>
   @ <p>
-  @ The "diff" tag covers all diffing pages such as /vdiff, /fdiff, and 
-  @ /vpatch.  The "annotate" tag covers /annotate and also /blame and
-  @ /praise.  The "zip" covers itself and also /tarball and /sqlar. If a
-  @ tag has an "X" character appended, then it only applies if query
-  @ parameters are such that the page is particularly difficult to compute.
-  @ In all other case, the tag should exactly match the page name.
+  @ "diff"标签涵盖所有差异比较页面，如/vdiff、/fdiff和
+  @ /vpatch。"annotate"标签涵盖/annotate以及/blame和
+  @ /praise。"zip"涵盖自身以及/tarball和/sqlar。如果一个
+  @ 标签后附加了"X"字符，则仅当查询参数使页面特别难以计算时才适用。
+  @ 在所有其他情况下，标签应与页面名称完全匹配。
   @
-  @ To disable robot restrictions, change this setting to "off".
-  @ (Property: robot-restrict)
+  @ 要禁用机器人限制，请将此设置更改为"off"。
+  @ (属性: robot-restrict)
   @ <br>
   textarea_attribute("", 2, 80,
       "robot-restrict", "rbrestrict", robot_restrict_default(), 0);
 
   @ <hr>
-  @ <p><b>Exceptions to anti-robot restrictions</b><br>
-  @ The entry below is a list of regular expressions, one per line.
-  @ If any of these regular expressions match the input URL, then the
-  @ request is exempt from anti-robot defenses.  Use this, for example,
-  @ to allow scripts to download release tarballs using a pattern
-  @ like:</p>
+  @ <p><b>反机器人限制的例外情况</b><br>
+  @ 下面的条目是一个正则表达式列表，每行一个。
+  @ 如果这些正则表达式中的任何一个与输入URL匹配，则该
+  @ 请求免受反机器人防御。例如，使用如下模式
+  @ 允许脚本下载发布压缩包：</p>
   @ <p>
   @ &emsp;&emsp;<tt>^/tarball\b.*\b(version-|release)\b</tt>
-  @ <p>The pattern should match against the REQUEST_URI with the
-  @ SCRIPT_NAME prefix removed, and with QUERY_STRING appended following
-  @ a "?" if QUERY_STRING exists.  (Property: robot-exception)<br>
+  @ <p>该模式应匹配已删除SCRIPT_NAME前缀的REQUEST_URI，并在QUERY_STRING存在时
+  @ 在其后附加"?"和QUERY_STRING。(属性: robot-exception)<br>
   textarea_attribute("", 3, 80,
       "robot-exception", "rbexcept", "", 0);
 
@@ -520,26 +512,23 @@ void setup_robots(void){
   addAutoHyperlinkSettings();
 
   @ <hr>
-  entry_attribute("Anonymous Login Validity", 11, "anon-cookie-lifespan",
+  entry_attribute("匿名登录有效期", 11, "anon-cookie-lifespan",
                   "anoncookls", "840", 0);
-  @ <p>The number of minutes for which an anonymous login cookie is valid.
-  @ Set to zero to disable anonymous login.
-  @ (property: anon-cookie-lifespan)
+  @ <p>匿名登录Cookie的有效分钟数。
+  @ 设置为零可禁用匿名登录。
+  @ (属性: anon-cookie-lifespan)
 
   @ <hr>
-  entry_attribute("Server Load Average Limit", 11, "max-loadavg", "mxldavg",
+  entry_attribute("服务器负载平均限制", 11, "max-loadavg", "mxldavg",
                   "0.0", 0);
-  @ <p>Some expensive operations (such as computing tarballs, zip archives,
-  @ or annotation/blame pages) are prohibited if the load average on the host
-  @ computer is too large.  Set the threshold for disallowing expensive
-  @ computations here.  Set this to 0.0 to disable the load average limit.
-  @ This limit is only enforced on Unix servers.  On Linux systems,
-  @ access to the /proc virtual filesystem is required, which means this limit
-  @ might not work inside a chroot() jail.
-  @ (Property: "max-loadavg")</p>
+  @ <p>如果主机计算机的负载平均值过大，则禁止某些昂贵的操作（如计算tarball、zip归档
+  @ 或注释/归咎页面）。在此设置禁止昂贵计算的阈值。设置为0.0可禁用负载平均限制。
+  @ 此限制仅在Unix服务器上强制执行。在Linux系统上，
+  @ 需要访问/proc虚拟文件系统，这意味着此限制可能在chroot()监狱内不起作用。
+  @ (属性: "max-loadavg")</p>
   @
   @ <hr>
-  @ <p><input type="submit"  name="submit" value="Apply Changes"></p>
+  @ <p><input type="submit"  name="submit" value="应用更改"></p>
   @ </div></form>
   db_end_transaction(0);
   style_finish_page();
@@ -552,9 +541,9 @@ void setup_robots(void){
 */
 void setup_access(void){
   static const char *const azRedirectOpts[] = {
-    "0", "Off",
-    "1", "Login Page Only",
-    "2", "All Pages"
+    "0", "关闭",
+    "1", "仅登录页面",
+    "2", "所有页面"
   };
   login_check_credentials();
   if( !g.perm.Setup ){
@@ -563,124 +552,103 @@ void setup_access(void){
   }
 
   style_set_current_feature("setup");
-  style_header("Access Control Settings");
+  style_header("访问控制设置");
   db_begin_transaction();
   @ <form action="%R/setup_access" method="post"><div>
   login_insert_csrf_secret();
-  @ <input type="submit"  name="submit" value="Apply Changes"></p>
+  @ <input type="submit"  name="submit" value="应用更改"></p>
   @ <hr>
-  multiple_choice_attribute("Redirect to HTTPS",
+  multiple_choice_attribute("重定向到HTTPS",
      "redirect-to-https", "redirhttps", "0",
      count(azRedirectOpts)/2, azRedirectOpts);
-  @ <p>Force the use of HTTPS by redirecting to HTTPS when an
-  @ unencrypted request is received.  This feature can be enabled
-  @ for the Login page only, or for all pages.
-  @ <p>Further details:  When enabled, this option causes the $secureurl TH1
-  @ variable is set to an "https:" variant of $baseurl.  Otherwise,
-  @ $secureurl is just an alias for $baseurl.
-  @ (Property: "redirect-to-https".  "0" for off, "1" for Login page only,
-  @ "2" otherwise.)
+  @ <p>当接收到未加密请求时，通过重定向到HTTPS强制使用HTTPS。此功能可以仅对登录页面启用，或对所有页面启用。
+  @ <p>进一步详情：启用此选项后，$secureurl TH1变量将被设置为$baseurl的"https:"变体。否则，
+  @ $secureurl仅作为$baseurl的别名。
+  @ (属性: "redirect-to-https"。"0"表示关闭，"1"表示仅登录页面，
+  @ "2"表示所有页面。)
   @ <hr>
-  onoff_attribute("Require password for local access",
+  onoff_attribute("本地访问需要密码",
      "localauth", "localauth", 0, 0);
-  @ <p>When enabled, the password sign-in is always required for
-  @ web access.  When disabled, unrestricted web access from 127.0.0.1
-  @ is allowed for the <a href="%R/help/ui">fossil ui</a> command or
-  @ from the <a href="%R/help/server">fossil server</a>,
-  @ <a href="%R/help/http">fossil http</a> commands when the
-  @ "--localauth" command line options is used, or from the
-  @ <a href="%R/help/cgi">fossil cgi</a> if a line containing
-  @ the word "localauth" appears in the CGI script.
-  @
-  @ <p>A password is always required if any one or more
-  @ of the following are true:
+  @ <p>启用后，Web访问始终需要密码登录。禁用时，当使用
+  @ <a href="%R/help/ui">fossil ui</a>命令，或使用
+  @ <a href="%R/help/server">fossil server</a>、
+  @ <a href="%R/help/http">fossil http</a>命令并添加"--localauth"命令行选项时，
+  @ 允许从127.0.0.1进行无限制的Web访问。如果CGI脚本中包含"localauth"关键字，
+  @ 也允许从<a href="%R/help/cgi">fossil cgi</a>进行无限制访问。
+  @ 
+  @ <p>在以下任一情况下，始终需要密码：
   @ <ol>
-  @ <li> This button is checked
-  @ <li> The inbound TCP/IP connection is not from 127.0.0.1
-  @ <li> The server is started using either of the
-  @ <a href="%R/help/server">fossil server</a> or
-  @ <a href="%R/help/server">fossil http</a> commands
-  @ without the "--localauth" option.
-  @ <li> The server is started from CGI without the "localauth" keyword
-  @ in the CGI script.
+  @ <li> 此按钮被勾选
+  @ <li> 入站TCP/IP连接并非来自127.0.0.1
+  @ <li> 服务器使用<a href="%R/help/server">fossil server</a>或
+  @ <a href="%R/help/server">fossil http</a>命令启动，
+  @ 但未使用"--localauth"选项。
+  @ <li> 服务器从CGI启动，但CGI脚本中没有"localauth"关键字。
   @ </ol>
-  @ (Property: "localauth")
+  @ (属性: "localauth")
   @
   @ <hr>
-  onoff_attribute("Enable /test-env",
+  onoff_attribute("启用 /test-env",
      "test_env_enable", "test_env_enable", 0, 0);
-  @ <p>When enabled, the %h(g.zBaseURL)/test_env URL is available to all
-  @ users.  When disabled (the default) only users Admin and Setup can visit
-  @ the /test_env page.
-  @ (Property: "test_env_enable")
+  @ <p>启用后，%h(g.zBaseURL)/test_env URL对所有用户可用。禁用时（默认），只有Admin和Setup用户可以访问
+  @ /test_env页面。
+  @ (属性: "test_env_enable")
   @ </p>
-  @
+  @ 
   @ <hr>
-  onoff_attribute("Enable /artifact_stats",
+  onoff_attribute("启用 /artifact_stats",
      "artifact_stats_enable", "artifact_stats_enable", 0, 0);
-  @ <p>When enabled, the %h(g.zBaseURL)/artifact_stats URL is available to all
-  @ users.  When disabled (the default) only users with check-in privilege may
-  @ access the /artifact_stats page.
-  @ (Property: "artifact_stats_enable")
+  @ <p>启用后，%h(g.zBaseURL)/artifact_stats URL对所有用户可用。禁用时（默认），只有具有签入权限的用户可以访问
+  @ /artifact_stats页面。
+  @ (属性: "artifact_stats_enable")
   @ </p>
   @
   @ <hr>
-  onoff_attribute("Allow REMOTE_USER authentication",
+  onoff_attribute("允许REMOTE_USER认证",
      "remote_user_ok", "remote_user_ok", 0, 0);
-  @ <p>When enabled, if the REMOTE_USER environment variable is set to the
-  @ login name of a valid user and no other login credentials are available,
-  @ then the REMOTE_USER is accepted as an authenticated user.
-  @ (Property: "remote_user_ok")
+  @ <p>启用后，如果REMOTE_USER环境变量设置为有效用户的登录名，且没有其他登录凭据可用，
+  @ 则REMOTE_USER将被视为已认证用户。
+  @ (属性: "remote_user_ok")
   @ </p>
-  @
+  @ 
   @ <hr>
-  onoff_attribute("Allow HTTP_AUTHENTICATION authentication",
+  onoff_attribute("允许HTTP_AUTHENTICATION认证",
      "http_authentication_ok", "http_authentication_ok", 0, 0);
-  @ <p>When enabled, allow the use of the HTTP_AUTHENTICATION environment
-  @ variable or the "Authentication:" HTTP header to find the username and
-  @ password. This is another way of supporting Basic Authentication.
-  @ (Property: "http_authentication_ok")
+  @ <p>启用后，允许使用HTTP_AUTHENTICATION环境变量或"Authentication:" HTTP头来查找用户名和
+  @ 密码。这是支持Basic Authentication的另一种方式。
+  @ (属性: "http_authentication_ok")
   @ </p>
   @
   @ <hr>
-  entry_attribute("Login expiration time", 6, "cookie-expire", "cex",
+  entry_attribute("登录过期时间", 6, "cookie-expire", "cex",
                   "8766", 0);
-  @ <p>The number of hours for which a login is valid.  This must be a
-  @ positive number.  The default is 8766 hours which is approximately equal
-  @ to a year.
-  @ (Property: "cookie-expire")</p>
+  @ <p>登录有效的小时数。必须是正数。默认值为8766小时，约等于一年。
+  @ (属性: "cookie-expire")</p>
 
   @ <hr>
-  entry_attribute("Download packet limit", 10, "max-download", "mxdwn",
+  entry_attribute("下载数据包限制", 10, "max-download", "mxdwn",
                   "5000000", 0);
-  @ <p>Fossil tries to limit out-bound sync, clone, and pull packets
-  @ to this many bytes, uncompressed.  If the client requires more data
-  @ than this, then the client will issue multiple HTTP requests.
-  @ Values below 1 million are not recommended.  5 million is a
-  @ reasonable number.  (Property: "max-download")</p>
+  @ <p>Fossil尝试将出站同步、克隆和拉取数据包限制为不压缩状态下的此字节数。如果客户端需要更多数据，
+  @ 则客户端将发出多个HTTP请求。不建议将值设置为低于100万。500万是一个合理的数值。
+  @ (属性: "max-download")</p>
 
   @ <hr>
-  entry_attribute("Download time limit", 11, "max-download-time", "mxdwnt",
+  entry_attribute("下载时间限制", 11, "max-download-time", "mxdwnt",
                   "30", 0);
 
-  @ <p>Fossil tries to spend less than this many seconds gathering
-  @ the out-bound data of sync, clone, and pull packets.
-  @ If the client request takes longer, a partial reply is given similar
-  @ to the download packet limit. 30s is a reasonable default.
-  @ (Property: "max-download-time")</p>
+  @ <p>Fossil尝试在收集同步、克隆和拉取数据包的出站数据时花费少于此秒数。
+  @ 如果客户端请求耗时更长，则会给出部分回复，类似于下载数据包限制。30秒是一个合理的默认值。
+  @ (属性: "max-download-time")</p>
 
   @ <a id="slal"></a>
   @ <hr>
-  entry_attribute("Server Load Average Limit", 11, "max-loadavg", "mxldavg",
+  entry_attribute("服务器负载平均限制", 11, "max-loadavg", "mxldavg",
                   "0.0", 0);
-  @ <p>Some expensive operations (such as computing tarballs, zip archives,
-  @ or annotation/blame pages) are prohibited if the load average on the host
-  @ computer is too large.  Set the threshold for disallowing expensive
-  @ computations here.  Set this to 0.0 to disable the load average limit.
-  @ This limit is only enforced on Unix servers.  On Linux systems,
-  @ access to the /proc virtual filesystem is required, which means this limit
-  @ might not work inside a chroot() jail.
-  @ (Property: "max-loadavg")</p>
+  @ <p>如果主机计算机的负载平均值过大，则禁止某些昂贵的操作（如计算tarball、zip归档
+  @ 或注释/归咎页面）。在此设置禁止昂贵计算的阈值。设置为0.0可禁用负载平均限制。
+  @ 此限制仅在Unix服务器上强制执行。在Linux系统上，
+  @ 需要访问/proc虚拟文件系统，这意味着此限制可能在chroot()监狱内不起作用。
+  @ (属性: "max-loadavg")</p>
 
   /* Add the auto-hyperlink settings controls.  These same controls
   ** are also accessible from the /setup_robot page.
@@ -689,103 +657,94 @@ void setup_access(void){
   addAutoHyperlinkSettings();
 
   @ <hr>
-  onoff_attribute("Require a CAPTCHA if not logged in",
+  onoff_attribute("未登录时需要验证码",
                   "require-captcha", "reqcapt", 1, 0);
-  @ <p>Require a CAPTCHA for edit operations (appending, creating, or
-  @ editing wiki or tickets or adding attachments to wiki or tickets)
-  @ for users who are not logged in. (Property: "require-captcha")</p>
+  @ <p>对于未登录用户的编辑操作（追加、创建或编辑wiki或工单，或向wiki或工单添加附件）需要验证码。
+  @ (属性: "require-captcha")</p>
 
   @ <hr>
-  entry_attribute("Public pages", 30, "public-pages",
+  entry_attribute("公开页面", 30, "public-pages",
                   "pubpage", "", 0);
-  @ <p>A comma-separated list of glob patterns for pages that are accessible
-  @ without needing a login and using the privileges given by the
-  @ "Default privileges" setting below.
+  @ <p>一组逗号分隔的glob模式，指定无需登录即可访问的页面，使用下方
+  @ "默认权限"设置提供的权限。
   @
-  @ <p>Example use case: Set this field to "/doc/trunk/www/*" and set
-  @ the "Default privileges" to include the "o" privilege
-  @ to give anonymous users read-only permission to the
-  @ latest version of the embedded documentation in the www/ folder without
-  @ allowing them to see the rest of the source code.
-  @ (Property: "public-pages")
+  @ <p>使用示例：将此字段设置为"/doc/trunk/www/*"，并将
+  @ "默认权限"设置为包含"o"权限，
+  @ 从而为匿名用户提供对www/文件夹中嵌入文档最新版本的只读权限，而不允许
+  @ 他们查看源代码的其余部分。
+  @ (属性: "public-pages")
   @ </p>
 
   @ <hr>
-  onoff_attribute("Allow users to register themselves",
+  onoff_attribute("允许用户自行注册",
                   "self-register", "selfreg", 0, 0);
-  @ <p>Allow users to register themselves on the /register webpage.
-  @ A self-registration creates a new entry in the USER table and
-  @ perhaps also in the SUBSCRIBER table if email notification is
-  @ enabled.
-  @ (Property: "self-register")</p>
+  @ <p>允许用户在/register网页上自行注册。
+  @ 自行注册会在USER表中创建一个新条目，
+  @ 如果启用了电子邮件通知，可能还会在SUBSCRIBER表中创建一个条目。
+  @ (属性: "self-register")</p>
 
   @ <hr>
-  onoff_attribute("Allow users to reset their own passwords",
+  onoff_attribute("允许用户重置自己的密码",
                   "self-pw-reset", "selfpw", 0, 0);
-  @ <p>Allow users to request that an email contains a hyperlink to a
-  @ password reset page be sent to their email address of record.  This
-  @ enables forgetful users to recover their forgotten passwords without
-  @ administrator intervention.
-  @ (Property: "self-pw-reset")</p>
+  @ <p>允许用户请求发送包含指向密码重置页面的超链接的电子邮件到他们的记录邮箱地址。
+  @ 这使健忘的用户能够在无需管理员干预的情况下恢复忘记的密码。
+  @ (属性: "self-pw-reset")</p>
 
   @ <hr>
-  onoff_attribute("Email verification required for self-registration",
+  onoff_attribute("自行注册需要电子邮件验证",
                   "selfreg-verify", "sfverify", 0, 0);
-  @ <p>If enabled, self-registration creates a new entry in the USER table
-  @ with only capabilities "7".  The default user capabilities are not
-  @ added until the email address associated with the self-registration
-  @ has been verified. This setting only makes sense if
-  @ email notifications are enabled.
-  @ (Property: "selfreg-verify")</p>
+  @ <p>如果启用，自行注册会在USER表中创建一个新条目，
+  @ 仅具有"7"权限。默认用户权限不会被添加，直到与自行注册相关联的
+  @ 电子邮件地址已被验证。此设置仅在
+  @ 启用电子邮件通知时才有意义。
+  @ (属性: "selfreg-verify")</p>
 
   @ <hr>
-  onoff_attribute("Allow anonymous subscriptions",
+  onoff_attribute("允许匿名订阅",
                   "anon-subscribe", "anonsub", 1, 0);
-  @ <p>If disabled, email notification subscriptions are only allowed
-  @ for users with a login.  If Nobody or Anonymous visit the /subscribe
-  @ page, they are redirected to /register or /login.
-  @ (Property: "anon-subscribe")</p>
+  @ <p>如果禁用，电子邮件通知订阅仅允许
+  @ 具有登录账户的用户使用。如果匿名用户访问/subscribe
+  @ 页面，他们将被重定向到/register或/login。
+  @ (属性: "anon-subscribe")</p>
 
   @ <hr>
-  entry_attribute("Authorized subscription email addresses", 35,
+  entry_attribute("授权的订阅电子邮件地址", 35,
                   "auth-sub-email", "asemail", "", 0);
-  @ <p>This is a comma-separated list of GLOB patterns that specify
-  @ email addresses that are authorized to subscriptions.  If blank
-  @ (the usual case), then any email address can be used to self-register.
-  @ This setting is used to limit subscriptions to members of a particular
-  @ organization or group based on their email address.
-  @ (Property: "auth-sub-email")</p>
+  @ <p>这是一个逗号分隔的GLOB模式列表，指定
+  @ 有权订阅的电子邮件地址。如果为空
+  @（通常情况），则任何电子邮件地址都可用于自行注册。
+  @ 此设置用于基于电子邮件地址将订阅限制为特定
+  @ 组织或团体的成员。
+  @ (属性: "auth-sub-email")</p>
 
   @ <hr>
-  entry_attribute("Default privileges", 10, "default-perms",
+  entry_attribute("默认权限", 10, "default-perms",
                   "defaultperms", "u", 0);
-  @ <p>Permissions given to users that... <ul><li>register themselves using
-  @ the self-registration procedure (if enabled), or <li>access "public"
-  @ pages identified by the public-pages glob pattern above, or <li>
-  @ are users newly created by the administrator.</ul>
-  @ <p>Recommended value: "u" for Reader.
-  @ <a href="%R/setup_ucap_list">Capability Key</a>.
-  @ (Property: "default-perms")
+  @ <p>授予以下用户的权限：<ul><li>使用自行注册程序注册的用户（如果启用），或<li>访问由上述public-pages glob模式标识的"公开"
+  @ 页面的用户，或<li>
+  @ 由管理员新创建的用户。</ul>
+  @ <p>推荐值："u"表示只读权限。
+  @ <a href="%R/setup_ucap_list">权限密钥</a>。
+  @ (属性: "default-perms")
   @ </p>
 
   @ <hr>
-  onoff_attribute("Show javascript button to fill in CAPTCHA",
+  onoff_attribute("显示自动填写验证码的JavaScript按钮",
                   "auto-captcha", "autocaptcha", 0, 0);
-  @ <p>When enabled, a button appears on the login screen for user
-  @ "anonymous" that will automatically fill in the CAPTCHA password.
-  @ This is less secure than forcing the user to do it manually, but is
-  @ probably secure enough and it is certainly more convenient for
-  @ anonymous users.  (Property: "auto-captcha")</p>
+  @ <p>启用后，匿名用户的登录屏幕上会出现一个按钮，可自动填写验证码密码。
+  @ 这比强制用户手动填写安全性较低，但可能足够安全，并且对
+  @ 匿名用户来说肯定更方便。
+  @ (属性: "auto-captcha")</p>
 
   @ <hr>
-  entry_attribute("Anonymous Login Validity", 11, "anon-cookie-lifespan",
+  entry_attribute("匿名登录有效期", 11, "anon-cookie-lifespan",
                   "anoncookls", "840", 0);
-  @ <p>The number of minutes for which an anonymous login cookie is valid.
-  @ Set to zero to disable anonymous logins.
-  @ (property: anon-cookie-lifespan)
+  @ <p>匿名登录Cookie有效的分钟数。
+  @ 设置为零可禁用匿名登录。
+  @ (属性: anon-cookie-lifespan)
 
   @ <hr>
-  @ <p><input type="submit"  name="submit" value="Apply Changes"></p>
+  @ <p><input type="submit"  name="submit" value="应用更改"></p>
   @ </div></form>
   db_end_transaction(0);
   style_finish_page();
@@ -972,11 +931,11 @@ void setup_timeline(void){
   double tmDiff;
   char zTmDiff[20];
   static const char *const azTimeFormats[] = {
-      "0", "HH:MM",
-      "1", "HH:MM:SS",
-      "2", "YYYY-MM-DD HH:MM",
-      "3", "YYMMDD HH:MM",
-      "4", "(off)"
+      "0", "时:分",
+      "1", "时:分:秒",
+      "2", "年-月-日 时:分",
+      "3", "年月日 时:分",
+      "4", "(关闭)"
   };
   login_check_credentials();
   if( !g.perm.Admin ){
@@ -985,128 +944,115 @@ void setup_timeline(void){
   }
 
   style_set_current_feature("setup");
-  style_header("Timeline Display Preferences");
+  style_header("时间线显示偏好");
   db_begin_transaction();
   @ <form action="%R/setup_timeline" method="post"><div>
   login_insert_csrf_secret();
-  @ <p><input type="submit"  name="submit" value="Apply Changes"></p>
+  @ <p><input type="submit"  name="submit" value="应用更改"></p>
 
   @ <hr>
-  onoff_attribute("Plaintext comments on timelines",
+  onoff_attribute("时间线上的纯文本评论",
                   "timeline-plaintext", "tpt", 0, 0);
-  @ <p>In timeline displays, check-in comments are displayed literally,
-  @ without any wiki or HTML interpretation.  Use CSS to change
-  @ display formatting features such as fonts and line-wrapping behavior.
-  @ (Property: "timeline-plaintext")</p>
+  @ <p>在时间线显示中，签入评论将按字面显示，
+  @ 不进行任何 wiki 或 HTML 解释。使用 CSS 更改
+  @ 显示格式特性，如字体和换行行为。
+  @ (属性: "timeline-plaintext")</p>
 
   @ <hr>
-  onoff_attribute("Truncate comment at first blank line (Git-style)",
+  onoff_attribute("在第一个空行截断评论 (Git风格)",
                   "timeline-truncate-at-blank", "ttb", 0, 0);
-  @ <p>In timeline displays, check-in comments are displayed only through
-  @ the first blank line.  This is the traditional way to display comments
-  @ in Git repositories (Property: "timeline-truncate-at-blank")</p>
+  @ <p>在时间线显示中，签入评论仅显示到
+  @ 第一个空行。这是在 Git 仓库中显示评论的传统方式
+  @ (属性: "timeline-truncate-at-blank")</p>
 
   @ <hr>
-  onoff_attribute("Break comments at newline characters",
+  onoff_attribute("在换行符处断开评论",
                   "timeline-hard-newlines", "thnl", 0, 0);
-  @ <p>In timeline displays, newline characters in check-in comments force
-  @ a line break on the display.
-  @ (Property: "timeline-hard-newlines")</p>
+  @ <p>在时间线显示中，签入评论中的换行符强制
+  @ 显示时换行。
+  @ (属性: "timeline-hard-newlines")</p>
 
   @ <hr>
-  onoff_attribute("Do not adjust user-selected background colors",
+  onoff_attribute("不调整用户选择的背景颜色",
                   "raw-bgcolor", "rbgc", 0, 0);
-  @ <p>Fossil normally attempts to adjust the saturation and intensity of
-  @ user-specified background colors on check-ins and branches so that the
-  @ foreground text is easily readable on all skins.  Enable this setting
-  @ to omit that adjustment and use exactly the background color specified
-  @ by users.
-  @ (Property: "raw-bgcolor")</p>
+  @ <p>Fossil 通常会尝试调整签入和分支上用户指定的背景颜色的饱和度和强度，以便
+  @ 前景文本在所有皮肤中都易于阅读。启用此设置
+  @ 可省略该调整，并完全使用用户指定的背景颜色。
+  @ (属性: "raw-bgcolor")</p>
 
   @ <hr>
-  onoff_attribute("Use Universal Coordinated Time (UTC)",
+  onoff_attribute("使用协调世界时 (UTC)",
                   "timeline-utc", "utc", 1, 0);
-  @ <p>Show times as UTC (also sometimes called Greenwich Mean Time (GMT) or
-  @ Zulu) instead of in local time.  On this server, local time is currently
+  @ <p>显示 UTC 时间（有时也称为格林威治标准时间 (GMT) 或
+  @ 祖鲁时间）而不是本地时间。在此服务器上，本地时间当前
   tmDiff = db_double(0.0, "SELECT julianday('now')");
   tmDiff = db_double(0.0,
         "SELECT (julianday(%.17g,'localtime')-julianday(%.17g))*24.0",
         tmDiff, tmDiff);
   sqlite3_snprintf(sizeof(zTmDiff), zTmDiff, "%.1f", tmDiff);
   if( strcmp(zTmDiff, "0.0")==0 ){
-    @ the same as UTC and so this setting will make no difference in
-    @ the display.</p>
+    @ 与 UTC 相同，因此此设置在显示中不会有任何区别。</p>
   }else if( tmDiff<0.0 ){
     sqlite3_snprintf(sizeof(zTmDiff), zTmDiff, "%.1f", -tmDiff);
-    @ %s(zTmDiff) hours behind UTC.</p>
+    @ 比 UTC 晚 %s(zTmDiff) 小时。</p>
   }else{
-    @ %s(zTmDiff) hours ahead of UTC.</p>
+    @ 比 UTC 早 %s(zTmDiff) 小时。</p>
   }
-  @ <p>(Property: "timeline-utc")
+  @ <p>(属性: "timeline-utc")
 
   @ <hr>
-  multiple_choice_attribute("Style", "timeline-default-style",
+  multiple_choice_attribute("样式", "timeline-default-style",
             "tdss", "0", N_TIMELINE_VIEW_STYLE, timeline_view_styles);
-  @ <p>The default timeline viewing style, for when the user has not
-  @ specified an alternative.  (Property: "timeline-default-style")</p>
+  @ <p>默认时间线查看样式，适用于用户未指定替代样式的情况。
+  @ (属性: "timeline-default-style")</p>
 
   @ <hr>
-  entry_attribute("Default Number Of Rows", 6, "timeline-default-length",
+  entry_attribute("默认行数", 6, "timeline-default-length",
                   "tldl", "50", 0);
-  @ <p>The maximum number of rows to show on a timeline in the absence
-  @ of a user display preference cookie setting or an explicit n= query
-  @ parameter.  (Property: "timeline-default-length")</p>
+  @ <p>在没有用户显示偏好 cookie 设置或显式 n= 查询参数的情况下，时间线上显示的最大行数。
+  @ (属性: "timeline-default-length")</p>
 
   @ <hr>
-  multiple_choice_attribute("Per-Item Time Format", "timeline-date-format",
+  multiple_choice_attribute("每项时间格式", "timeline-date-format",
             "tdf", "0", count(azTimeFormats)/2, azTimeFormats);
-  @ <p>If the "HH:MM" or "HH:MM:SS" format is selected, then the date is shown
-  @ in a separate box (using CSS class "timelineDate") whenever the date
-  @ changes.  With the "YYYY-MM-DD&nbsp;HH:MM" and "YYMMDD ..." formats,
-  @ the complete date and time is shown on every timeline entry using the
-  @ CSS class "timelineTime". (Property: "timeline-date-format")</p>
+  @ <p>如果选择了 "HH:MM" 或 "HH:MM:SS" 格式，那么每当日期更改时，日期将显示在单独的框中
+  @（使用 CSS 类 "timelineDate"）。使用 "YYYY-MM-DD&nbsp;HH:MM" 和 "YYMMDD ..." 格式时，
+  @ 每个时间线条目都使用 CSS 类 "timelineTime" 显示完整的日期和时间。
+  @ (属性: "timeline-date-format")</p>
 
   @ <hr>
-  entry_attribute("Max timeline comment length", 6,
+  entry_attribute("最大时间线评论长度", 6,
                   "timeline-max-comment", "tmc", "0", 0);
-  @ <p>The maximum length of a comment to be displayed in a timeline.
-  @ "0" there is no length limit.
-  @ (Property: "timeline-max-comment")</p>
+  @ <p>在时间线中显示的评论的最大长度。
+  @ "0" 表示没有长度限制。
+  @ (属性: "timeline-max-comment")</p>
 
   @ <hr>
-  entry_attribute("Tooltip dwell time (milliseconds)", 6,
+  entry_attribute("工具提示停留时间 (毫秒)", 6,
                   "timeline-dwelltime", "tdt", "100", 0);
   @ <br>
-  entry_attribute("Tooltip close time (milliseconds)", 6,
+  entry_attribute("工具提示关闭时间 (毫秒)", 6,
                   "timeline-closetime", "tct", "250", 0);
-  @ <p>The <strong>dwell time</strong> defines how long the mouse pointer
-  @ should be stationary above an object of the graph before a tooltip
-  @ appears.<br>
-  @ The <strong>close time</strong> defines how long the mouse pointer
-  @ can be away from an object before a tooltip is closed.</p>
-  @ <p>Set <strong>dwell time</strong> to "0" to disable tooltips.<br>
-  @ Set <strong>close time</strong> to "0" to keep tooltips visible until
-  @ the mouse is clicked elsewhere.<p>
-  @ <p>(Properties: "timeline-dwelltime", "timeline-closetime")</p>
+  @ <p><strong>停留时间</strong> 定义了鼠标指针在图表对象上方静止多长时间后才会显示工具提示。<br>
+  @ <strong>关闭时间</strong> 定义了鼠标指针离开对象多长时间后工具提示会关闭。</p>
+  @ <p>将 <strong>停留时间</strong> 设置为 "0" 可禁用工具提示。<br>
+  @ 将 <strong>关闭时间</strong> 设置为 "0" 可使工具提示保持可见，直到
+  @ 鼠标在其他位置点击。<p>
+  @ <p>(属性: "timeline-dwelltime", "timeline-closetime")</p>
 
   @ <hr>
-  onoff_attribute("Timestamp hyperlinks to /info",
+  onoff_attribute("时间戳超链接到 /info",
                   "timeline-tslink-info", "ttlti", 0, 0);
-  @ <p>The hyperlink on the timestamp associated with each timeline entry,
-  @ on the far left-hand side of the screen, normally targets another
-  @ /timeline page that shows the entry in context.  However, if this
-  @ option is turned on, that hyperlink targets the /info page showing
-  @ the details of the entry.
-  @ <p>The /timeline link is the default since it is often useful to
-  @ see an entry in context, and because that link is not otherwise
-  @ accessible on the timeline.  The /info link is also accessible by
-  @ double-clicking the timeline node or by clicking on the hash that
-  @ follows "check-in:" in the supplemental information section on the
-  @ right of the entry.
-  @ <p>(Properties: "timeline-tslink-info")
+  @ <p>屏幕最左侧与每个时间线条目关联的时间戳上的超链接，通常指向另一个
+  @ /timeline 页面，该页面在上下文中显示该条目。但是，如果启用此选项，
+  @ 该超链接将指向显示条目详细信息的 /info 页面。
+  @ <p>/timeline 链接是默认值，因为在上下文中查看条目通常很有用，
+  @ 并且该链接在时间线上无法通过其他方式访问。/info 链接也可以通过
+  @ 双击时间线节点或点击右侧补充信息部分中 "check-in:" 后面的哈希值来访问。
+  @ <p>(属性: "timeline-tslink-info")
 
   @ <hr>
-  @ <p><input type="submit"  name="submit" value="Apply Changes"></p>
+  @ <p><input type="submit"  name="submit" value="应用更改"></p>
   @ </div></form>
   db_end_transaction(0);
   style_finish_page();
@@ -1132,7 +1078,7 @@ void setup_settings(void){
   }
 
   style_set_current_feature("setup");
-  style_header("Settings");
+  style_header("设置");
   if(!g.repositoryOpen){
     /* Provide read-only access to versioned settings,
        but only if no repo file was explicitly provided. */
@@ -1140,21 +1086,19 @@ void setup_settings(void){
   }
   db_begin_transaction();
   if( bIfChng ){
-    @ <p>Only settings whose value is different from the default are shown.
-    @ Click the "All" button above to set all settings.
+    @ <p>仅显示值与默认值不同的设置。
+    @ 点击上方的"全部"按钮可设置所有设置。
   }
-  @ <p>Settings marked with (v) are "versionable" and will be overridden
-  @ by the contents of managed files named
-  @ "<tt>.fossil-settings/</tt><i>SETTING-NAME</i>".
-  @ If the file for a versionable setting exists, the value cannot be
-  @ changed on this screen.</p><hr><p>
+  @ <p>标记为(v)的设置是"可版本化"的，会被命名为
+  @ "<tt>.fossil-settings/</tt><i>SETTING-NAME</i>"的托管文件内容覆盖。
+  @ 如果可版本化设置的文件存在，则无法在此屏幕上更改其值。</p><hr><p>
   @
   @ <form action="%R/setup_settings" method="post"><div>
   if( bIfChng ){
-    style_submenu_element("All", "%R/setup_settings?all");
+    style_submenu_element("全部", "%R/setup_settings?all");
   }else{
     @ <input type="hidden" name="all" value="1">
-    style_submenu_element("Changes-Only", "%R/setup_settings");
+    style_submenu_element("仅显示变更", "%R/setup_settings");
   }
   @ <table border="0"><tr><td valign="top">
   login_insert_csrf_secret();
@@ -1176,7 +1120,7 @@ void setup_settings(void){
       }
     }
   }
-  @ <br><input type="submit"  name="submit" value="Apply Changes">
+  @ <br><input type="submit"  name="submit" value="应用更改">
   @ </td><td style="width:50px;"></td><td valign="top">
   @ <table>
   for(i=0, pSet=aSetting; i<nSetting; i++, pSet++){
@@ -1291,135 +1235,122 @@ void setup_config(void){
   }
 
   style_set_current_feature("setup");
-  style_header("WWW Configuration");
+  style_header("WWW 配置");
   db_begin_transaction();
   @ <form action="%R/setup_config" method="post"><div>
   login_insert_csrf_secret();
-  @ <input type="submit"  name="submit" value="Apply Changes"></p>
+  @ <input type="submit"  name="submit" value="应用更改"></p>
   @ <hr>
-  entry_attribute("Project Name", 60, "project-name", "pn", "", 0);
-  @ <p>A brief project name so visitors know what this site is about.
-  @ The project name will also be used as the RSS feed title.
-  @ (Property: "project-name")
+  entry_attribute("项目名称", 60, "project-name", "pn", "", 0);
+  @ <p>简短的项目名称，以便访问者了解本网站的内容。
+  @ 项目名称也将用作RSS feed标题。
+  @ (属性: "project-name")
   @ </p>
   @ <hr>
-  textarea_attribute("Project Description", 3, 80,
+  textarea_attribute("项目描述", 3, 80,
                      "project-description", "pd", "", 0);
-  @ <p>Describe your project. This will be used in page headers for search
-  @ engines, the repository listing and a short RSS description.
-  @ (Property: "project-description")</p>
+  @ <p>描述您的项目。这将用于搜索引擎的页面标题、
+  @ 仓库列表和简短的RSS描述。
+  @ (属性: "project-description")</p>
   @ <hr>
-  entry_attribute("Canonical Server URL", 40, "email-url",
+  entry_attribute("规范服务器URL", 40, "email-url",
                    "eurl", "", 0);
-  @ <p>This is the URL used to access this repository as a server.
-  @ Other repositories use this URL to clone or sync against this repository.
-  @ This is also the basename for hyperlinks included in email alert text.
-  @ Omit the trailing "/".
-  @ If this repo will not be set up as a persistent server and will not
-  @ be sending email alerts, then leave this entry blank.
-  @ Suggested value: "%h(g.zBaseURL)"
-  @ (Property: "email-url")</p>
+  @ <p>这是用于作为服务器访问此仓库的URL。
+  @ 其他仓库使用此URL来克隆或与此仓库同步。
+  @ 这也是电子邮件通知文本中包含的超链接的基础URL。
+  @ 请省略尾部的"/"。
+  @ 如果此仓库不会设置为持久服务器且不会发送电子邮件通知，
+  @ 则将此条目留空。
+  @ 建议值: "%h(g.zBaseURL)"
+  @ (属性: "email-url")</p>
   @ <hr>
-  entry_attribute("Tarball and ZIP-archive Prefix", 20, "short-project-name",
+  entry_attribute("Tarball和ZIP归档前缀", 20, "short-project-name",
                   "spn", "", 0);
-  @ <p>This is used as a prefix on the names of generated tarballs and
-  @ ZIP archive. For best results, keep this prefix brief and avoid special
-  @ characters such as "/" and "\".
-  @ If no tarball prefix is specified, then the full Project Name above is used.
-  @ (Property: "short-project-name")
+  @ <p>这用作生成的tarball和ZIP归档名称的前缀。为获得最佳效果，
+  @ 请保持此前缀简短，并避免使用特殊字符如"/"和"\".
+  @ 如果未指定tarball前缀，则使用上面的完整项目名称。
+  @ (属性: "short-project-name")
   @ </p>
   @ <hr>
-  entry_attribute("Download Tag", 20, "download-tag", "dlt", "trunk", 0);
-  @ <p>The <a href='%R/download'>/download</a> page is designed to provide
-  @ a convenient place for newbies
-  @ to download a ZIP archive or a tarball of the project.  By default,
-  @ the latest trunk check-in is downloaded.  Change this tag to something
-  @ else (ex: release) to alter the behavior of the /download page.
-  @ (Property: "download-tag")
+  entry_attribute("下载标签", 20, "download-tag", "dlt", "trunk", 0);
+  @ <p><a href='%R/download'>/download</a>页面旨在为新手提供方便的位置，
+  @ 以下载项目的ZIP归档或tarball。默认情况下，
+  @ 下载最新的trunk签入。将此标签更改为其他内容（例如：release）
+  @ 可以更改/download页面的行为。
+  @ (属性: "download-tag")
   @ </p>
   @ <hr>
-  entry_attribute("Index Page", 60, "index-page", "idxpg", "/home", 0);
-  @ <p>Enter the pathname of the page to display when the "Home" menu
-  @ option is selected and when no pathname is
-  @ specified in the URL.  For example, if you visit the url:</p>
+  entry_attribute("索引页", 60, "index-page", "idxpg", "/home", 0);
+  @ <p>输入当选择"主页"菜单选项以及URL中未指定路径名时显示的页面路径名。
+  @ 例如，如果您访问以下URL：</p>
   @
   @ <blockquote><p>%h(g.zBaseURL)</p></blockquote>
   @
-  @ <p>And you have specified an index page of "/home" the above will
-  @ automatically redirect to:</p>
+  @ <p>并且您已指定索引页为"/home"，上述URL将自动重定向到：</p>
   @
   @ <blockquote><p>%h(g.zBaseURL)/home</p></blockquote>
   @
-  @ <p>The default "/home" page displays a Wiki page with the same name
-  @ as the Project Name specified above.  Some sites prefer to redirect
-  @ to a documentation page (ex: "/doc/trunk/index.wiki") or to "/timeline".</p>
+  @ <p>默认的"/home"页面显示与上面指定的项目名称同名的Wiki页面。
+  @ 一些站点更喜欢重定向到文档页面（例如："/doc/trunk/index.wiki"）或"/timeline"。</p>
   @
-  @ <p>Note:  To avoid a redirect loop or other problems, this entry must
-  @ begin with "/" and it must specify a valid page.  For example,
-  @ "<b>/home</b>" will work but "<b>home</b>" will not, since it omits the
-  @ leading "/".</p>
-  @ <p>(Property: "index-page")
+  @ <p>注意：为避免重定向循环或其他问题，此条目必须以"/"开头，
+  @ 并且必须指定有效的页面。例如，
+  @ "<b>/home</b>"将起作用，但"<b>home</b>"不会，因为它省略了前导的"/"。</p>
+  @ <p>(属性: "index-page")
   @ <hr>
-  @ <p>The main menu for the web interface
+  @ <p>Web界面的主菜单
   @ <p>
   @
-  @ <p>This setting should be a TCL list.  Each set of four consecutive
-  @ values defines a single main menu item:
+  @ <p>此设置应为TCL列表。每组连续的四个值定义一个主菜单项：
   @ <ol>
-  @ <li> The first term is text that appears on the menu.
-  @ <li> The second term is a hyperlink to take when a user clicks on the
-  @      entry.  Hyperlinks that start with "/" are relative to the
-  @      repository root.
-  @ <li> The third term is an argument to the TH1 "capexpr" command.
-  @      If capexpr evaluates to true, then the entry is shown.  If not,
-  @      the entry is omitted.  "*" is always true.  "{}" is never true.
-  @ <li> The fourth term is a list of extra class names to apply to the new
-  @      menu entry.  Some skins use classes "desktoponly" and "wideonly"
-  @      to only show the entries when the web browser screen is wide or
-  @      very wide, respectively.
+  @ <li> 第一个项是显示在菜单上的文本。
+  @ <li> 第二个项是当用户点击该条目时要跳转到的超链接。
+  @      以"/"开头的超链接相对于仓库根目录。
+  @ <li> 第三个项是TH1 "capexpr"命令的参数。
+  @      如果capexpr求值为true，则显示该条目。否则，省略该条目。
+  @      "*"始终为true。"{}"始终为false。
+  @ <li> 第四个项是应用于新菜单项的额外类名列表。
+  @      一些皮肤使用类"desktoponly"和"wideonly"分别仅在Web浏览器屏幕较宽或
+  @      非常宽时显示条目。
   @ </ol>
   @
-  @ <p>Some custom skins might not use this property. Whether the property
-  @ is used or not a choice made by the skin designer. Some skins may add extra
-  @ choices (such as the hamburger button) to the menu that are not shown
-  @ on this list. (Property: mainmenu)
+  @ <p>一些自定义皮肤可能不使用此属性。是否使用此属性是由皮肤设计师做出的选择。
+  @ 一些皮肤可能会向菜单中添加额外的选项（例如汉堡按钮），这些选项在此列表中未显示。
+  @ (属性: mainmenu)
   @ <p>
   if(P("resetMenu")!=0){
     db_unset("mainmenu", 0);
     cgi_delete_parameter("mmenu");
   }
-  textarea_attribute("Main Menu", 12, 80,
+  textarea_attribute("主菜单", 12, 80,
       "mainmenu", "mmenu", style_default_mainmenu(), 0);
   @ </p>
   @ <p><input type='checkbox' id='cbResetMenu' name='resetMenu' value='1'>
-  @ <label for='cbResetMenu'>Reset menu to default value</label>
+  @ <label for='cbResetMenu'>将菜单重置为默认值</label>
   @ </p>
   @ <hr>
-  @ <p>Extra links to appear on the <a href="%R/sitemap">/sitemap</a> page,
-  @ as sub-items of the "Home Page" entry, appearing before the
-  @ "Documentation Search" entry (if any).  In skins that use the /sitemap
-  @ page to construct a hamburger menu dropdown, new entries added here
-  @ will appear on the hamburger menu.
+  @ <p>出现在<a href="%R/sitemap">/sitemap</a>页面上的额外链接，
+  @ 作为"主页"条目的子项，出现在"文档搜索"条目（如果有）之前。
+  @ 在使用/sitemap页面构建汉堡菜单下拉菜单的皮肤中，
+  @ 此处添加的新条目将出现在汉堡菜单上。
   @
-  @ <p>This setting should be a TCL list divided into triples.  Each
-  @ triple defines a new entry:
+  @ <p>此设置应为分为三元组的TCL列表。每个三元组定义一个新条目：
   @ <ol>
-  @ <li> The first term is the display name of the /sitemap entry
-  @ <li> The second term is a hyperlink to take when a user clicks on the
-  @      entry.  Hyperlinks that start with "/" are relative to the
-  @      repository root.
-  @ <li> The third term is an argument to the TH1 "capexpr" command.
-  @      If capexpr evaluates to true, then the entry is shown.  If not,
-  @      the entry is omitted.  "*" is always true.
+  @ <li> 第一个项是/sitemap条目的显示名称
+  @ <li> 第二个项是当用户点击该条目时要跳转到的超链接。
+  @      以"/"开头的超链接相对于仓库根目录。
+  @ <li> 第三个项是TH1 "capexpr"命令的参数。
+  @      如果capexpr求值为true，则显示该条目。否则，省略该条目。
+  @      "*"始终为true。
   @ </ol>
   @
-  @ <p>The default value is blank, meaning no added entries.
-  @ (Property: sitemap-extra)
+  @ <p>默认值为空，意味着没有添加的条目。
+  @ (属性: sitemap-extra)
   @ <p>
-  textarea_attribute("Custom Sitemap Entries", 8, 80,
+  textarea_attribute("自定义站点地图条目", 8, 80,
       "sitemap-extra", "smextra", "", 0);
   @ <hr>
-  @ <p><input type="submit"  name="submit" value="Apply Changes"></p>
+  @ <p><input type="submit"  name="submit" value="应用更改"></p>
   @ </div></form>
   db_end_transaction(0);
   style_finish_page();
@@ -1438,66 +1369,55 @@ void setup_wiki(void){
   }
 
   style_set_current_feature("setup");
-  style_header("Wiki Configuration");
+  style_header("Wiki 配置");
   db_begin_transaction();
   @ <form action="%R/setup_wiki" method="post"><div>
   login_insert_csrf_secret();
-  @ <input type="submit"  name="submit" value="Apply Changes"></p>
+  @ <input type="submit"  name="submit" value="应用更改"></p>
   @ <hr>
-  onoff_attribute("Associate Wiki Pages With Branches, Tags, Tickets, or Checkins",
+  onoff_attribute("将Wiki页面与分支、标签、工单或签入关联",
                   "wiki-about", "wiki-about", 1, 0);
   @ <p>
-  @ Associate wiki pages with branches, tags, tickets, or checkins, based on
-  @ the wiki page name.  Wiki pages that begin with "branch/", "checkin/",
-  @ "tag/" or "ticket" and which continue with the name of an existing branch,
-  @ check-in, tag or ticket are treated specially when this feature is enabled.
+  @ 根据Wiki页面名称将Wiki页面与分支、标签、工单或签入关联。当此功能启用时，以"branch/"、"checkin/"、
+  @ "tag/"或"ticket"开头并后跟现有分支、签入、标签或工单名称的Wiki页面将被特殊处理。
   @ <ul>
-  @ <li> <b>branch/</b><i>branch-name</i>
-  @ <li> <b>checkin/</b><i>full-check-in-hash</i>
-  @ <li> <b>tag/</b><i>tag-name</i>
-  @ <li> <b>ticket/</b><i>full-ticket-hash</i>
+  @ <li> <b>branch/</b><i>分支名称</i>
+  @ <li> <b>checkin/</b><i>完整签入哈希值</i>
+  @ <li> <b>tag/</b><i>标签名称</i>
+  @ <li> <b>ticket/</b><i>完整工单哈希值</i>
   @ </ul>
-  @ (Property: "wiki-about")</p>
+  @ (属性: "wiki-about")</p>
   @ <hr>
-  entry_attribute("Allow Unsafe HTML In Markdown", 6,
+  entry_attribute("允许在Markdown中使用不安全HTML", 6,
                   "safe-html", "safe-html", "", 0);
-  @ <p>Allow "unsafe" HTML (ex: &lt;script&gt;, &lt;form&gt;, etc) to be
-  @ generated by <a href="%R/md_rules">Markdown-formatted</a> documents.
-  @ This setting is a string where each character indicates a "type" of
-  @ document in which to allow unsafe HTML:
+  @ <p>允许在<a href="%R/md_rules">Markdown格式</a>文档中生成"不安全"HTML（例如：&lt;script&gt;、&lt;form&gt;等）。
+  @ 此设置是一个字符串，其中每个字符表示允许使用不安全HTML的文档"类型"：
   @ <ul>
-  @ <li> <b>b</b> &rarr; checked-in files, embedded documentation
-  @ <li> <b>f</b> &rarr; forum posts
-  @ <li> <b>t</b> &rarr; tickets
-  @ <li> <b>w</b> &rarr; wiki pages
+  @ <li> <b>b</b> &rarr; 签入文件、嵌入式文档
+  @ <li> <b>f</b> &rarr; 论坛帖子
+  @ <li> <b>t</b> &rarr; 工单
+  @ <li> <b>w</b> &rarr; Wiki页面
   @ </ul>
-  @ Include letters for each type of document for which unsafe HTML should
-  @ be allowed.  For example, to allow unsafe HTML only for checked-in files,
-  @ make this setting be just "<b>b</b>".  To allow unsafe HTML anywhere except
-  @ in forum posts, make this setting be "<b>btw</b>".  The default is an
-  @ empty string which means that Fossil never allows Markdown documents
-  @ to generate unsafe HTML.
-  @ (Property: "safe-html")</p>
+  @ 为每种应允许不安全HTML的文档类型包含相应字母。例如，仅允许在签入文件中使用不安全HTML，
+  @ 请将此设置设为仅"<b>b</b>"。要允许在除论坛帖子外的任何地方使用不安全HTML，请将此设置设为"<b>btw</b>"。
+  @ 默认值为空字符串，表示Fossil从不允许Markdown文档生成不安全HTML。
+  @ (属性: "safe-html")</p>
   @ <hr>
-  @ The current interwiki tag map is as follows:
+  @ 当前的跨Wiki标签映射如下：
   interwiki_append_map_table(cgi_output_blob());
-  @ <p>Visit <a href="./intermap">%R/intermap</a> for details or to
-  @ modify the interwiki tag map.
+  @ <p>访问 <a href="./intermap">%R/intermap</a> 了解详情或修改跨Wiki标签映射。
   @ <hr>
-  onoff_attribute("Use HTML as wiki markup language",
+  onoff_attribute("使用HTML作为Wiki标记语言",
     "wiki-use-html", "wiki-use-html", 0, 0);
-  @ <p>Use HTML as the wiki markup language. Wiki links will still be parsed
-  @ but all other wiki formatting will be ignored.</p>
-  @ <p><strong>CAUTION:</strong> when
-  @ enabling, <i>all</i> HTML tags and attributes are accepted in the wiki.
-  @ No sanitization is done. This means that it is very possible for malicious
-  @ users to inject dangerous HTML, CSS and JavaScript code into your wiki.</p>
-  @ <p>This should <strong>only</strong> be enabled when wiki editing is limited
-  @ to trusted users. It should <strong>not</strong> be used on a publicly
-  @ editable wiki.</p>
-  @ (Property: "wiki-use-html")
+  @ <p>使用HTML作为Wiki标记语言。Wiki链接仍将被解析，
+  @ 但所有其他Wiki格式将被忽略。</p>
+  @ <p><strong>警告：</strong>启用时，Wiki中将接受<i>所有</i>HTML标签和属性。
+  @ 不会进行任何清理。这意味着恶意用户很可能向您的Wiki注入危险的HTML、CSS和JavaScript代码。</p>
+  @ <p>仅当Wiki编辑限于受信任用户时才应<strong>启用</strong>此功能。
+  @ 不应在可公开编辑的Wiki上使用此功能。</p>
+  @ (属性: "wiki-use-html")
   @ <hr>
-  @ <p><input type="submit"  name="submit" value="Apply Changes"></p>
+  @ <p><input type="submit"  name="submit" value="应用更改"></p>
   @ </div></form>
   db_end_transaction(0);
   style_finish_page();
@@ -1510,10 +1430,10 @@ void setup_wiki(void){
 */
 void setup_chat(void){
   static const char *const azAlerts[] = {
-    "alerts/plunk.wav",  "Plunk",
-    "alerts/bflat3.wav", "Tone-1",
-    "alerts/bflat2.wav", "Tone-2",
-    "alerts/bloop.wav",  "Bloop",
+    "alerts/plunk.wav",  "叮咚声",
+    "alerts/bflat3.wav", "提示音1",
+    "alerts/bflat2.wav", "提示音2",
+    "alerts/bloop.wav",  "嘟嘟声",
   };
 
   login_check_credentials();
@@ -1523,62 +1443,51 @@ void setup_chat(void){
   }
 
   style_set_current_feature("setup");
-  style_header("Chat Configuration");
+  style_header("聊天配置");
   db_begin_transaction();
   @ <form action="%R/setup_chat" method="post"><div>
   login_insert_csrf_secret();
-  @ <input type="submit"  name="submit" value="Apply Changes"></p>
+  @ <input type="submit"  name="submit" value="应用更改"></p>
   @ <hr>
-  entry_attribute("Initial Chat History Size", 10,
+  entry_attribute("初始聊天历史记录大小", 10,
                   "chat-initial-history", "chatih", "50", 0);
-  @ <p>When /chat first starts up, it preloads up to this many historical
-  @ messages.
-  @ (Property: "chat-initial-history")</p>
+  @ <p>当/chat首次启动时，它会预加载最多此数量的历史消息。
+  @ (属性: "chat-initial-history")</p>
   @ <hr>
-  entry_attribute("Minimum Number Of Historical Messages To Retain", 10,
+  entry_attribute("保留的历史消息最小数量", 10,
                   "chat-keep-count", "chatkc", "50", 0);
-  @ <p>The chat subsystem purges older messages.  But it will always retain
-  @ the N most recent messages where N is the value of this setting.
-  @ (Property: "chat-keep-count")</p>
+  @ <p>聊天子系统会清理较旧的消息，但它将始终保留最近的N条消息，其中N是此设置的值。
+  @ (属性: "chat-keep-count")</p>
   @ <hr>
-  entry_attribute("Maximum Message Age In Days", 10,
+  entry_attribute("消息最大保留天数", 10,
                   "chat-keep-days", "chatkd", "7", 0);
-  @ <p>Chat message are removed after N days, where N is the value of
-  @ this setting.  N may be fractional.  So, for example, to only keep
-  @ an historical record of chat messages for 12 hours, set this value
-  @ to 0.5.
-  @ (Property: "chat-keep-days")</p>
+  @ <p>聊天消息在N天后被移除，其中N是此设置的值。N可以是小数。例如，若只想保留12小时的聊天历史记录，
+  @ 请将此值设置为0.5。
+  @ (属性: "chat-keep-days")</p>
   @ <hr>
-  entry_attribute("Chat Polling Timeout", 10,
+  entry_attribute("聊天轮询超时时间", 10,
                   "chat-poll-timeout", "chatpt", "420", 0);
-  @ <p>New chat content is downloaded using the "long poll" technique.
-  @ HTTP requests are made to /chat-poll which blocks waiting on new
-  @ content to arrive.  But the /chat-poll cannot block forever.  It
-  @ eventual must give up and return an empty message set.  This setting
-  @ determines how long /chat-poll will wait before giving up.  The
-  @ default setting of approximately 7 minutes works well on many systems.
-  @ Shorter delays might be required on installations that use proxies
-  @ or web-servers with short timeouts.  For best efficiency, this value
-  @ should be larger rather than smaller.
-  @ (Property: "chat-poll-timeout")</p>
+  @ <p>新的聊天内容使用"长轮询"技术下载。系统向/chat-poll发送HTTP请求，该请求会阻塞等待新内容到达。
+  @ 但/chat-poll不能永远阻塞，最终必须放弃并返回空消息集。此设置决定/chat-poll在放弃前等待的时间。
+  @ 默认约7分钟的设置在许多系统上运行良好。使用代理或具有短超时的Web服务器的安装可能需要更短的延迟。
+  @ 为获得最佳效率，此值应尽可能大。
+  @ (属性: "chat-poll-timeout")</p>
   @ <hr>
-  entry_attribute("Chat Timeline Robot Username", 15,
+  entry_attribute("聊天时间线机器人用户名", 15,
                   "chat-timeline-user", "chatrobot", "", 0);
-  @ <p>If this setting is not an empty string, then any changes that appear
-  @ on the timeline are announced in the chatroom under the username
-  @ supplied.  The username does not need to actually exist in the USER table.
-  @ Suggested username:  "chat-robot".
-  @ (Property: "chat-timeline-user")</p>
+  @ <p>如果此设置不为空字符串，则时间线上出现的任何更改都会在聊天室中以提供的用户名进行公告。
+  @ 该用户名不需要实际存在于USER表中。
+  @ 建议的用户名: "chat-robot"。
+  @ (属性: "chat-timeline-user")</p>
   @ <hr>
 
-  multiple_choice_attribute("Alert sound",
+  multiple_choice_attribute("提示音",
      "chat-alert-sound", "snd", azAlerts[0],
      count(azAlerts)/2, azAlerts);
-  @ <p>The sound used in the client-side chat to indicate that a new
-  @ chat message has arrived.
-  @ (Property: "chat-alert-sound")</p>
+  @ <p>客户端聊天中用于指示新聊天消息到达的声音。
+  @ (属性: "chat-alert-sound")</p>
   @ <hr/>
-  @ <p><input type="submit"  name="submit" value="Apply Changes"></p>
+  @ <p><input type="submit"  name="submit" value="应用更改"></p>
   @ </div></form>
   db_end_transaction(0);
   @ <script nonce="%h(style_nonce())">
@@ -1607,35 +1516,33 @@ void setup_modreq(void){
   }
 
   style_set_current_feature("setup");
-  style_header("Moderator For Wiki And Tickets");
+  style_header("Wiki和工单审核设置");
   db_begin_transaction();
   @ <form action="%R/setup_modreq" method="post"><div>
   login_insert_csrf_secret();
   @ <hr>
-  onoff_attribute("Moderate ticket changes",
+  onoff_attribute("审核工单变更",
      "modreq-tkt", "modreq-tkt", 0, 0);
-  @ <p>When enabled, any change to tickets is subject to the approval
-  @ by a ticket moderator - a user with the "q" or Mod-Tkt privilege.
-  @ Ticket changes enter the system and are shown locally, but are not
-  @ synced until they are approved.  The moderator has the option to
-  @ delete the change rather than approve it.  Ticket changes made by
-  @ a user who has the Mod-Tkt privilege are never subject to
-  @ moderation. (Property: "modreq-tkt")
+  @ <p>启用后，任何工单变更都需要工单审核员的批准
+  @ - 拥有"q"或Mod-Tkt权限的用户。
+  @ 工单变更会进入系统并在本地显示，但在获得批准前不会同步。
+  @ 审核员可以选择删除变更而不是批准它。
+  @ 拥有Mod-Tkt权限的用户所做的工单变更永远不受审核限制。
+  @ (属性: "modreq-tkt")
   @
   @ <hr>
-  onoff_attribute("Moderate wiki changes",
+  onoff_attribute("审核Wiki变更",
      "modreq-wiki", "modreq-wiki", 0, 0);
-  @ <p>When enabled, any change to wiki is subject to the approval
-  @ by a wiki moderator - a user with the "l" or Mod-Wiki privilege.
-  @ Wiki changes enter the system and are shown locally, but are not
-  @ synced until they are approved.  The moderator has the option to
-  @ delete the change rather than approve it.  Wiki changes made by
-  @ a user who has the Mod-Wiki privilege are never subject to
-  @ moderation. (Property: "modreq-wiki")
+  @ <p>启用后，任何Wiki变更都需要Wiki审核员的批准
+  @ - 拥有"l"或Mod-Wiki权限的用户。
+  @ Wiki变更会进入系统并在本地显示，但在获得批准前不会同步。
+  @ 审核员可以选择删除变更而不是批准它。
+  @ 拥有Mod-Wiki权限的用户所做的Wiki变更永远不受审核限制。
+  @ (属性: "modreq-wiki")
   @ </p>
 
   @ <hr>
-  @ <p><input type="submit"  name="submit" value="Apply Changes"></p>
+  @ <p><input type="submit"  name="submit" value="应用更改"></p>
   @ </div></form>
   db_end_transaction(0);
   style_finish_page();
@@ -1665,37 +1572,36 @@ void setup_adunit(void){
   }
 
   style_set_current_feature("setup");
-  style_header("Edit Ad Unit");
+  style_header("编辑广告单元");
   @ <form action="%R/setup_adunit" method="post"><div>
   login_insert_csrf_secret();
-  @ <b>Banner Ad-Unit:</b><br>
+  @ <b>横幅广告单元：</b><br>
  textarea_attribute("", 6, 80, "adunit", "adunit", "", 0);
   @ <br>
-  @ <b>Right-Column Ad-Unit:</b><br>
+  @ <b>右侧栏广告单元：</b><br>
   textarea_attribute("", 6, 80, "adunit-right", "adright", "", 0);
   @ <br>
-  onoff_attribute("Omit ads to administrator",
+  onoff_attribute("向管理员隐藏广告",
      "adunit-omit-if-admin", "oia", 0, 0);
   @ <br>
-  onoff_attribute("Omit ads to logged-in users",
+  onoff_attribute("向已登录用户隐藏广告",
      "adunit-omit-if-user", "oiu", 0, 0);
   @ <br>
-  onoff_attribute("Temporarily disable all ads",
+  onoff_attribute("临时禁用所有广告",
      "adunit-disable", "oall", 0, 0);
   @ <br>
-  @ <input type="submit" name="submit" value="Apply Changes">
-  @ <input type="submit" name="clear" value="Delete Ad-Unit">
+  @ <input type="submit" name="submit" value="应用更改">
+  @ <input type="submit" name="clear" value="删除广告单元">
   @ </div></form>
   @ <hr>
-  @ <b>Ad-Unit Notes:</b><ul>
-  @ <li>Leave both Ad-Units blank to disable all advertising.
-  @ <li>The "Banner Ad-Unit" is used for wide pages.
-  @ <li>The "Right-Column Ad-Unit" is used on pages with tall, narrow content.
-  @ <li>If the "Right-Column Ad-Unit" is blank, the "Banner Ad-Unit" is
-  @     used on all pages.
-  @ <li>Properties: "adunit", "adunit-right", "adunit-omit-if-admin", and
-  @     "adunit-omit-if-user".
-  @ <li>Suggested <a href="setup_skinedit?w=0">CSS</a> changes:
+  @ <b>广告单元说明：</b><ul>
+  @ <li>将两个广告单元都留空可禁用所有广告。
+  @ <li>"横幅广告单元"用于宽页面。
+  @ <li>"右侧栏广告单元"用于内容高而窄的页面。
+  @ <li>如果"右侧栏广告单元"为空，则所有页面都使用"横幅广告单元"。
+  @ <li>属性："adunit"、"adunit-right"、"adunit-omit-if-admin"和
+  @     "adunit-omit-if-user"。
+  @ <li>建议的 <a href="setup_skinedit?w=0">CSS</a> 更改：
   @ <blockquote><pre>
   @ div.adunit_banner {
   @   margin: auto;
@@ -1705,11 +1611,10 @@ void setup_adunit(void){
   @   float: right;
   @ }
   @ div.adunit_right_container {
-  @   min-height: <i>height-of-right-column-ad-unit</i>;
+  @   min-height: <i>右侧栏广告单元高度</i>;
   @ }
   @ </pre></blockquote>
-  @ <li>For a place-holder Ad-Unit for testing, Copy/Paste the following
-  @ with appropriate adjustments to "width:" and "height:".
+  @ <li>如需测试用的占位广告单元，请复制粘贴以下内容，并适当调整"width:"和"height:"。
   @ <blockquote><pre>
   @ &lt;div style='
   @   margin: 0 auto;
@@ -1717,7 +1622,7 @@ void setup_adunit(void){
   @   height: 90px;
   @   border: 1px solid #f11;
   @   background-color: #fcc;
-  @ '&gt;Demo Ad&lt;/div&gt;
+  @ '&gt;演示广告&lt;/div&gt;
   @ </pre></blockquote>
   @ </li>
   style_finish_page();
@@ -2149,19 +2054,19 @@ void page_admin_log(){
     return;
   }
   style_set_current_feature("setup");
-  style_header("Admin Log");
-  style_submenu_element("Log-Menu", "setup-logmenu");
+  style_header("管理日志");
+  style_submenu_element("日志菜单", "setup-logmenu");
   create_admin_log_table();
   limit = atoi(PD("n","200"));
   ofst = atoi(PD("x","0"));
   fLogEnabled = db_get_boolean("admin-log", 1);
-  @ <div>Admin logging is %s(fLogEnabled?"on":"off").
-  @ (Change this on the <a href="setup_settings">settings</a> page.)</div>
+  @ <div>管理日志功能处于%s(fLogEnabled?"开启":"关闭")状态。
+  @ 可在<a href="setup_settings">设置</a>页面更改此设置。</div>
 
   if( ofst>0 ){
     int prevx = ofst - limit;
     if( prevx<0 ) prevx = 0;
-    @ <p><a href="admin_log?n=%d(limit)&x=%d(prevx)">[Newer]</a></p>
+    @ <p><a href="admin_log?n=%d(limit)&x=%d(prevx)">[较新]</a></p>
   }
   db_prepare(&stLog,
     "SELECT datetime(time,'unixepoch'), who, page, what "
@@ -2171,10 +2076,10 @@ void page_admin_log(){
   @ <table class="sortable adminLogTable" width="100%%" \
   @  data-column-types='Tttx' data-init-sort='1'>
   @ <thead>
-  @ <th>Time</th>
-  @ <th>User</th>
-  @ <th>Page</th>
-  @ <th width="60%%">Message</th>
+  @ <th>时间</th>
+  @ <th>用户</th>
+  @ <th>页面</th>
+  @ <th width="60%%">消息</th>
   @ </thead><tbody>
   while( SQLITE_ROW == db_step(&stLog) ){
     const char *zTime = db_column_text(&stLog, 0);
@@ -2194,7 +2099,7 @@ void page_admin_log(){
   db_finalize(&stLog);
   @ </tbody></table>
   if( counter>ofst+limit ){
-    @ <p><a href="admin_log?n=%d(limit)&x=%d(limit+ofst)">[Older]</a></p>
+    @ <p><a href="admin_log?n=%d(limit)&x=%d(limit+ofst)">[较旧]</a></p>
   }
   style_finish_page();
 }
@@ -2206,12 +2111,12 @@ void page_admin_log(){
 */
 static void select_fts_tokenizer(void){
   const char *const aTokenizer[] = {
-  "off",     "None",
-  "porter",  "Porter Stemmer",
-  "unicode61", "Unicode without stemming",
-  "trigram", "Trigram",
+  "off",     "无",
+  "porter",  "Porter词干提取器",
+  "unicode61", "不使用词干提取的Unicode",
+  "trigram", "三元组",
   };
-  multiple_choice_attribute("FTS Tokenizer", "search-tokenizer",
+  multiple_choice_attribute("FTS分词器", "search-tokenizer",
                             "ftstok", "off", 4, aTokenizer);
 }
 
@@ -2227,51 +2132,47 @@ void page_srchsetup(){
     return;
   }
   style_set_current_feature("setup");
-  style_header("Search Configuration");
+  style_header("搜索配置");
   @ <form action="%R/srchsetup" method="post"><div>
   login_insert_csrf_secret();
   @ <div style="text-align:center;font-weight:bold;">
-  @ Server-specific settings that affect the
-  @ <a href="%R/search">/search</a> webpage.
+  @ 影响<a href="%R/search">/search</a>网页的服务器特定设置。
   @ </div>
   @ <hr>
-  textarea_attribute("Document Glob List", 3, 35, "doc-glob", "dg", "", 0);
-  @ <p>The "Document Glob List" is a comma- or newline-separated list
-  @ of GLOB expressions that identify all documents within the source
-  @ tree that are to be searched when "Document Search" is enabled.
-  @ Some examples:
+  textarea_attribute("文档全局列表", 3, 35, "doc-glob", "dg", "", 0);
+  @ <p>"文档全局列表"是用逗号或换行符分隔的GLOB表达式列表，
+  @ 用于标识当"文档搜索"启用时，源代码树中所有需要搜索的文档。
+  @ 一些示例：
   @ <table border=0 cellpadding=2 align=center>
   @ <tr><td>*.wiki,*.html,*.md,*.txt<td style="width: 4x;">
-  @ <td>Search all wiki, HTML, Markdown, and Text files</tr>
+  @ <td>搜索所有wiki、HTML、Markdown和文本文件</tr>
   @ <tr><td>doc/*.md,*/README.txt,README.txt<td>
-  @ <td>Search all Markdown files in the doc/ subfolder and all README.txt
-  @ files.</tr>
-  @ <tr><td>*<td><td>Search all checked-in files</tr>
-  @ <tr><td><i>(blank)</i><td>
-  @ <td>Search nothing. (Disables document search).</tr>
+  @ <td>搜索doc/子文件夹中的所有Markdown文件和所有README.txt
+  @ 文件。</tr>
+  @ <tr><td>*<td><td>搜索所有已签入文件</tr>
+  @ <tr><td><i>(空白)</i><td>
+  @ <td>不搜索任何内容。（禁用文档搜索）</tr>
   @ </table>
   @ <hr>
-  entry_attribute("Document Branches", 20, "doc-branch", "db", "trunk", 0);
-  @ <p>When searching documents, use the versions of the files found at the
-  @ type of the "Document Branches" branch.  Recommended value: "trunk".
-  @ Document search is disabled if blank. It may be a list of branch names
-  @ separated by spaces and/or commas.
+  entry_attribute("文档分支", 20, "doc-branch", "db", "trunk", 0);
+  @ <p>搜索文档时，使用在"文档分支"分支类型中找到的文件版本。推荐值："trunk"。
+  @ 如果为空则禁用文档搜索。可以是用空格和/或逗号分隔的分支名称列表。
   @ <hr>
-  onoff_attribute("Search Check-in Comments", "search-ci", "sc", 0, 0);
+  onoff_attribute("搜索签入注释", "search-ci", "sc", 0, 0);
   @ <br>
-  onoff_attribute("Search Documents", "search-doc", "sd", 0, 0);
+  onoff_attribute("搜索文档", "search-doc", "sd", 0, 0);
   @ <br>
-  onoff_attribute("Search Tickets", "search-tkt", "st", 0, 0);
+  onoff_attribute("搜索工单", "search-tkt", "st", 0, 0);
   @ <br>
-  onoff_attribute("Search Wiki", "search-wiki", "sw", 0, 0);
+  onoff_attribute("搜索Wiki", "search-wiki", "sw", 0, 0);
   @ <br>
-  onoff_attribute("Search Tech Notes", "search-technote", "se", 0, 0);
+  onoff_attribute("搜索技术笔记", "search-technote", "se", 0, 0);
   @ <br>
-  onoff_attribute("Search Forum", "search-forum", "sf", 0, 0);
+  onoff_attribute("搜索论坛", "search-forum", "sf", 0, 0);
   @ <br>
-  onoff_attribute("Search Built-in Help Text", "search-help", "sh", 0, 0);
+  onoff_attribute("搜索内置帮助文本", "search-help", "sh", 0, 0);
   @ <hr>
-  @ <p><input type="submit"  name="submit" value="Apply Changes"></p>
+  @ <p><input type="submit"  name="submit" value="应用更改"></p>
   @ <hr>
   if( P("fts0") ){
     search_drop_index();
@@ -2291,20 +2192,19 @@ void page_srchsetup(){
                                " AND name LIKE 'fts%%'")*pgsz;
     char zSize[30];
     approxSizeName(sizeof(zSize),zSize,nFts);
-    @ <p>Currently using an SQLite FTS%d(search_index_type(0)) search index.
-    @ The index helps search run faster, especially on large repositories,
-    @ but takes up space.  The index is currently using about %s(zSize)
-    @ or %.1f(100.0*(double)nFts/(double)nTotal)%% of the repository.</p>
+    @ <p>当前使用SQLite FTS%d(search_index_type(0))搜索索引。
+    @ 该索引有助于加快搜索速度，特别是在大型代码仓库中，
+    @ 但会占用空间。索引当前使用约%s(zSize)的空间，
+    @ 占代码仓库的%.1f(100.0*(double)nFts/(double)nTotal)%%。</p>
     select_fts_tokenizer();
-    @ <p><input type="submit" name="fts0" value="Delete The Full-Text Index">
-    @ <input type="submit" name="fts1" value="Rebuild The Full-Text Index">
-    style_submenu_element("FTS Index Debugging","%R/test-ftsdocs");
+    @ <p><input type="submit" name="fts0" value="删除全文索引">
+    @ <input type="submit" name="fts1" value="重建全文索引">
+    style_submenu_element("FTS索引调试","%R/test-ftsdocs");
   }else{
-    @ <p>The SQLite search index is disabled.  All searching will be
-    @ a full-text scan.  This usually works fine, but can be slow for
-    @ larger repositories.</p>
+    @ <p>SQLite搜索索引已禁用。所有搜索都将进行全文扫描。
+    @ 这通常可以正常工作，但对于大型代码仓库可能会很慢。</p>
     select_fts_tokenizer();
-    @ <p><input type="submit" name="fts1" value="Create A Full-Text Index">
+    @ <p><input type="submit" name="fts1" value="创建全文索引">
   }
   @ </div></form>
   style_finish_page();
@@ -2367,7 +2267,8 @@ void page_waliassetup(){
     return;
   }
   style_set_current_feature("setup");
-  style_header("URL Alias Configuration");
+  style_header("URL别名配置");
+
   if( P("submit")!=0 && cgi_csrf_safe(2) ){
     Blob token;
     Blob sql;
@@ -2405,7 +2306,7 @@ void page_waliassetup(){
   @ <form action="%R/waliassetup" method="post"><div>
   login_insert_csrf_secret();
   @ <table border=0 cellpadding=5>
-  @ <tr><th>Alias<th>URI That The Alias Maps Into
+  @ <tr><th>别名<th>别名映射到的URI
   blob_init(&namelist, 0, 0);
   while( db_step(&q)==SQLITE_ROW ){
     const char *zName = db_column_text(&q, 0);
@@ -2422,48 +2323,31 @@ void page_waliassetup(){
   db_finalize(&q);
   @ <tr><td>
   @ <input type='hidden' name='namelist' value='%h(blob_str(&namelist))'>
-  @ <input type='submit' name='submit' value="Apply Changes">
+  @ <input type='submit' name='submit' value="应用更改">
   @ </td><td></td></tr>
   @ </table></form>
   @ <hr>
-  @ <p>When the first term of an incoming URL exactly matches one of
-  @ the "Aliases" on the left-hand side (LHS) above, the URL is
-  @ converted into the corresponding form on the right-hand side (RHS).
+  @ <p>当传入URL的第一个部分与上方左侧(LHS)的"别名"完全匹配时，URL将转换为右侧(RHS)的相应形式。
   @ <ul>
   @ <li><p>
-  @ The LHS is compared against only the first term of the incoming URL.
-  @ All LHS entries in the alias table should therefore begin with a
-  @ single "/" followed by a single path element.
+  @ 左侧(LHS)仅与传入URL的第一个部分进行比较。因此，别名表中的所有左侧条目都应该以单个"/"开头，后跟单个路径元素。
   @ <li><p>
-  @ The RHS entries in the alias table should begin with a single "/"
-  @ followed by a path element, and optionally followed by "?" and a
-  @ list of query parameters.
+  @ 别名表中的右侧(RHS)条目应该以单个"/"开头，后跟路径元素，可选地后跟"?"和查询参数列表。
   @ <li><p>
-  @ Query parameters on the RHS are added to the set of query parameters
-  @ in the incoming URL.
+  @ 右侧(RHS)的查询参数会添加到传入URL的查询参数集中。
   @ <li><p>
-  @ If the same query parameter appears in both the incoming URL and
-  @ on the RHS of the alias, the RHS query parameter value overwrites
-  @ the value on the incoming URL.
+  @ 如果相同的查询参数同时出现在传入URL和别名的右侧(RHS)，则右侧(RHS)的查询参数值会覆盖传入URL上的值。
   @ <li><p>
-  @ If a query parameter on the RHS of the alias is of the form "X!"
-  @ (a name followed by "!") then the X query parameter is removed
-  @ from the incoming URL if
-  @ it exists.
+  @ 如果别名右侧(RHS)的查询参数形式为"X!"（名称后跟"!"），则如果存在X查询参数，它将从传入URL中移除。
   @ <li><p>
-  @ Only a single alias operation occurs.  It is not possible to nest aliases.
-  @ The RHS entries must be built-in webpage names.
+  @ 只发生单个别名操作。不可能嵌套别名。右侧(RHS)条目必须是内置网页名称。
   @ <li><p>
-  @ The alias table is only checked if no built-in webpage matches
-  @ the incoming URL.
-  @ Hence, it is not possible to override a built-in webpage using aliases.
-  @ This is by design.
+  @ 只有当没有内置网页与传入URL匹配时，才会检查别名表。
+  @ 因此，无法使用别名覆盖内置网页。这是设计使然。
   @ </ul>
   @
-  @ <p>To delete an entry from the alias table, change its name or value to an
-  @ empty string and press "Apply Changes".
+  @ <p>要从别名表中删除条目，请将其名称或值更改为空字符串，然后按"应用更改"。
   @
-  @ <p>To add a new alias, fill in the name and value in the bottom row
-  @ of the table above and press "Apply Changes".
+  @ <p>要添加新别名，请在上面表格的最后一行填写名称和值，然后按"应用更改"。
   style_finish_page();
 }

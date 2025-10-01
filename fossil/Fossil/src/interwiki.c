@@ -343,12 +343,10 @@ void interwiki_page(void){
   }
 
   style_set_current_feature("interwiki");
-  style_header("Interwiki Map Configuration");
-  @ <p>Interwiki links are hyperlink targets of the form
-  @ <blockquote><i>Tag</i><b>:</b><i>PageName</i></blockquote>
-  @ <p>Such links resolve to links to <i>PageName</i> on a separate server
-  @ identified by <i>Tag</i>.  The Interwiki Map or "intermap" is a mapping
-  @ from <i>Tags</i> to complete Server URLs.
+  style_header("Interwiki 映射配置");
+  @ <p>Interwiki 链接是以下形式的超链接目标
+  @ <blockquote><i>标记</i><b>:</b><i>页面名</i></blockquote>
+  @ <p>此类链接将解析为指向由标记标识的单独服务器上的页面名的链接。Interwiki 映射（或简称"intermap"）是从标记到完整服务器 URL 的映射。
   db_prepare(&q,
     "SELECT substr(name,11),"
     "       value->>'base', value->>'hash', value->>'wiki'"
@@ -356,23 +354,23 @@ void interwiki_page(void){
   );
   while( db_step(&q)==SQLITE_ROW ){
     if( n==0 ){
-      @ The current mapping is as follows:
+      @ 当前映射如下：
       @ <ol>
     }
     @ <li><p> %h(db_column_text(&q,0))
     @ <ul>
-    @ <li> Base-URL: <tt>%h(db_column_text(&q,1))</tt>
+    @ <li> 基础 URL: <tt>%h(db_column_text(&q,1))</tt>
     z = db_column_text(&q,2);
     if( z==0 ){
-      @ <li> Hash-path: <i>NULL</i>
+      @ <li> 哈希路径: <i>空</i>
     }else{
-      @ <li> Hash-path: <tt>%h(z)</tt>
+      @ <li> 哈希路径: <tt>%h(z)</tt>
     }
     z = db_column_text(&q,3);
     if( z==0 ){
-      @ <li> Wiki-path: <i>NULL</i>
+      @ <li> Wiki 路径: <i>空</i>
     }else{
-      @ <li> Wiki-path: <tt>%h(z)</tt>
+      @ <li> Wiki 路径: <tt>%h(z)</tt>
     }
     @ </ul>
     n++;
@@ -381,41 +379,38 @@ void interwiki_page(void){
   if( n ){
     @ </ol>
   }else{
-    @ No mappings are currently defined.
+    @ 当前没有定义映射。
   }
 
   if( !g.perm.Setup ){
-    /* Do not show intermap editing fields to non-setup users */
+    /* 不为非设置用户显示 intermap 编辑字段 */
     style_finish_page();
     return;
   }
 
-  @ <p>To add a new mapping, fill out the form below providing a unique name
-  @ for the tag.  To edit an exist mapping, fill out the form and use the
-  @ existing name as the tag.  To delete an existing mapping, fill in the
-  @ tag field but leave the "Base URL" field blank.</p>
+  @ <p>要添加新映射，请填写下面的表单并为标记提供唯一名称。要编辑现有映射，请填写表单并使用现有名称作为标记。要删除现有映射，请填写标记字段，但将"基础 URL"字段留空。</p>
   if( zErr ){
     @ <p class="error">%h(zErr)</p>
   }
   @ <form method="POST" action="%R/intermap">
   login_insert_csrf_secret();
   @ <table border="0">
-  @ <tr><td class="form_label" id="imtag">Tag:</td>
+  @ <tr><td class="form_label" id="imtag">标记：</td>
   @ <td><input type="text" id="tag" aria-labeledby="imtag" name="tag" \
   @ size="15" value="%h(zTag)"></td></tr>
-  @ <tr><td class="form_label" id="imbase">Base&nbsp;URL:</td>
+  @ <tr><td class="form_label" id="imbase">基础 URL：</td>
   @ <td><input type="text" id="base" aria-labeledby="imbase" name="base" \
   @ size="70" value="%h(zBase)"></td></tr>
-  @ <tr><td class="form_label" id="imhash">Hash-path:</td>
+  @ <tr><td class="form_label" id="imhash">哈希路径：</td>
   @ <td><input type="text" id="hash" aria-labeledby="imhash" name="hash" \
   @ size="20" value="%h(zHash)">
-  @ (use "<tt>/info/</tt>" when the target is Fossil)</td></tr>
-  @ <tr><td class="form_label" id="imwiki">Wiki-path:</td>
+  @ （当目标是 Fossil 时使用"<tt>/info/</tt>"）</td></tr>
+  @ <tr><td class="form_label" id="imwiki">Wiki 路径：</td>
   @ <td><input type="text" id="wiki" aria-labeledby="imwiki" name="wiki" \
   @ size="20" value="%h(zWiki)">
-  @ (use "<tt>/wiki?name=</tt>" when the target is Fossil)</td></tr>
+  @ （当目标是 Fossil 时使用"<tt>/wiki?name=</tt>"）</td></tr>
   @ <tr><td></td>
-  @ <td><input type="submit" name="submit" value="Apply Changes"></td></tr>
+  @ <td><input type="submit" name="submit" value="应用更改"></td></tr>
   @ </table>
   @ </form>
 
