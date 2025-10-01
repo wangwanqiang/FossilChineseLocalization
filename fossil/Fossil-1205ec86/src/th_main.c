@@ -21,7 +21,6 @@
 #include "config.h"
 #include "th_main.h"
 #include "sqlite3.h"
-#include "l10n.h"
 
 #if INTERFACE
 /*
@@ -2474,10 +2473,6 @@ void Th_FossilInit(u32 flags){
       Th_CreateCommand(g.interp, aCommand[i].zName, aCommand[i].xProc,
                        aCommand[i].pContext, 0);
     }
-    
-    /* Initialize localization system and register translation commands */
-    l10n_init();
-    l10n_register_commands(g.interp);
   }else{
     wasInit = 1;
   }

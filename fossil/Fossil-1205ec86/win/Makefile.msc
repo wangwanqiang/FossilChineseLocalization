@@ -32,7 +32,7 @@ INSTALLDIR = $(DESTDIR)\$(INSTALLDIR)
 #
 # NOTE: Make sure B path has no trailing backslash, UNIX-style path is OK too.
 #
-!if !exist("$(B)\VERSION")
+!if !exist("$(B)\.fossil-settings")
 !error Please specify path to project base directory: B="path/to/fossil"
 !endif
 
@@ -782,7 +782,6 @@ OBJ   = "$(OX)\add$O" \
         "$(OX)\xfer$O" \
         "$(OX)\xfersetup$O" \
         "$(OX)\zip$O" \
-        "$(OX)\th_compat_impl.obj" \
         "$(OX)\fossil.res"
 
 
@@ -1033,7 +1032,6 @@ APPTARGETS = $(APPTARGETS) openssl
 	echo "$(OX)\xfer.obj" >> $@
 	echo "$(OX)\xfersetup.obj" >> $@
 	echo "$(OX)\zip.obj" >> $@
-	echo "$(OX)\th_compat_impl.obj" >> $@
 	echo $(LIBS) >> $@
 
 "$(OBJDIR)\translate$E": "$(SRCDIR_tools)\translate.c"
@@ -1195,10 +1193,6 @@ realclean: clean
 	echo "$(SRCDIR)\../skins/xekri/details.txt" >> $@
 	echo "$(SRCDIR)\../skins/xekri/footer.txt" >> $@
 	echo "$(SRCDIR)\../skins/xekri/header.txt" >> $@
-	echo "$(SRCDIR)\../skins/l10n/css.txt" >> $@
-	echo "$(SRCDIR)\../skins/l10n/details.txt" >> $@
-	echo "$(SRCDIR)\../skins/l10n/footer.txt" >> $@
-	echo "$(SRCDIR)\../skins/l10n/header.txt" >> $@
 	echo "$(SRCDIR)\accordion.js" >> $@
 	echo "$(SRCDIR)\alerts/bflat2.wav" >> $@
 	echo "$(SRCDIR)\alerts/bflat3.wav" >> $@
@@ -2033,9 +2027,6 @@ realclean: clean
 
 "$(OX)\th_main_.c" : "$(SRCDIR)\th_main.c"
 	"$(OBJDIR)\translate$E" $** > $@
-
-"$(OX)\th_compat_impl.obj" : "$(B)\win\th_compat_impl.c"
-	$(TCC) /Fo$@ /Fd$(@D)\ -c "$(B)\win\th_compat_impl.c"
 
 "$(OX)\timeline$O" : "$(OX)\timeline_.c" "$(OX)\timeline.h"
 	$(TCC) /Fo$@ /Fd$(@D)\ -c "$(OX)\timeline_.c"

@@ -337,7 +337,7 @@ int db_int(int iDflt,const char *zSql,...);
 void md5sum_step_text(const char *zText,int nBytes);
 void md5sum_init(void);
 void etag_check(unsigned eFlags,const char *zHash);
-#define FOSSIL_BUILD_HASH "5e9a46606a8c43817b7d330bb36e7b47"
+#define FOSSIL_BUILD_HASH "2198e4a0c653f611d1b972515cb5b1e6"
 const char *fossil_exe_id(void);
 #define ETAG_QUERY    0x10 /* Output depends on PATH_INFO and QUERY_STRING */
 #define ETAG_HASH     0x08 /* Output depends on a hash */

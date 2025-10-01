@@ -19,33 +19,56 @@
 #define fossil_strcmp(A,B) strcmp(TH_CONST_CHAR_PTR_CAST(A), TH_CONST_CHAR_PTR_CAST(B))
 #endif
 
-/* 定义TH1函数的包装宏，直接应用类型转换 */
-#define TH_COMPAT_TH_LIST_APPEND(interp, pzList, pnList, zArg, nArg) \
-    Th_ListAppend(interp, pzList, pnList, TH_CONST_CHAR_PTR_CAST(zArg), nArg)
+/* 为了避免递归宏定义，我们使用一个临时的宏名称来保存原始函数名 */
+#define TH_COMPAT_RAW_Th_ListAppend Th_ListAppend
+#define TH_COMPAT_RAW_Th_Fetch Th_Fetch
+#define TH_COMPAT_RAW_Th_GetVar Th_GetVar
+#define TH_COMPAT_RAW_Th_SetVar Th_SetVar
+#define TH_COMPAT_RAW_Th_SetResult Th_SetResult
+#define TH_COMPAT_RAW_Th_ErrorMessage Th_ErrorMessage
+#define TH_COMPAT_RAW_Th_WrongNumArgs Th_WrongNumArgs
+#define TH_COMPAT_RAW_Th_GetResult Th_GetResult
+#define TH_COMPAT_RAW_Th_FossilInit Th_FossilInit
+#define TH_COMPAT_RAW_Th_Trace Th_Trace
+#define TH_COMPAT_RAW_Th_Free Th_Free
+#define TH_COMPAT_RAW_Th_ToInt Th_ToInt
 
-#define TH_COMPAT_TH_FETCH(zName, pSize) \
-    Th_Fetch(TH_CONST_CHAR_PTR_CAST(zName), pSize)
+/* 现在定义原始函数名的宏，使用保存的原始函数名来避免递归 */
+#define Th_ListAppend(interp, pzList, pnList, zArg, nArg) \
+    TH_COMPAT_RAW_Th_ListAppend(interp, pzList, pnList, TH_CONST_CHAR_PTR_CAST(zArg), nArg)
 
-#define TH_COMPAT_TH_GET_VAR(interp, zName, nName) \
-    Th_GetVar(interp, TH_CONST_CHAR_PTR_CAST(zName), nName)
+#define Th_Fetch(zName, pSize) \
+    TH_COMPAT_RAW_Th_Fetch(TH_CONST_CHAR_PTR_CAST(zName), pSize)
 
-#define TH_COMPAT_TH_SET_VAR(interp, zName, nName, zValue, nValue) \
-    Th_SetVar(interp, TH_CONST_CHAR_PTR_CAST(zName), nName, TH_CONST_CHAR_PTR_CAST(zValue), nValue)
+#define Th_GetVar(interp, zName, nName) \
+    TH_COMPAT_RAW_Th_GetVar(interp, TH_CONST_CHAR_PTR_CAST(zName), nName)
 
-#define TH_COMPAT_TH_SET_RESULT(interp, zStr, nStr) \
-    Th_SetResult(interp, TH_CONST_CHAR_PTR_CAST(zStr), nStr)
+#define Th_SetVar(interp, zName, nName, zValue, nValue) \
+    TH_COMPAT_RAW_Th_SetVar(interp, TH_CONST_CHAR_PTR_CAST(zName), nName, TH_CONST_CHAR_PTR_CAST(zValue), nValue)
 
-#define TH_COMPAT_TH_ERROR_MESSAGE(interp, zMsg, zArg, nArg) \
-    Th_ErrorMessage(interp, TH_CONST_CHAR_PTR_CAST(zMsg), TH_CONST_CHAR_PTR_CAST(zArg), nArg)
+#define Th_SetResult(interp, zStr, nStr) \
+    TH_COMPAT_RAW_Th_SetResult(interp, TH_CONST_CHAR_PTR_CAST(zStr), nStr)
 
-#define TH_COMPAT_TH_WRONG_NUM_ARGS(interp, zMsg) \
-    Th_WrongNumArgs(interp, TH_CONST_CHAR_PTR_CAST(zMsg))
+#define Th_ErrorMessage(interp, zMsg, zArg, nArg) \
+    TH_COMPAT_RAW_Th_ErrorMessage(interp, TH_CONST_CHAR_PTR_CAST(zMsg), TH_CONST_CHAR_PTR_CAST(zArg), nArg)
 
-#define TH_COMPAT_TH_GET_RESULT(interp) \
-    TH_CHAR_PTR_CAST(Th_GetResult(interp))
+#define Th_WrongNumArgs(interp, zMsg) \
+    TH_COMPAT_RAW_Th_WrongNumArgs(interp, TH_CONST_CHAR_PTR_CAST(zMsg))
 
-/* 注意：我们不再重定义原始函数名，以避免与函数声明和定义冲突 */
-/* 请在需要类型转换的地方显式使用TH_COMPAT_TH_*宏 */
+#define Th_GetResult(interp) \
+    TH_CHAR_PTR_CAST(TH_COMPAT_RAW_Th_GetResult(interp))
+
+#define Th_FossilInit(flags) \
+    TH_COMPAT_RAW_Th_FossilInit(flags)
+
+#define Th_Trace(zFormat, ...) \
+    TH_COMPAT_RAW_Th_Trace(TH_CONST_CHAR_PTR_CAST(zFormat), __VA_ARGS__)
+
+#define Th_Free(interp, p) \
+    TH_COMPAT_RAW_Th_Free(interp, p)
+
+#define Th_ToInt(interp, zVal, nVal, pInt) \
+    TH_COMPAT_RAW_Th_ToInt(interp, TH_CONST_CHAR_PTR_CAST(zVal), nVal, pInt)
 
 /* 补充th_main.c中使用的常量定义 */
 #ifndef TH_INIT_NONE

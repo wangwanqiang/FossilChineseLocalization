@@ -214,11 +214,7 @@ EXTRA_FILES = \
   $(SRCDIR)/../skins/xekri/details.txt \
   $(SRCDIR)/../skins/xekri/footer.txt \
   $(SRCDIR)/../skins/xekri/header.txt \
-  $(SRCDIR)/../skins/l10n/css.txt \
-  $(SRCDIR)/../skins/l10n/details.txt \
-  $(SRCDIR)/../skins/l10n/footer.txt \
-  $(SRCDIR)/../skins/l10n/header.txt \
-  $(SRCDIR)/accordion.js \ 
+  $(SRCDIR)/accordion.js \
   $(SRCDIR)/alerts/bflat2.wav \
   $(SRCDIR)/alerts/bflat3.wav \
   $(SRCDIR)/alerts/bloop.wav \
