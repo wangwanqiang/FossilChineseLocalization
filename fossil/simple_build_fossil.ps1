@@ -39,7 +39,7 @@ $tempPath = [System.IO.Path]::GetTempPath()
 $tempBatch = Join-Path $tempPath "build_fossil_temp.bat"
 
 # Build command with basic options including base directory
-$bPath = "$fossilDir\Fossil-1205ec86"
+$bPath = "$fossilDir"
 $buildOptions = "/f Makefile.msc B=`"$bPath`" OPTIMIZATIONS=$optimize FOSSIL_BUILD_ZLIB=1 DEBUG=0 PLATFORM=$platform FOSSIL_ENABLE_TH1_HOOKS=1 FOSSIL_ENABLE_TH1_DOCS=1"
 $buildCmd = "nmake $buildOptions"
 

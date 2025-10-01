@@ -32,7 +32,7 @@ INSTALLDIR = $(DESTDIR)\$(INSTALLDIR)
 #
 # NOTE: Make sure B path has no trailing backslash, UNIX-style path is OK too.
 #
-!if !exist("$(B)\.fossil-settings")
+!if !exist("$(B)\_FOSSIL_")
 !error Please specify path to project base directory: B="path/to/fossil"
 !endif
 
@@ -153,8 +153,8 @@ TCLINCDIR = $(TCLSRCDIR)\generic
 !endif
 
 # zlib options
-ZINCDIR   = $(B)\compat\zlib
-ZLIBDIR   = $(B)\compat\zlib
+ZINCDIR   = $(B)\Fossil-1205ec86\compat\zlib
+ZLIBDIR   = $(B)\Fossil-1205ec86\compat\zlib
 
 !if $(FOSSIL_DYNAMIC_BUILD)!=0
 ZLIB      = zdll.lib
