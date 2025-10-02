@@ -13,7 +13,7 @@ exit /b 1
 
 REM Set ignore patterns for Fossil
 echo Setting fossil ignore-glob configuration...
-%FOSSIL_EXE% settings ignore-glob "*.o,*.obj,*.exe,*.dll,*.pdb,*.ilk,*.suo,*.ncb,*.user,*.cache,*.bak,*.tmp,*.temp,*.old,*.log,*.err"
+%FOSSIL_EXE% settings ignore-glob "*.o,*.obj,*.exe,*.dll,*.pdb,*.ilk,*.suo,*.ncb,*.user,*.cache,*.bak,*.tmp,*.temp,*.old,*.log,*.err,ai_backups/*"
 
 if %ERRORLEVEL% equ 0 (
 echo Success: fossil ignore-glob configuration has been set!
