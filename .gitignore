@@ -8,3 +8,4 @@ fossil.fossil
 /fossil/translation_terms.db
 /fossil/__pycache__/*.pyc
 /*.cache
+/fossil/_FOSSIL_
