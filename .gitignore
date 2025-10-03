@@ -4,3 +4,7 @@ fossil.fossil
 /fossil/Fossil/compat/zlib/*.pdb
 /fossil/bin/fossil.exe
 /fossil/Fossil/win/fossil.exe
+/fossil/ai_backups
+/fossil/translation_terms.db
+/fossil/__pycache__/*.pyc
+/*.cache
