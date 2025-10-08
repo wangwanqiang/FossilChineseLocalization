@@ -1,68 +1,80 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-检查数据库结构的简单脚本
+检查数据库结构的优化脚本
 """
 
 import os
 import sqlite3
+import logging
+from typing import List, Tuple
 
-def main():
-    # 检查文件是否存在
-    db_path = 'translation_terms.db'
-    print(f"数据库文件 '{db_path}' 是否存在: {os.path.exists(db_path)}")
+# 配置日志
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+def check_file_exists(file_path: str) -> bool:
+    """检查文件是否存在"""
+    exists = os.path.exists(file_path)
+    logging.info(f"数据库文件 '{file_path}' 是否存在: {exists}")
+    if exists:
+        logging.info(f"文件大小: {os.path.getsize(file_path)} 字节")
+    return exists
+
+def list_tables(cursor: sqlite3.Cursor) -> List[str]:
+    """列出数据库中的所有表"""
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+    return [table[0] for table in cursor.fetchall()]
+
+def describe_table(cursor: sqlite3.Cursor, table_name: str) -> None:
+    """描述表结构和内容"""
+    logging.info(f"- 表名: {table_name}")
+    cursor.execute(f"PRAGMA table_info({table_name})")
+    columns = cursor.fetchall()
+    logging.info("  表结构:")
+    for col in columns:
+        logging.info(f"  - {col[1]} ({col[2]})")
     
-    if os.path.exists(db_path):
-        print(f"文件大小: {os.path.getsize(db_path)} 字节")
-        
-        # 连接数据库并检查表
-        try:
-            conn = sqlite3.connect(db_path)
+    cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
+    count = cursor.fetchone()[0]
+    logging.info(f"  记录数: {count}")
+    
+    if count > 0:
+        logging.info("  前3条记录示例:")
+        cursor.execute(f"SELECT * FROM {table_name} LIMIT 3")
+        for i, row in enumerate(cursor.fetchall()):
+            logging.info(f"  - 记录 {i+1}: {row}")
+
+def check_database(db_path: str) -> None:
+    """检查数据库结构"""
+    try:
+        with sqlite3.connect(db_path) as conn:
             cursor = conn.cursor()
-            
-            print("\n数据库中的表:")
-            cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
-            tables = cursor.fetchall()
-            
+            tables = list_tables(cursor)
             if tables:
-                for table in tables:
-                    table_name = table[0]
-                    print(f"- 表名: {table_name}")
-                    
-                    # 查看表结构
-                    print(f"  表结构:")
-                    cursor.execute(f"PRAGMA table_info({table_name})")
-                    columns = cursor.fetchall()
-                    for col in columns:
-                        print(f"  - {col[1]} ({col[2]})")
-                    
-                    # 查看记录数
-                    cursor.execute(f"SELECT COUNT(*) FROM {table_name}")
-                    count = cursor.fetchone()[0]
-                    print(f"  记录数: {count}")
-                    
-                    # 查看前3条记录（如果有）
-                    if count > 0:
-                        print(f"  前3条记录示例:")
-                        cursor.execute(f"SELECT * FROM {table_name} LIMIT 3")
-                        for i, row in enumerate(cursor.fetchall()):
-                            print(f"  - 记录 {i+1}: {row}")
+                logging.info("\n数据库中的表:")
+                for table_name in tables:
+                    describe_table(cursor, table_name)
             else:
-                print("数据库中没有表")
-                
-        except sqlite3.Error as e:
-            print(f"数据库错误: {e}")
-        finally:
-            conn.close()
+                logging.info("数据库中没有表")
+    except sqlite3.Error as e:
+        logging.error(f"数据库错误: {e}")
+
+def find_other_db_files(directory: str) -> List[str]:
+    """查找目录下的其他数据库文件"""
+    return [f for f in os.listdir(directory) if f.endswith('.db')]
+
+def main() -> None:
+    db_path = 'translation_terms.db'
+    if check_file_exists(db_path):
+        check_database(db_path)
     
-    # 检查是否有其他可能的数据库文件
-    print("\n检查当前目录下是否有其他可能的数据库文件:")
-    db_files = [f for f in os.listdir('.') if f.endswith('.db')]
+    logging.info("\n检查当前目录下是否有其他可能的数据库文件:")
+    db_files = find_other_db_files('.')
     if db_files:
         for f in db_files:
-            print(f"- {f}")
+            logging.info(f"- {f}")
     else:
-        print("没有找到其他数据库文件")
+        logging.info("没有找到其他数据库文件")
 
 if __name__ == '__main__':
     main()

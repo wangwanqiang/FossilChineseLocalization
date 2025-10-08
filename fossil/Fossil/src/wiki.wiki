@@ -1,62 +1,52 @@
-<h2>Wiki Formatting Rule Summary</h2>
+<h2>Wiki 格式化规则摘要</h2>
 
-  #  Blank lines are paragraph breaks
-  #  Bullets are "*" surrounded by two spaces at the beginning of a line
-  #  Enumeration items are "#" or a digit and a "." surrounded by two
-     spaces at the beginning of a line
-  #  Indented paragraphs begin with a tab or two spaces
-  #  Hyperlinks are contained within square brackets:
-     <nowiki>"<b>[</b><i>target</i><b>]</b>"
-     or "<b>[</b><i>target</i><b>|</b><i>label</i><b>]</b>"</nowiki>
-  #  Most ordinary HTML works
-  #  &lt;verbatim&gt; and &lt;nowiki&gt;
+  #  空行表示段落分隔
+  #  项目符号以 "*" 开头，且前后有两个空格
+  #  枚举项以 "#" 或数字+点开头，前后有两个空格
+  #  缩进段落以制表符或两个空格开头
+  #  超链接包含在方括号中：
+     <nowiki>"<b>[</b><i>目标</i><b>]</b>"
+     或 "<b>[</b><i>目标</i><b>|</b><i>标签</i><b>]</b>"</nowiki>
+  #  大多数普通 HTML 标签可用
+  #  &lt;verbatim&gt; 和 &lt;nowiki&gt;
 
-We call the first five rules above the "wiki" formatting rules.
-The last two rules are the HTML formatting rules.
+我们将上面的前五个规则称为"wiki"格式化规则。
+最后两个规则是 HTML 格式化规则。
 
-<h2>Formatting Rule Details</h2>
+<h2>格式化规则详细说明</h2>
 
-  1.  <b>Paragraphs.</b>
-      Any sequence of one or more blank lines forms a paragraph break.
-      Centered or right-justified paragraphs are not supported by wiki markup,
-      but you can do these things if you need them using HTML.
+  1.  <b>段落</b>
+      任何由一个或多个空行组成的序列构成段落分隔。
+      Wiki 标记不支持居中和右对齐段落，但您可以使用 HTML 实现这些功能。
 
-  2.  <b>Bullet Lists.</b>
-      A bullet list item is a line that begins with a single "*" character
-      surrounded on both sides by two or more spaces or by a tab.
-      Only a single level of bullet list is supported by wiki.
-      For nested lists, use HTML.
+  2.  <b>项目符号列表</b>
+      项目符号列表项是一行以单个 "*" 字符开头的文本，且字符两侧有两个或更多空格或制表符。
+      Wiki 仅支持单级项目符号列表。
+      对于嵌套列表，请使用 HTML。
 
-  3.  <b>Enumeration Lists.</b>
-      An enumeration list item is a line that begins with a single "#"
-      character surrounded on both sides by two or more spaces or by a tab.
-      Or it can be a number and a "." (ex:  "5.") surrounded on both sides
-      by two spaces or a tab.
-      Only a single level of enumeration list is supported by wiki.
-      For nested lists or for enumerations that count using letters or
-      roman numerals, use HTML.
+  3.  <b>枚举列表</b>
+      枚举列表项是一行以单个 "#" 字符开头的文本，且字符两侧有两个或更多空格或制表符。
+      也可以是以数字加点（例如："5."）开头的文本，前后有两个空格或制表符。
+      Wiki 仅支持单级枚举列表。
+      对于嵌套列表或使用字母或罗马数字计数的枚举，请使用 HTML。
 
-  4.  <b>Indented Paragraphs.</b>
-      Any paragraph that begins with two or more spaces or a tab and which
-      is not a bullet or enumeration list item is rendered indented.
-      Only a single level of indentation is supported by wiki.
-      Use HTML for deeper indentation.
+  4.  <b>缩进段落</b>
+      任何以两个或更多空格或制表符开头且不是项目符号或枚举列表项的段落都将被渲染为缩进格式。
+      Wiki 仅支持单级缩进。
+      如需更深的缩进，请使用 HTML。
 
-  5.  <b>Hyperlinks.</b>
-      Text within square brackets <nowiki>("[...]")</nowiki> becomes a
-      hyperlink. The target can be a wiki page name, the artifact ID of
-      a check-in or ticket, the name of an image, a URL, or an
-      [#intermap|interwiki link] of the form 
-      "<i>Tag</i><b>:</b><i>PageName</i>".
-      By default, the target is displayed as the text of the hyperlink.
-      But you can specify alternative text after the target name
-      separated by a "|" character.
-      You can also link to internal anchor names using 
-      <nowiki>[#anchor-name],</nowiki> providing you have added the necessary 
-      "&lt;a name='anchor-name'&gt;&lt;/a&gt;" tag to your wiki page.
+  5.  <b>超链接</b>
+      方括号 <nowiki>("[...]"）</nowiki> 内的文本将成为超链接。目标可以是 wiki 页面名称、签入或工单的构件 ID、图像名称、URL 或
+      [#intermap|interwiki 链接]，格式为
+      "<i>标签</i><b>:</b><i>页面名称</i>"。
+      默认情况下，目标将显示为超链接的文本。
+      但您可以在目标名称后指定替代文本，用 "|" 字符分隔。
+      您还可以使用
+      <nowiki>[#anchor-name]</nowiki>
+      链接到内部锚点名称，前提是您已在 wiki 页面中添加了必要的 "&lt;a name='anchor-name'&gt;&lt;/a&gt;" 标签。
 
-  6.  <b>HTML.</b>
-      The following standard HTML elements may be used:
+  6.  <b>HTML</b>
+      可以使用以下标准 HTML 元素：
       &lt;a&gt; &lt;address&gt; &lt;article&gt; &lt;aside&gt; &lt;b&gt;
       &lt;big&gt; &lt;blockquote&gt; &lt;br&gt; &lt;center&gt; &lt;cite&gt;
       &lt;code&gt; &lt;col&gt; &lt;colgroup&gt; &lt;dd&gt; 
@@ -70,21 +60,18 @@ The last two rules are the HTML formatting rules.
       &lt;strike&gt; &lt;strong&gt; &lt;sub&gt; &lt;sup&gt; &lt;table&gt;
       &lt;tbody&gt; &lt;td&gt; &lt;tfoot&gt; &lt;th&gt; &lt;thead&gt;
       &lt;title&gt; &lt;tr&gt; &lt;tt&gt; &lt;u&gt; &lt;ul&gt; &lt;var&gt;
-      &lt;verbatim&gt;. There are two non-standard elements available:
-      &lt;verbatim&gt; and &lt;nowiki&gt;. No other elements are allowed.
-      All attributes are checked and only a few benign attributes are
-      allowed on each element. In particular, any attributes that specify
-      javascript or CSS are elided.
+      &lt;verbatim&gt;。还有两个非标准元素可用：
+      &lt;verbatim&gt; 和 &lt;nowiki&gt;。不允许使用其他元素。
+      所有属性都经过检查，每个元素只允许使用少量良性属性。特别是，任何指定
+      JavaScript 或 CSS 的属性都会被删除。
 
-  7.  <b>Special Markup.</b>
-      The &lt;nowiki&gt; tag disables all wiki formatting rules through
-      the matching &lt;/nowiki&gt; element. The &lt;verbatim&gt; tag works
-      like &lt;pre&gt; with the addition that it also disables all wiki
-      and HTML markup through the matching &lt;/verbatim&gt;.
-      Text within 
+  7.  <b>特殊标记</b>
+      &lt;nowiki&gt; 标签会禁用所有 wiki 格式化规则，直到匹配的 &lt;/nowiki&gt; 元素。&lt;verbatim&gt; 标签的作用类似于 &lt;pre&gt;，但还会禁用所有 wiki
+      和 HTML 标记，直到匹配的 &lt;/verbatim&gt;。
+      
       <tt>&lt;verbatim&nbsp;type="pikchr"&gt;...&lt;/verbatim&gt;</tt>
-      is formatted using <a href="https://pikchr.org/home">Pikchr</a>.
+      内的文本使用 <a href="https://pikchr.org/home">Pikchr</a> 进行格式化。
 
 
 <a name="intermap"></a>
-<h2>Interwiki Tag [/intermap|Map]</h2>
+<h2>Interwiki 标签 [/intermap|映射]</h2>
